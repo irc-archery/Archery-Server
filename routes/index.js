@@ -103,6 +103,7 @@ router.post('/add', output, function(req, res) {
 		} else {
 			// セッションも一緒に送る
 			req.session.user = req.body.name;
+            req.session.password = req.body.password;
 			res.redirect('/');
 		}
 	});
