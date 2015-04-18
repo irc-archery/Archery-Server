@@ -5,10 +5,10 @@ function mySql(){
 
 	// connect mysql data base 
 	return mysql.createConnection({
-		host: process.env.DB_HOST || 'localhost',
-		user : 'mod1_user',
-		password: process.env.DB_PASS || 'IRC2015',
-		database: process.env.DB_NAME || 'mod1_DB'
+		host: process.env.mysql_host || 'localhost',
+		user : process.env.mysql_user || 'user_name',
+		password: process.env.mysql_pass || 'user_password',
+		database: process.env.mysql_db || 'db_name'
 	});
 }
 

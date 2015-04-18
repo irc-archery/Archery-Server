@@ -10,11 +10,10 @@ var connectCouchDB = require('connect-couchdb')(session);
 var app = express();
 
 var store = new connectCouchDB({
-	name: 'archery-server-sessions',
-	username: '',
-	password: '',
-	host: 'localhost',
-	post: '5984'
+	name: process.env.couchdb_name || 'db_name',
+	username: process.env.couchdb_user || 'db_user',
+	password: process.env.couchdb_pass || 'db_pass',
+	host: process.env.couchdb_host || 'db_host'
 });
 
 // view engine setup
@@ -31,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(session({
 	name: "connect.sid",
-	secret: 'secret',
+	secret: process.env.session_sercret || 'secret',
   	saveUninitialized: true,
 	cookie: {
 		httpOnly: false
