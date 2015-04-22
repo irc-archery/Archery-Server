@@ -10,10 +10,10 @@ var connectCouchDB = require('connect-couchdb')(session);
 var app = express();
 
 var store = new connectCouchDB({
-	name: process.env.couchdb_name || 'db_name',
-	username: process.env.couchdb_user || 'db_user',
-	password: process.env.couchdb_pass || 'db_pass',
-	host: process.env.couchdb_host || 'db_host'
+	name: process.env.COUCHDB_NAME || 'db_name',
+	//username: process.env.COUCHDB_USER || 'db_user',
+	//password: process.env.COUCHDB_PASS || 'db_pass',
+	host: process.env.COUCHDB_HOST || 'db_host'
 });
 
 // view engine setup

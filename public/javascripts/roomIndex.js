@@ -1,11 +1,13 @@
 var socket = io.connect();
 
-// 初回接続時に発生するイベントのハンドラー
-socket.on('connect_message', function (data) {
-    var msg = "<div id='alert' class='alert alert-info'>\
-<button class='close' data-dismiss='alert'>&times;</button>" + data.name + " : " + data.message + "</div>";
-  $("div#chat-area").prepend(msg);
-  $("div#alert").hide().fadeIn(1000);
+socket.on('init', function (data) {
+  console.log('init!');
+  console.log(data);
+});
+
+socket.on('getIndex', function (data) {
+  console.log(data);
+  $(".debug").prepend(data);
 });
 
 // コメント受信時に発生するイベントのハンドラー

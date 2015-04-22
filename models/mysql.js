@@ -1,17 +1,12 @@
-//--- MySQL ---//
-
-function mySql(){
+function mySql() {
 	var mysql = require('mysql');
 
-	// connect mysql data base 
 	return mysql.createConnection({
-		host: process.env.mysql_host || 'localhost',
-		user : process.env.mysql_user || 'user_name',
-		password: process.env.mysql_pass || 'user_password',
-		database: process.env.mysql_db || 'db_name'
+		host: process.env.MYSQL_HOST || 'localhost',
+		user : process.env.MYSQL_USER || 'user_name',
+		password: process.env.MYSQL_PASS || 'user_password',
+		database: process.env.MYSQL_DB || 'db_name'
 	});
 }
-
-//--- End MySQL ---//
 
 module.exports = mySql;

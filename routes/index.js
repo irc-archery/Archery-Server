@@ -1,7 +1,5 @@
 var express = require('express');
 var router = express.Router();
-// Create Connection to MySQL
-var connection = require('../models/mysql.js')();
 
 router.get('/', function(req, res) {
 	res.render('index');
@@ -22,7 +20,7 @@ router.post('/add', function(req, res) {
 	
 });
 
-router.get('/logout', output, function(req, res) {
+router.get('/logout', function(req, res) {
 	req.session.destroy();
 	console.log('deleted session');
 	res.redirect('/');
