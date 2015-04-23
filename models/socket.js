@@ -21,7 +21,7 @@ function socketio(server) {
 		socket.emit('init',  "nya");
 	
 		// クライアントに得点表一覧を送信する
-		connection.query('show tables from archery', function(err, results) {
+		connection.query('select * from `match`;', function(err, results) {
 			socket.emit('getIndex', results);
 		});
 	});

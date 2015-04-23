@@ -3,9 +3,9 @@ function mySql() {
 
 	return mysql.createConnection({
 		host: process.env.MYSQL_HOST || 'localhost',
-		user : process.env.MYSQL_USER || 'user_name',
-		password: process.env.MYSQL_PASS || 'user_password',
-		database: process.env.MYSQL_DB || 'db_name'
+		user : process.env.MYSQL_USER || 'archery_user',
+		password: process.env.MYSQL_PASS || 'archery_password',
+		database: process.env.MYSQL_DB || 'archery'
 	});
 }
 
