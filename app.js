@@ -4,17 +4,19 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session');
-var connectCouchDB = require('connect-couchdb')(session);
+//var session = require('express-session');
+//var connectCouchDB = require('connect-couchdb')(session);
 
 var app = express();
 
+/*
 var store = new connectCouchDB({
 	name: process.env.COUCHDB_NAME || 'archery-server-sessions',
 	//username: process.env.COUCHDB_USER || 'db_user',
 	//password: process.env.COUCHDB_PASS || 'db_pass',
 	host: process.env.COUCHDB_HOST || 'localhost'
 });
+*/
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -28,6 +30,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cookieParser());
+/*
 app.use(session({
 	name: "connect.sid",
 	secret: process.env.session_sercret || 'secret',
@@ -40,6 +43,7 @@ app.use(session({
 	store: store
 	})
 );
+*/
 
 var routes = require('./routes/index');
 var app_routes = require('./routes/app_routes');
