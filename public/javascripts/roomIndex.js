@@ -5,7 +5,7 @@ socket.on('init', function (data) {
   console.log(data);
 });
 
-  // 得点表一覧を表示
+// 得点表一覧を表示
 socket.on('getIndex', function (data) {
 
   var code = '';
@@ -34,60 +34,20 @@ socket.on('getIndex', function (data) {
   $("#tableArea").append(code);
 });
 
-// コメント受信時に発生するイベントのハンドラー
-socket.on('receive', function (data) {
-  var element = "<form class='rows' data-id='" + data.id + "'>\
-        <div class='form-group'>\
-        <div>" + data.name + " : " + data.message +  "</div>\
-        </div>\
-        <div class='form-group'>\
-        <button type='button' data-id='" + data.id + "' class='btn btn-warning' onclick='message_delete(this.dataset.id)'>Delete</button>\
-        </div>\
-        </form>";
-      
-  $("div#chat-area").prepend(element);
-  $("form[data-id='" + data.id + "']").hide().fadeIn(1000);
+// 得点表の情報を出力
+socket.on('getScoreCard', function (data) {
+  console.log('bellow is Score card data');
+  console.log(data);
 });
 
-// 初回接続時にDBに格納されているデータを受け取るイベントのハンドラー
-socket.on('init_receive', function (data){
-  for (var i = 0; i < data.length; i++){
-        var element = "<form class='rows' data-id='" + data[i].id + "'>\
-        <div class='form-group'>\
-        <div>" + data[i].name + " : " + data[i].message +  "</div>\
-        </div>\
-        <div class='form-group'>\
-        <button type='button' data-id='" + data[i].id + "' class='btn btn-warning' onclick='message_delete(this.dataset.id)'>Delete</button>\
-        </div>\
-        </form>";
-      
-        $("div#chat-area").prepend(element);
-	$("form[data-id='" + data[i].id + "']").hide().fadeIn(1000);
-  }
-});
+function getScoreCard(){
 
-// コメントを削除するイベントのハンドラー
-socket.on('ClDelete', function(data){
-  $("form[data-id='" + data.id + "']").remove();		
-});
+  //var id = $('#scoreCardNumber');
+  id = 1;
 
-socket.on('truncate', function(data){
-  $("div#chat-area").empty(); 
-});
+  console.log('score card number:')
+  console.log(id);
 
-// コメントをサーバに送信する関数
-function Send() {
-  var name = $("input#name").val();
-  var msg = $("input#message").val();
-  $("input#message").val("");
-  socket.emit('send', { name: name, message: msg });
+  socket.emit('getScoreCard', {id: id});
 }
 
-// コメントの削除要請をする関数
-function message_delete(arg_id){
-  socket.emit("SeDelete", {id: arg_id});
-}
-
-function trunCate(){
-  socket.emit('truncate');
-}
