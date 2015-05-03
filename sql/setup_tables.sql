@@ -1,5 +1,6 @@
 create table `organization` (
 	`o_id` int not null auto_increment primary key unique,
+	`p_id` int,
 	`organizationName` varchar(255),
 	`establish` date,
 	`place` varchar(255),
@@ -33,7 +34,7 @@ create table `match` (
 	`arrows` int,
 	`perEnd` int,
 	`length` int,
-	`rule` varchar(255),
+	`rule` int,
 	`permission` int,
 	index(`m_id`),
 	foreign key(`p_id`) references `account`(`p_id`),

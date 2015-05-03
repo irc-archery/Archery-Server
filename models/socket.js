@@ -9,7 +9,7 @@ function socketio(server) {
 		console.log('suceess connection');	
 
 		// クライアントに得点表一覧を送信する
-		connection.query('select * from `match`;', function(err, results) {
+		connection.query('select * from `match`', function(err, results) {
 			console.log('emit getIndex');
 			socket.emit('getIndex', results);
 		});
