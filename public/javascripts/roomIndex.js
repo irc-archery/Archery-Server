@@ -1,30 +1,27 @@
 var socket = io.connect();
 
-socket.on('init', function (data) {
-  console.log('init!');
-  console.log(data);
-});
+socket.emit('extractMatchIndex');
+console.log('emit extractMatchIndex');
 
 // 得点表一覧を表示
-socket.on('getIndex', function (data) {
+socket.on('extractMatchIndex', function (data) {
+
+  console.log('output extractMatchIndex');
+  console.log(data);
 
   var code = '';
 
   // table
-  code += "<table border=1>";
-  code += "<tr><th>id</th><th>matchName</th><th>playerNum</th><th>shotNum</th><th>setNum</th><th>length</th><th>role</th></tr>";
+  code += "<table border=1 style='padding: 5;'>";
+  code += "<tr><th>m_id</th><th>matchName</th><th>length</th></tr>";
 
   for (var i = 0; i < data.length; i++) {
 
     code += "<tr>";
 
-    code += "<td>" + data[i]['id'] + "</td>";
+    code += "<td>" + data[i]['m_id'] + "</td>";
     code += "<td>" + data[i]['matchName'] + "</td>";
-    code += "<td>" + data[i]['playerNum'] + "</td>";
-    code += "<td>" + data[i]['shotNum'] + "</td>";
-    code += "<td>" + data[i]['setNum'] + "</td>";
     code += "<td>" + data[i]['length'] + "</td>";
-    code += "<td>" + data[i]['role'] + "</td>";
 
     code += "</tr>";
   }
