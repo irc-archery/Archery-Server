@@ -1,5 +1,5 @@
 function socketio(server) {
-  var connection = require('./mysql.js')(); // Catch data from Database and output console connection.query('show tables from archery', function(err, results, fields) {// output results console.log('show tables from archery'); console.log('---results---'); console.log(results); console.log('---result end---'); }); //--- Socket.IO ---// // wakeup socket.io server
+  var connection = require('./mysql.js')();
   io = require('socket.io')(server);
 
 	// クライアントとの接続が確立
@@ -51,14 +51,13 @@ function socketio(server) {
 					socket.emit('extractScoreCardIndex', matchIndexData);
 				});
 			});
-
 		});
 
 		// ユーザーにdata.idの得点表のデータを返す
-		socket.on('getScoreCard', function(data){
+		socket.on('extractScoreCard', function(data){
 			connection.query('select * from `score` where id = ' + data.id, function(err, results){socket.emit('getScoreCard', results); }); });
 		// 得点表記入
-		socket.on('postScore', function (data) {
+		socket.on('insertScore', function (data) {
 			// 得点表の挿入処理
 			connection.query('insert into ', function (err, results) {
 

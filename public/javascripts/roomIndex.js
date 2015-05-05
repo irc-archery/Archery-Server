@@ -1,18 +1,14 @@
 var socket = io.connect();
 
+// Emit Extract Match Index
 socket.emit('extractMatchIndex');
-console.log('emit extractMatchIndex');
 
-// match一覧を表示
+// On Extract Match Index
 socket.on('extractMatchIndex', function (data) {
-
-  console.log('output extractMatchIndex');
-  console.log(data);
 
   var code = '';
 
   // table
-  code += "<table border=1 style='padding: 5;'>";
   code += "<tr><th>m_id</th><th>matchName</th><th>length</th></tr>";
 
   for (var i = 0; i < data.length; i++) {
@@ -26,31 +22,43 @@ socket.on('extractMatchIndex', function (data) {
     code += "</tr>";
   }
 
-  code += "</table>";
-
-  $("#tableArea").append(code);
+  $("#matchIndexArea").append(code);
 });
 
-// 得点表の情報を出力
-socket.on('getScoreCard', function (data) {
-  console.log('bellow is Score card data');
-  console.log(data);
-});
-
+// Emit Extract ScoreCard Index
 function extractScoreCardIndex(){
 
   var id = $('#matchNumber').val();
 
-  console.log('score card number:');
-  console.log(id);
-
   socket.emit('extractScoreCardIndex', {'m_id': id});
 }
 
+// On Extract ScoreCard Index
 socket.on('extractScoreCardIndex', function(data){
-  console.log('extractScoreCardIndex data');
-  console.log(data); 
-});
 
+  var code = '';
+
+  code += '<tbody>';
+
+  code += '<tr><td colspan="4" style="text-align: center;">m_id : ' + $('#matchNumber').val() + '</td></tr>';
+
+  code += '<tr><th>sc_id</th><th>firstName</th><th>lastName</th><th>scoreTotal</th></tr>';
+
+  for (var i = 0; i < data.length; i++) {
+    
+    code += '<tr>';
+
+    code += '<td>' + data[i]['sc_id'] + '</td>';
+    code += '<td>' + data[i]['firstName'] + '</td>';
+    code += '<td>' + data[i]['lastName'] + '</td>';
+    code += '<td>' + data[i]['scoreTotal'] + '</td>';
+
+    code += '</tr>';
+  }
+
+  code += '</tbody>';
+
+  $("#scoreCardIndexArea").append(code);
+});
 
 

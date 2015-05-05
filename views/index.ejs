@@ -14,23 +14,31 @@
 <body>
 	<div id="topBar">
 		<p class="container col-sm-offset-2 col-sm-8">
-            <span>Logged in sitenai </span>
+            <span>Logged in </span>
             <a href="/logout" style= "float: right; di
             splay: block;">Logout</a>
         </p>
 	</div>
 
 	<div class="container col-sm-offset-2 col-sm-8">
-		<h1>Chat System</h1>
-		<div id="tableArea">
-		</div>
-		<div>
-			<p>Input Match Number</p>
-			<input type="text" id="matchNumber">
-			<input type="button" onclick="extractScoreCardIndex()" value="send">
-		</div>
-	</div>
+		<h1>Archery-Web-Client</h1>
+		<h2>extractMatchIndex</h2>
+		<table id="matchIndexArea" class="table table-bordered">
 
+		</table>
+		<h2>extractScoreCardIndex</h2>
+		<div>
+			<p>Input Match ID</p>
+			<div class="form-inline">
+				<input class="form-control" type="text" id="matchNumber">
+				<input class="btn btn-primary" type="button" onclick="extractScoreCardIndex()" value="emit">
+			</div>
+		</div>
+
+		<table id="scoreCardIndexArea" class="table table-bordered">
+						
+		</table>
+	</div>
 
     <script src="/javascripts/jquery.min.js"></script>
     <script src="/components/bootstrap/js/bootstrap.min.js"></script>

@@ -27,6 +27,7 @@ div#topBar{
 div#topBar a,div#topBar span{
    color: white;
 }
+
 h1{
  width: 100%;
  margin-top: 50px;
@@ -36,3 +37,11 @@ h1{
  text-align: center;
 }
 
+h2{
+	width: 100%;
+	border-bottom: 2px solid #2980b9;
+}
+
+table {
+	margin-top: 20px;
+}
