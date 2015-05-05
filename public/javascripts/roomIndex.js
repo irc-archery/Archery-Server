@@ -3,7 +3,7 @@ var socket = io.connect();
 socket.emit('extractMatchIndex');
 console.log('emit extractMatchIndex');
 
-// 得点表一覧を表示
+// match一覧を表示
 socket.on('extractMatchIndex', function (data) {
 
   console.log('output extractMatchIndex');
@@ -37,14 +37,20 @@ socket.on('getScoreCard', function (data) {
   console.log(data);
 });
 
-function getScoreCard(){
+function extractScoreCardIndex(){
 
-  //var id = $('#scoreCardNumber');
-  id = 1;
+  var id = $('#matchNumber').val();
 
-  console.log('score card number:')
+  console.log('score card number:');
   console.log(id);
 
-  socket.emit('getScoreCard', {id: id});
+  socket.emit('extractScoreCardIndex', {'m_id': id});
 }
+
+socket.on('extractScoreCardIndex', function(data){
+  console.log('extractScoreCardIndex data');
+  console.log(data); 
+});
+
+
 

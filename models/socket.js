@@ -10,10 +10,11 @@ function socketio(server) {
 
 		// 試合 一覧取得
 		socket.on('extractMatchIndex', function(data){
-			console.log('emit extractMatchIndex verfnit');
+
+			console.log('on extractMatchIndex');
 
 			connection.query('select m_id, matchName, length from `match`;', function(err, results){
-				console.log('output resutls of extractMatchIndex');
+				console.log('emit extractMatchIndex');
 				console.log(results);
 				socket.emit('extractMatchIndex', results);
 			});
@@ -32,11 +33,25 @@ function socketio(server) {
 			console.log('on extractScoreCardIndex');
 			console.log(data);
 
-			connection.query('select scoreCard.sc_id, scoreCard.scoreTotal, score.sum from scoreCard, score where scoreCard.sc_idscore.sc_id', function(err, results){
+			// sql syntax for extract index id
+			var matchIndexIdSql = 'select scoreCard.sc_id, scoreCard.p_id from scoreCard where scoreCard.m_id = ' + data.m_id;
 
+			// extract id used to index
+			connection.query(matchIndexIdSql, function(err, matchIndexId){
+
+				var matchIndexDataSql = 'select score.sc_id, account.firstName, account.lastName, score.scoreTotal from account, score where score.sc_id = ' + matchIndexId[0].sc_id + ' and account.p_id = ' + matchIndexId[0].p_id;
+
+				for(var i = 1; i < matchIndexId.length; i++){
+					matchIndexDataSql += ' union select score.sc_id, account.firstName, account.lastName, score.scoreTotal from account, score where score.sc_id = ' + matchIndexId[i].sc_id + ' and account.p_id = ' + matchIndexId[i].p_id;
+				}
+
+				connection.query(matchIndexDataSql, function(err, matchIndexData){
+					console.log('emit : extractMatchIndex');
+					console.log(matchIndexData);
+					socket.emit('extractScoreCardIndex', matchIndexData);
+				});
 			});
 
-			//socket.emit('extractScoreCardIndex');
 		});
 
 		// ユーザーにdata.idの得点表のデータを返す
