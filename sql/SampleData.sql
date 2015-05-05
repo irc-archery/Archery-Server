@@ -7,8 +7,8 @@ insert into account(o_id, firstName, lastName, email, password) values(1, '大�
 insert into account(o_id, firstName, lastName, email, password) values(2, '名', '姓', 'example2@gmail.com', 'password');
 
 # sample data of match
-insert into `match`(p_id, o_id, matchName, created, ended, arrows, length) values(1, 1, '試合 1', now(), 6, 6, 70);
-insert into `match`(p_id, o_id, matchName, created, ended, arrows, length) values(2, 2, '試合 2', now(), 4, 4, 50);
+insert into `match`(p_id, o_id, matchName, created, arrows, perEnd, length) values(1, 1, '試合 1', now(), 6, 6, 70);
+insert into `match`(p_id, o_id, matchName, created, arrows, perEnd, length) values(2, 2, '試合 2', now(), 4, 4, 50);
 
 # sample data of scoreCard
 insert into scoreCard(p_id, m_id, created, place) values(1, 1, now(), '原ノ町');
