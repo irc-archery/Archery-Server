@@ -29,6 +29,7 @@ create table `match` (
 	`p_id` int,
 	`o_id` int,
 	`matchName` varchar(255),
+	`sponsor` varchar(255),
 	`created` datetime,
 	`ended` datetime,
 	`arrows` int,

@@ -6,18 +6,26 @@ socket.emit('extractMatchIndex');
 // On Extract Match Index
 socket.on('extractMatchIndex', function (data) {
 
+  console.log(data);
+
   var code = '';
 
   // table
-  code += "<tr><th>m_id</th><th>matchName</th><th>length</th></tr>";
+  code += "<tr>"
+
+  Object.keys(data[0]).forEach(function (key) {
+    code += "<th>" + key + "</th>";
+  });
+
+  code += "</tr>";
 
   for (var i = 0; i < data.length; i++) {
 
     code += "<tr>";
 
-    code += "<td>" + data[i]['m_id'] + "</td>";
-    code += "<td>" + data[i]['matchName'] + "</td>";
-    code += "<td>" + data[i]['length'] + "</td>";
+    Object.keys(data[i]).forEach(function (key) {
+      code += "<td>" + data[i][key] + "</td>";
+    });
 
     code += "</tr>";
   }
@@ -35,6 +43,8 @@ function extractScoreCardIndex(){
 
 // On Extract ScoreCard Index
 socket.on('extractScoreCardIndex', function(data){
+
+  console.log(data);
 
   var code = '';
 
