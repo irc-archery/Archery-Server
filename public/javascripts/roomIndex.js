@@ -33,6 +33,26 @@ socket.on('extractMatchIndex', function (data) {
   $("#matchIndexArea").append(code);
 });
 
+// Emit Insert Match
+function insertMatch() {
+
+  var p_id = $('#p_id').val();
+  var matchName = $('#matchName').val();
+  var sponsor = $('#sponsor').val();
+  var arrows = $('#arrows').val();
+  var perEnd = $('#perEnd').val();
+  var length = $('#length').val();
+
+  socket.emit('insertMatch', {
+    'p_id': p_id,
+    'matchName': matchName,
+    'sponsor': sponsor,
+    'arrows': arrows,
+    'perEnd': perEnd,
+    'length': length
+  });
+}
+
 // Emit Extract ScoreCard Index
 function extractScoreCardIndex(){
 

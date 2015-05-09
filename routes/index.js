@@ -21,10 +21,9 @@ router.post('/add', function(req, res) {
 });
 
 router.get('/logout', function(req, res) {
-	req.session.destroy();
+	//req.session.destroy();
 	console.log('deleted session');
 	res.redirect('/');
 });
-
 
 module.exports = router;

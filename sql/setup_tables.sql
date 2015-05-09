@@ -52,28 +52,35 @@ create table `scoreCard` (
 	foreign key (`m_id`) references `match`	(`m_id`)
 ) CHARACTER SET 'utf8' ENGINE = InnoDB;
 
-create table `score` (
-	`s_id` int not null auto_increment primary key unique,
+create table `scorePerEnd` (
+	`spe_id` int not null auto_increment primary key unique,
 	`sc_id` int,
 	`p_id` int,
 	`o_id` int,
-	`score_1` varchar(50),
-	`score_2` varchar(50),
-	`score_3` varchar(50),
-	`score_4` varchar(50),
-	`score_5` varchar(50),
-	`score_6` varchar(50),
-	`scoreSubTotal_1` int,
-	`scoreSubTotal_2` int,
-	`scoreSubTotal_3` int,
-	`scoreSubTotal_4` int,
-	`scoreSubTotal_5` int,
-	`scoreSubTotal_6` int,
-	`countMaxScore` int,
-	`countXScore` int,
-	`scoreTotal` int,
-	index(`s_id`),
+	`perEnd` int,
+	`score_1` varchar(5),
+	`score_2` varchar(5),
+	`score_3` varchar(5),
+	`score_4` varchar(5),
+	`score_5` varchar(5),
+	`score_6` varchar(5),
+	`subTotal` int,
+	index(`spe_id`),
 	foreign key(`sc_id`) references `scoreCard`(`sc_id`),
 	foreign key(`p_id`) references `account`(`p_id`),
 	foreign key(`o_id`) references `organization`(`o_id`)
 ) CHARACTER SET 'utf8' ENGINE = InnoDB;
+
+create table `scoreTotal` (
+	`st_id` int not null auto_increment primary key unique,
+	`sc_id` int,
+	`p_id` int,
+	`o_id` int,
+	`ten` int,
+	`x` int,
+	`total` int,
+	index(`st_id`),
+	foreign key (`sc_id`) references `scoreCard`(`sc_id`),
+	foreign key (`p_id`) references `account`(`p_id`),
+	foreign key (`o_id`) references `organization`(`o_id`)
+) CHARACTER SET `utf8` ENGINE = InnoDB;

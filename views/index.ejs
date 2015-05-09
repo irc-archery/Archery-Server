@@ -22,22 +22,55 @@
 
 	<div class="container col-sm-offset-2 col-sm-8">
 		<h1>Archery-Web-Client</h1>
-		<h2>extractMatchIndex</h2>
-		<table id="matchIndexArea" class="table table-bordered">
 
-		</table>
+		<h2>extractMatchIndex</h2>
+		<table id="matchIndexArea" class="table table-bordered"></table>
+
 		<h2>extractScoreCardIndex</h2>
 		<div>
 			<p>Input Match ID</p>
 			<div class="form-inline">
 				<input class="form-control" type="text" id="matchNumber">
-				<input class="btn btn-primary" type="button" onclick="extractScoreCardIndex()" value="emit">
+				<input class="btn btn-primary" type="button" onclick="extractScoreCardIndex()" value="Emit">
 			</div>
 		</div>
+		<table id="scoreCardIndexArea" class="table table-bordered"></table>
 
-		<table id="scoreCardIndexArea" class="table table-bordered">
-						
-		</table>
+		<h2>insertMatch</h2>
+		<div class="form-inline">
+			<label for="p_id">作成者ID(p_id) : </label>
+			<input class="form-control" type="number" id="p_id">
+		</div>
+
+		<div class="form-inline">
+			<label for="matchName">試合名(matchName) : </label>
+			<input class="form-control" type="text" id="matchName">
+		</div>
+
+		<div class="form-inline">
+			<label for="sponsor">主催(sponsor) : </label>
+			<input class="form-control" type="text" id="sponsor">
+		</div>
+
+		<div class="form-inline">
+			<label for="arrows">射数(arrows) : </label>
+			<input class="form-control" type="number" id="arrows">
+		</div>
+
+		<div class="form-inline">
+			<label for="perEnd">セット数(perEnd) : </label>
+			<input class="form-control" type="number" id="perEnd">
+		</div>
+
+		<div class="form-inline">
+			<label for="length">距離(length) : </label>
+			<input class="form-control" type="number" id="length">
+		</div>
+
+		<div class="form-inline">
+			<input class="btn btn-primary" type="button" onclick="insertMatch()" value="Emit">
+		</div>
+
 	</div>
 
     <script src="/javascripts/jquery.min.js"></script>
