@@ -36,11 +36,11 @@ socket.on('extractMatchIndex', function (data) {
 // Emit Insert Match
 function insertMatch() {
 
-  var p_id = $('#p_id').val();
+  var p_id = $('#insertMatchp_id').val();
   var matchName = $('#matchName').val();
   var sponsor = $('#sponsor').val();
   var arrows = $('#arrows').val();
-  var perEnd = $('#perEnd').val();
+  var perEnd = $('#insertMatchperEnd').val();
   var length = $('#length').val();
 
   socket.emit('insertMatch', {
