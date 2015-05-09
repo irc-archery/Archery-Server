@@ -69,6 +69,14 @@ function socketio(server) {
 			socket.emit('joinMatch', {result: result})
 		});
 
+		// 得点表 作成
+		socket.on('insertScoreCard', function(data) {
+			console.log('on insertScoreCard');
+			console.log(data);
+
+			//connection.query
+		});
+
 		//  得点表 一覧取得
 		socket.on('extractScoreCardIndex', function(data) {
 
@@ -103,19 +111,6 @@ function socketio(server) {
 			});
 		});
 
-		socket.on('insertScoreCard', function(data) {
-			console.log('on insertScoreCard');
-			console.log('data');
-			//connection.query
-		});
-
-		// ユーザーにdata.idの得点表のデータを返す
-		socket.on('extractScoreCard', function(data){
-			connection.query('select * from `score` where id = ' + data.id, function(err, results){
-				socket.emit('getScoreCard', results);
-			 });
-		});
-
 		// 得点表記入
 		socket.on('insertScore', function (data) {
 			// 得点表の挿入処理
@@ -123,6 +118,8 @@ function socketio(server) {
 
 			}); 
 		});
+
+		// 得点表 取得
   });
 	//--- End Socket.IO ---//
 };
