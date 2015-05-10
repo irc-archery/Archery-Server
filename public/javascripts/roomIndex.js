@@ -51,7 +51,30 @@ function insertMatch() {
     'perEnd': perEnd,
     'length': length
   });
-}
+};
+
+// Emit Insert Score
+function insertScore() {
+
+  var data = new Object();
+
+  data['sc_id'] = $('#insertScoresc_id').val();
+  data['p_id'] = $('#insertScorep_id').val();
+  data['perEnd'] = $('#insertScoreperEnd').val();
+
+  for(var i = 1; i <= 6; i++) {
+    data['score_' + i]  = $('#score_' + i).val();
+  }
+
+  data['subTotal'] = $('#subTotal').val();
+  data['ten'] = $('#ten').val();
+  data['x'] = $('#x').val();
+  data['total'] = $('#total').val();
+
+  console.log(data);
+
+  socket.emit('insertScore', data);
+};
 
 // Emit Extract ScoreCard Index
 function extractScoreCardIndex(){
@@ -59,7 +82,7 @@ function extractScoreCardIndex(){
   var id = $('#matchNumber').val();
 
   socket.emit('extractScoreCardIndex', {'m_id': id});
-}
+};
 
 // On Extract ScoreCard Index
 socket.on('extractScoreCardIndex', function(data){

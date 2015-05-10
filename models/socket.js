@@ -11,6 +11,10 @@ function socketio(server) {
 		// 試合 作成
 		socket.on('insertMatch', function(data) {
 
+			// ON log
+			console.log('on insertMatch');
+			console.log(data);
+
 			// 作成者が所属している団体のIDを抽出するためのSQL文
 			var extractOrganizationId = 'select o_id as id from `organization` where p_id = ' + data.p_id;
 
@@ -22,7 +26,9 @@ function socketio(server) {
 				
 				// 試合データを挿入
 				connection.query(insertMatchSql, function(err, insertMatchResults) {
+					console.log('connection.query insertMatch results');
 					console.log(insertMatchResults);
+					console.log('connection.query insertMatch err');
 					console.log(err);
 					socket.emit('insertMatch', {'err': err});
 				});
@@ -113,9 +119,24 @@ function socketio(server) {
 
 		// 得点表記入
 		socket.on('insertScore', function (data) {
-			// 得点表の挿入処理
-			connection.query('insert into ', function (err, results) {
 
+			// On log
+			console.log('on insertScore');
+			console.log(data);
+
+			// 得点を挿入するためのSQL文
+			var insertScoreSql = 'insert into `scorePerEnd`(sc_id, p_id, o_id, perEnd, score_1, score_2, score_3, score_4, score_5, score_6, subTotal) values(' + data.sc_id + ', ' + data.p_id + ', (select o_id from `organization` where p_id = ' + data.p_id + '), ' + data.perEnd + ', "' + data.score_1 + '", "' + data.score_2 + '", "' + data.score_3 + '", "' + data.score_4 + '", "' + data.score_5 + '", "' + data.score_6 + '", ' + data.subTotal + ');';
+
+			// 得点表の挿入処理
+			connection.query(insertScoreSql, function (err, results) {
+
+				// output results
+				console.log('connection.query insertScore results');
+				console.log(results);
+
+				// output err
+				console.log('connection.query insertScore err');
+				console.log(err);
 			}); 
 		});
 
