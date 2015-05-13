@@ -127,8 +127,15 @@ function socketio(server) {
 			// 得点を挿入するためのSQL文
 			var insertScoreSql = 'insert into `scorePerEnd`(sc_id, p_id, o_id, perEnd, score_1, score_2, score_3, score_4, score_5, score_6, subTotal) values(' + data.sc_id + ', ' + data.p_id + ', (select o_id from `organization` where p_id = ' + data.p_id + '), ' + data.perEnd + ', "' + data.score_1 + '", "' + data.score_2 + '", "' + data.score_3 + '", "' + data.score_4 + '", "' + data.score_5 + '", "' + data.score_6 + '", ' + data.subTotal + ');';
 
-			// 得点表の挿入処理
+			// 得点合計を更新するためのSQL文
+			var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + data.ten + ', x = ' + data.x + ', total = ' + data.total + ' where sc_id = ' + data.sc_id + ' and p_id = ' + data.p_id;
+
+			console.log(updateScoreTotalSql);
+
+			// 得点の挿入処理
 			connection.query(insertScoreSql, function (err, results) {
+
+				// 後にこのコールバック関数で、挿入された得点をブロードキャストでエミットする
 
 				// output results
 				console.log('connection.query insertScore results');
@@ -138,6 +145,65 @@ function socketio(server) {
 				console.log('connection.query insertScore err');
 				console.log(err);
 			}); 
+
+			// 得点合計の挿入処理
+			connection.query(updateScoreTotalSql, function (err, results) {
+				console.log('connection.query updateScore results');
+				console.log(results);
+
+				console.log('connection.query updateScore err');
+				console.log(err);
+			});
+		});
+	
+		// 得点表修正
+		socket.on('updateScore', function (data) {
+
+			// On log
+			console.log('on updateScore');
+			console.log(data);
+
+			// 得点を挿入するためのSQL文
+			var updateScoreSql = 'update `scorePerEnd` set';
+
+			for(var i = 1; i <= 6; i++){
+				if( 'updatedScore_' + i in data ) {
+					updateScoreSql += ' updatedScore_' + i + ' = ' + data['updatedScore_' + i] + ',';
+				}
+			}
+
+			// where文を追加
+			updateScoreSql += ' subTotal = ' + data.subTotal + ' where sc_id = ' + data.sc_id + ' and p_id = ' + data.p_id + ';';
+
+			console.log(updateScoreSql);
+
+			// 得点合計を更新するためのSQL文
+			var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + data.ten + ', x = ' + data.x + ', total = ' + data.total + ' where sc_id = ' + data.sc_id + ' and p_id = ' + data.p_id;
+
+			// 得点の更新処理
+			connection.query(updateScoreSql, function (err, results) {
+
+				// 後にこのコールバック関数で、挿入された得点をブロードキャストでエミットする
+
+				// output results
+				console.log('connection.query updateScore results');
+				console.log(results);
+
+				// output err
+				console.log('connection.query updateScore err');
+				console.log(err);
+			}); 
+
+			// 得点合計の挿入処理
+			connection.query(updateScoreTotalSql, function (err, results) {
+
+				console.log('connection.query updateScore results');
+				console.log(results);
+
+				console.log('connection.query updateScore err');
+				console.log(err);
+			});
+
 		});
 
 		// 得点表 取得

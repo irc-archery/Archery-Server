@@ -1,0 +1,152 @@
+Archery Server イベントリスト
+2015 05 09
+
+試合
+
+一覧取得
+
+Emit  Event Name  : extractMatchIndex
+Emit Data Format :  null
+
+On Event Name : extractMatchIndex
+On Data Format :  
+{ 
+  'm_id' : int,			// 試合ID
+  'matchName' : string,	// 試合名
+  'sponsor': string,	// 主催
+  'created': string,	// 試合開始日
+  'arrows': int,		// 射数
+  'perEnd': int,		// セット数
+  'length': int,		// 距離
+  'players': int		// 参加人数 (得点表の数)
+}
+
+概要  : 
+試合一覧データの取得。クライアントがイベント名'extractMatchIndex'でemitし、同じイベント名でonすることで試合一覧のデータ上記のフォーマットで得ることができる。
+
+
+作成
+
+Emit Event Name : insertMatch
+Emit Data Format :  
+{
+	'p_id': int,		// 試合作成者のID
+	'matchName': string,// 試合名
+	'sponsor': string,	// 主催
+	'arrows': int,		// 射数
+	'perEnd': int,		// セット数
+	'length': int 		// 距離
+}
+
+On Event Name : 
+On Data Format : 
+
+概要 :
+試合作成。作成時に必要な上記のデータをEmitすることで試合のデータベースに新たな試合が追加される。
+
+
+参加 ※未実装
+
+Emit Event Name : joinMatch
+Emit Data Format : {'m_id' : int }
+
+On Event Name : joinMatch
+On Data Format : {'results': bool }
+
+概要 : 
+試合へ参加するためのイベント。未実装。
+クライアントが参加したい試合のidをイベント名 'joinMatch'でemitすると、そのクライアントのsocketを送られてきたidの試合に参加させる。
+
+
+得点表
+
+一覧取得
+
+Emit Event Name : extractScoreCardIndex
+Emit Data Format : {'m_id': int } // ほしい試合のIDをkey:'m_id'でEmitする。
+
+On Event Name : extractScoreCardIndex
+On Data Format : 
+{ 
+	'sc_id', int,		// 得点表ID
+	'firstName': string,// 選手 - 姓
+	'lastName': string,	// 選手 - 名
+	'scoreTotal': int 	// 得点合計
+}
+
+概要 : 
+得点表一覧で返すデータ
+
+作成
+
+Emit Event Name : insertScoreCard
+Emit Data Format : 
+{ 
+	'm_id': int,		// どの試合で得点表を作成したのか, その試合のID
+	'email': string,	// ユーザーログイン用のemail
+	'password': string	// ユーザーログイン用のpassword
+}
+
+On Event Name : 
+On Data Format
+
+概要 :
+得点表作成。誰の得点表を作成するのか, そのでログインするためのemailとpassword、
+どの試合で得点表を作成するのか、その試合のIDをEmitする。
+
+
+得点
+
+挿入
+
+Emit Event Name : insertScore
+Emit Data Format : 
+{
+	'sc_id': int,		// 得点表のID
+	'p_id': int,		// 得点表の作成者ID
+	'perEnd': int,		// 何セット目の得点か
+	'score_1': string,	// 1射目の得点
+	'score_2': string,	// 2射目の得点
+	'score_3': string,	// 3射目の得点
+	'score_4': string,	// 4射目の得点
+	'score_5': string,	// 5射目の得点
+	'score_6': string,	// 6射目の得点
+	'subTotal': int 	// そのセットの小計
+	'ten': int,			// 全セットの10数
+	'x': int,			// 全セットのx数
+	'total': int 		// 全セットの合計
+}
+
+On Event Name : 
+On Data Format : 
+
+概要 :
+得点の挿入。どの得点表の得点なのか、誰の得点表の得点なのか、その情報とともに、それぞれの射の得点とそのセットの小計を送る。
+また、その得点表全体の合計点数、10数, x数も同時に送信する。
+
+
+更新(修正)
+
+Emit Event Name : updateScore
+Emit Data Format : 
+{
+	'sc_id': int,				// 得点表のID
+	'p_id': int,				// 得点表の作成者ID
+	'perEnd': int,				// 何セット目の得点か
+	'updatedScore_1': string,	// 1射目の得点
+	'updatedScore_2': string,	// 2射目の得点
+	'updatedScore_3': string,	// 3射目の得点
+	'updatedScore_4': string,	// 4射目の得点
+	'updatedScore_5': string,	// 5射目の得点
+	'updatedScore_6': string,	// 6射目の得点
+	'subTotal': int 	// そのセットの小計
+	'ten': int,			// 全セットの10数
+	'x': int,			// 全セットのx数
+	'total': int 		// 全セットの合計
+}
+
+概要 :
+得点の修正。修正したい得点がある得点表のID, その得点表の作成者ID, セット数を送る。
+修正したい得点はupdatedScore_xとして送信する。(ただし、xは何射目なのかを表す)
+また、updatedScore_1〜6までのすべての得点を送る必要はなく、修正された得点のみを送る。 
+

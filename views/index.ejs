@@ -38,8 +38,8 @@
 
 		<h2>insertMatch</h2>
 		<div class="form-inline">
-			<label for="scoreCardIndexp_id">作成者ID(p_id) : </label>
-			<input class="form-control" type="number" id="scoreCardIndexp_id">
+			<label for="insertMatchP_id">作成者ID(p_id) : </label>
+			<input class="form-control" type="number" id="insertMatchP_id">
 		</div>
 
 		<div class="form-inline">
@@ -58,8 +58,8 @@
 		</div>
 
 		<div class="form-inline">
-			<label for="scoreCardIndexperEnd">セット数(perEnd) : </label>
-			<input class="form-control" type="number" id="scoreCardIndexperEnd">
+			<label for="insertMatchPerEnd">セット数(perEnd) : </label>
+			<input class="form-control" type="number" id="insertMatchPerEnd">
 		</div>
 
 		<div class="form-inline">
@@ -73,8 +73,8 @@
 
 		<h2>insertScoreCard</h2>
 		<div class="form-inline">
-			<label for="insertScoreCardm_id">試合ID(m_id) : </label>
-			<input class="form-control" type="number" id="insertScoreCardm_id">
+			<label for="insertScoreCardM_id">試合ID(m_id) : </label>
+			<input class="form-control" type="number" id="insertScoreCardM_id">
 		</div>	
 		<div class="form-inline">
 			<label for="email">Email : </label>
@@ -85,21 +85,21 @@
 			<input class="form-control" type="password" id="password">
 		</div>	
 		<div class="form-inline">
-			<input type="submit" class="btn btn-primary" value="Emit" onclick="insertScoreCard">
+			<input type="submit" class="btn btn-primary" value="Emit" onclick="insertScoreCard()">
 		</div>
 
 		<h2>insertScore</h2>
 		<div class="form-inline">
-			<label for="insertScoresc_id">得点表ID(sc_id)</label>
-			<input type="number" class="form-control" id="insertScoresc_id">	
+			<label for="insertScoreSc_id">得点表ID(sc_id)</label>
+			<input type="number" class="form-control" id="insertScoreSc_id">	
 		</div>
 		<div class="form-inline">
-			<label for="insertScorep_id">作成者ID(p_id)</label>
-			<input type="number" class="form-control" id="insertScorep_id">	
+			<label for="insertScoreP_id">作成者ID(p_id)</label>
+			<input type="number" class="form-control" id="insertScoreP_id">	
 		</div>
 		<div class="form-inline">
-			<label for="insertScoreperEnd">セット(perEnd)</label>
-			<input type="number" class="form-control" id="insertScoreperEnd">	
+			<label for="insertScorePerEnd">セット(perEnd)</label>
+			<input type="number" class="form-control" id="insertScorePerEnd">	
 		</div>
 		<div class="form-inline">
 			<label for="score_1">1射目の得点(score_1)</label>
@@ -143,6 +143,63 @@
 		</div>
 		<div class="form-inline">
 			<input type="submit" class="btn btn-primary" value="Emit" onclick="insertScore()">
+		</div>
+
+		<h2>updateScore</h2>
+		<div class="form-inline">
+			<label for="updateScoreSc_id">得点表ID(sc_id)</label>
+			<input type="number" class="form-control" id="updateScoreSc_id">	
+		</div>
+		<div class="form-inline">
+			<label for="updateScoreP_id">作成者ID(p_id)</label>
+			<input type="number" class="form-control" id="updateScoreP_id">	
+		</div>
+		<div class="form-inline">
+			<label for="updateScorePerEnd">セット(perEnd)</label>
+			<input type="number" class="form-control" id="updateScorePerEnd">	
+		</div>
+		<div class="form-inline">
+			<label for="updatedScore_1">1射目の得点(updatedScore_1)</label>
+			<input type="number" class="form-control" id="updatedScore_1">	
+		</div>
+		<div class="form-inline">
+			<label for="updatedScore_2">2射目の得点(updatedScore_2)</label>
+			<input type="number" class="form-control" id="updatedScore_2">	
+		</div>
+		<div class="form-inline">
+			<label for="updatedScore_3">3射目の得点(updatedScore_3)</label>
+			<input type="number" class="form-control" id="updatedScore_3">	
+		</div>
+		<div class="form-inline">
+			<label for="updatedScore_4">4射目の得点(updatedScore_4)</label>
+			<input type="number" class="form-control" id="updatedScore_4">	
+		</div>
+		<div class="form-inline">
+			<label for="updatedScore_5">5射目の得点(updatedScore_5)</label>
+			<input type="number" class="form-control" id="updatedScore_5">	
+		</div>
+		<div class="form-inline">
+			<label for="updatedScore_6">6射目の得点(updatedScore_6)</label>
+			<input type="number" class="form-control" id="updatedScore_6">	
+		</div>
+		<div class="form-inline">
+			<label for="updatedSubTotal">小計(subTotal)</label>
+			<input type="number" class="form-control" id="updatedSubTotal">	
+		</div>
+		<div class="form-inline">
+			<label for="updatedTen">10数(ten)</label>
+			<input type="number" class="form-control" id="updatedTen">	
+		</div>
+		<div class="form-inline">
+			<label for="updatedX">x数(x)</label>
+			<input type="number" class="form-control" id="updatedX">	
+		</div>
+		<div class="form-inline">
+			<label for="updatedTotal">合計(total)</label>
+			<input type="number" class="form-control" id="updatedTotal">	
+		</div>
+		<div class="form-inline">
+			<input type="submit" class="btn btn-primary" value="Emit" onclick="updateScore()">
 		</div>
 	</div>
 

@@ -33,57 +33,6 @@ socket.on('extractMatchIndex', function (data) {
   $("#matchIndexArea").append(code);
 });
 
-// Emit Insert Match
-function insertMatch() {
-
-  var p_id = $('#insertMatchp_id').val();
-  var matchName = $('#matchName').val();
-  var sponsor = $('#sponsor').val();
-  var arrows = $('#arrows').val();
-  var perEnd = $('#insertMatchperEnd').val();
-  var length = $('#length').val();
-
-  socket.emit('insertMatch', {
-    'p_id': p_id,
-    'matchName': matchName,
-    'sponsor': sponsor,
-    'arrows': arrows,
-    'perEnd': perEnd,
-    'length': length
-  });
-};
-
-// Emit Insert Score
-function insertScore() {
-
-  var data = new Object();
-
-  data['sc_id'] = $('#insertScoresc_id').val();
-  data['p_id'] = $('#insertScorep_id').val();
-  data['perEnd'] = $('#insertScoreperEnd').val();
-
-  for(var i = 1; i <= 6; i++) {
-    data['score_' + i]  = $('#score_' + i).val();
-  }
-
-  data['subTotal'] = $('#subTotal').val();
-  data['ten'] = $('#ten').val();
-  data['x'] = $('#x').val();
-  data['total'] = $('#total').val();
-
-  console.log(data);
-
-  socket.emit('insertScore', data);
-};
-
-// Emit Extract ScoreCard Index
-function extractScoreCardIndex(){
-
-  var id = $('#matchNumber').val();
-
-  socket.emit('extractScoreCardIndex', {'m_id': id});
-};
-
 // On Extract ScoreCard Index
 socket.on('extractScoreCardIndex', function(data){
 
@@ -100,8 +49,7 @@ socket.on('extractScoreCardIndex', function(data){
   for (var i = 0; i < data.length; i++) {
     
     code += '<tr>';
-
-    code += '<td>' + data[i]['sc_id'] + '</td>';
+ code += '<td>' + data[i]['sc_id'] + '</td>';
     code += '<td>' + data[i]['firstName'] + '</td>';
     code += '<td>' + data[i]['lastName'] + '</td>';
     code += '<td>' + data[i]['scoreTotal'] + '</td>';
@@ -113,5 +61,90 @@ socket.on('extractScoreCardIndex', function(data){
 
   $("#scoreCardIndexArea").append(code);
 });
+
+// Emit Extract ScoreCard Index
+function extractScoreCardIndex(){
+
+  var id = $('#matchNumber').val();
+
+  socket.emit('extractScoreCardIndex', {'m_id': id});
+};
+
+// Emit Insert Match
+function insertMatch() {
+
+  var data = new Object();
+
+  data['p_id'] = $('#insertMatchP_id').val();
+  data['matchName'] = $('#matchName').val();
+  data['sponsor'] = $('#sponsor').val();
+  data['arrows'] = $('#arrows').val();
+  data['perEnd'] = $('#insertMatchPerEnd').val();
+  data['length'] = $('#length').val();
+
+  console.log('insertMatch');
+  console.log(data);
+
+  socket.emit('insertMatch', data);
+};
+
+// Emit Insert Score Card
+function insertScoreCard() {
+
+  var data = new Object();
+
+}
+
+// Emit Insert Score
+function insertScore() {
+
+  var data = new Object();
+
+  data['sc_id'] = $('#insertScoreSc_id').val();
+  data['p_id'] = $('#insertScoreP_id').val();
+  data['perEnd'] = $('#insertScorePerEnd').val();
+
+  for(var i = 1; i <= 6; i++) {
+    data['score_' + i]  = $('#score_' + i).val();
+  }
+
+  data['subTotal'] = $('#subTotal').val();
+  data['ten'] = $('#ten').val();
+  data['x'] = $('#x').val();
+  data['total'] = $('#total').val();
+
+  console.log('insertScore')
+  console.log(data);
+
+  socket.emit('insertScore', data);
+};
+
+// Emit Update Score
+function updateScore() {
+
+  var data = new Object();
+
+  data['sc_id'] = $('#updateScoreSc_id').val();
+  data['p_id'] = $('#updateScoreP_id').val();
+  data['perEnd'] = $('#updateScorePerEnd').val();
+
+  for(var i = 1; i <= 6; i++) {
+    if($('#updatedScore_' + i).val() != ''){
+      data['updatedScore_' + i]  = $('#updatedScore_' + i).val();
+    }
+  }
+
+  data['subTotal'] = $('#updatedSubTotal').val();
+  data['ten'] = $('#updatedTen').val();
+  data['x'] = $('#updatedX').val();
+  data['total'] = $('#updatedTotal').val();
+
+  console.log('updateScore');
+  console.log(data);
+
+  socket.emit('updateScore', data);
+};
+
+
 
 
