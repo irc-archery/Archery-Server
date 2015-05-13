@@ -168,7 +168,7 @@ function socketio(server) {
 
 			for(var i = 1; i <= 6; i++){
 				if( 'updatedScore_' + i in data ) {
-					updateScoreSql += ' updatedScore_' + i + ' = ' + data['updatedScore_' + i] + ',';
+					updateScoreSql += ' updatedScore_' + i + ' = "' + data['updatedScore_' + i] + '",';
 				}
 			}
 

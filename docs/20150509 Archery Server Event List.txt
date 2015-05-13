@@ -3,7 +3,7 @@ Archery Server イベントリスト
 
 試合
 
-一覧取得
+試合::一覧取得
 
 Emit  Event Name  : extractMatchIndex
 Emit Data Format :  null
@@ -25,7 +25,7 @@ On Data Format :
 試合一覧データの取得。クライアントがイベント名'extractMatchIndex'でemitし、同じイベント名でonすることで試合一覧のデータ上記のフォーマットで得ることができる。
 
 
-作成
+試合::作成
 
 Emit Event Name : insertMatch
 Emit Data Format :  
@@ -45,7 +45,7 @@ On Data Format :
 試合作成。作成時に必要な上記のデータをEmitすることで試合のデータベースに新たな試合が追加される。
 
 
-参加 ※未実装
+試合::参加 ※未実装
 
 Emit Event Name : joinMatch
 Emit Data Format : {'m_id' : int }
@@ -60,24 +60,67 @@ On Data Format : {'results': bool }
 
 得点表
 
-一覧取得
+得点表::一覧取得
 
 Emit Event Name : extractScoreCardIndex
 Emit Data Format : {'m_id': int } // ほしい試合のIDをkey:'m_id'でEmitする。
 
 On Event Name : extractScoreCardIndex
 On Data Format : 
-{ 
-	'sc_id', int,		// 得点表ID
-	'firstName': string,// 選手 - 姓
-	'lastName': string,	// 選手 - 名
-	'scoreTotal': int 	// 得点合計
+[
+	{ 
+		'sc_id', int,		// 得点表ID
+		'playerName': string,	// 選手名
+		'scoreTotal': int 	// 得点合計
+	},
+	{ ... },
+	{ ... }
+]
+
+概要 : 
+得点表一覧で返すデータ。
+イベント名'extractScoreCardIndex'で試合IDを送ると、同じイベント名で得点表ID, 選手名, 得点合計が格納されているObjectの配列が送られてくる
+
+
+id:xの得点表の取得
+
+Emit Event Name : extractScoreCard
+Emit Data Format : { 'sc_id': int } // ほしい得点表のIDをEmitする
+
+On Event Name : extractScoreCard
+On Data Format :
+{
+	'sc_id': int,			// 得点表ID
+	'p_id': int,			// 選手ID
+	'playerName': string,	// 選手名
+	'length': int,			// 距離
+	'countPerEnd': int, 	// 現在のセット (テーブルに格納されているカラムの数)
+	'ten': int,				// 10数
+	'x': int, 				// X数
+	'sum': int,				// 合計
+	'score': [
+		{ 
+			'score_1': string,			// 1射目の得点
+			...,
+			'score_6': string,			// 6射目の得点
+			'updatedScore_1': string,	// 1射目の修正された得点 (DEFAULT VALUE : NULL)
+			...,
+			'updatedScore_6': string,	// 6射目の修正された得点
+			'subTotal': int,			// このセットの小計
+			'perEnd': int 				// このオブジェクトの得点が属するセット数
+		},
+		{ ... },
+		{ ... }
+	]
 }
 
 概要 : 
-得点表一覧で返すデータ
+得点表データ。
+ユーザーは得点表一覧より閲覧したい得点表をタップするので、クライアント側はイベント名 'extractScoreCard'でその得点表のID(sc_id)をEmitする。
+サーバーは受け取った得点表のIDの得点表データを同じイベント名で上記のフォーマットに従ってEmitする。
 
-作成
+
+得点表::作成
 
 Emit Event Name : insertScoreCard
 Emit Data Format : 
@@ -97,7 +140,7 @@ On Data Format
 
 得点
 
-挿入
+得点::挿入
 
 Emit Event Name : insertScore
 Emit Data Format : 
@@ -125,7 +168,7 @@ On Data Format :
 また、その得点表全体の合計点数、10数, x数も同時に送信する。
 
 
-更新(修正)
+得点::修正
 
 Emit Event Name : updateScore
 Emit Data Format : 
@@ -133,20 +176,76 @@ Emit Data Format :
 	'sc_id': int,				// 得点表のID
 	'p_id': int,				// 得点表の作成者ID
 	'perEnd': int,				// 何セット目の得点か
-	'updatedScore_1': string,	// 1射目の得点
-	'updatedScore_2': string,	// 2射目の得点
-	'updatedScore_3': string,	// 3射目の得点
-	'updatedScore_4': string,	// 4射目の得点
-	'updatedScore_5': string,	// 5射目の得点
-	'updatedScore_6': string,	// 6射目の得点
+	'updatedScore_x': string,	// x射目の得点 (ただし、xは何射目なのかを表す)
 	'subTotal': int 	// そのセットの小計
 	'ten': int,			// 全セットの10数
 	'x': int,			// 全セットのx数
 	'total': int 		// 全セットの合計
 }
 
+On Event Name : 
+On Data Format : 
+
 概要 :
 得点の修正。修正したい得点がある得点表のID, その得点表の作成者ID, セット数を送る。
 修正したい得点はupdatedScore_xとして送信する。(ただし、xは何射目なのかを表す)
 また、updatedScore_1〜6までのすべての得点を送る必要はなく、修正された得点のみを送る。 
+
+
+得点::得点挿入による更新
+
+Emit Event Name : 
+Emit Data Format :
+
+On Event Name : broadcastInsertScore
+On Data Format : 
+{
+	'sc_id': int,				// 得点表のID
+	'p_id': int,				// 得点表の作成者ID
+	'perEnd': int,				// 何セット目の得点か
+	'score_1': string,	// 1射目の得点
+	'score_2': string,	// 2射目の得点
+	'score_3': string,	// 3射目の得点
+	'score_4': string,	// 4射目の得点
+	'score_5': string,	// 5射目の得点
+	'score_6': string,	// 6射目の得点
+	'subTotal': int 	// そのセットの小計
+	'ten': int,			// 全セットの10数
+	'x': int,			// 全セットのx数
+	'total': int 		// 全セットの合計
+}
+
+発生条件 : その得点表が更新された時(insertScore)に、この得点表を閲覧している人に送られるイベント
+
+概要 : 
+得点表閲覧中に、その得点表が更新された時に閲覧者の端末で発生するイベント。
+更新された1セット文のスコアをEmitする。
+
+
+
+得点::得点修正による更新
+
+Emit Event Name : 
+Emit Data Format :
+
+On Event Name : broadcastUpdateScore
+On Data Format : 
+{
+	'sc_id': int,				// 得点表のID
+	'p_id': int,				// 得点表の作成者ID
+	'perEnd': int,				// 何セット目の得点か
+	'updatedScore_x': string,	// x射目の得点 (ただし、xは何射目なのかを表す)
+	'subTotal': int 	// そのセットの小計
+	'ten': int,			// 全セットの10数
+	'x': int,			// 全セットのx数
+	'total': int 		// 全セットの合計
+}
+
+発生条件 : その得点表が更新された時(updateScore)に、この得点表を閲覧している人に送られるイベント
+
+概要 : 
+得点表閲覧中に、その得点表が更新された時に閲覧者の端末で発生するイベント。
+修正された得点とそれによって影響を受ける可能性がある小計、合計点数, 10数, x数をEmitする
+
+
 
