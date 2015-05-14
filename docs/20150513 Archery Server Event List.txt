@@ -94,7 +94,7 @@ On Data Format :
 	'p_id': int,			// 選手ID
 	'playerName': string,	// 選手名
 	'length': int,			// 距離
-	'countPerEnd': int, 	// 現在のセット (テーブルに格納されているカラムの数)
+	'countPerEnd': int, 	// 現在のセット (テーブルに格納されているカラムの数e
 	'ten': int,				// 10数
 	'x': int, 				// X数
 	'sum': int,				// 合計

@@ -49,7 +49,7 @@ socket.on('extractScoreCardIndex', function(data){
   for (var i = 0; i < data.length; i++) {
     
     code += '<tr>';
- code += '<td>' + data[i]['sc_id'] + '</td>';
+    code += '<td>' + data[i]['sc_id'] + '</td>';
     code += '<td>' + data[i]['firstName'] + '</td>';
     code += '<td>' + data[i]['lastName'] + '</td>';
     code += '<td>' + data[i]['scoreTotal'] + '</td>';
@@ -62,6 +62,12 @@ socket.on('extractScoreCardIndex', function(data){
   $("#scoreCardIndexArea").append(code);
 });
 
+socket.on('extractScoreCard', function (data) {
+
+  console.log(data);
+
+});
+
 // Emit Extract ScoreCard Index
 function extractScoreCardIndex(){
 
@@ -69,6 +75,14 @@ function extractScoreCardIndex(){
 
   socket.emit('extractScoreCardIndex', {'m_id': id});
 };
+
+function extractScoreCard () {
+
+  var id = $('#scoreCardNumber').val();
+
+  socket.emit('extractScoreCard', {'sc_id': id});
+
+}
 
 // Emit Insert Match
 function insertMatch() {

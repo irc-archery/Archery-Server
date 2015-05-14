@@ -30,11 +30,21 @@
 		<div>
 			<p>Input Match ID</p>
 			<div class="form-inline">
-				<input class="form-control" type="text" id="matchNumber">
+				<input class="form-control" type="number" id="matchNumber">
 				<input class="btn btn-primary" type="button" onclick="extractScoreCardIndex()" value="Emit">
 			</div>
 		</div>
 		<table id="scoreCardIndexArea" class="table table-bordered"></table>
+
+		<h2>extractScoreCard</h2>
+		<div>
+			<p>Input Score Card ID (sc_id)</p>
+			<div class="form-inline">
+				<input class="form-control" type="number" id="scoreCardNumber">
+				<input class="btn btn-primary" type="button" onclick="extractScoreCard()" value="Emit">
+			</div>
+		</div>
+		<table id="scoreCardArea" class="table table-bordered"></table>
 
 		<h2>insertMatch</h2>
 		<div class="form-inline">
