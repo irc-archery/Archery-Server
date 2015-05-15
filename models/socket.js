@@ -170,30 +170,41 @@ function socketio(server) {
 			// 得点合計を更新するためのSQL文
 			var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + connection.escape(data.ten) + ', x = ' + connection.escape(data.x) + ', total = ' + connection.escape(data.total) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id);
 
-			console.log(updateScoreTotalSql);
-
 			// 得点の挿入処理
-			connection.query(insertScoreSql, function (err, results) {
+			connection.query(insertScoreSql, function (err, insertScoreData) {
 
 				// 後にこのコールバック関数で、挿入された得点をブロードキャストでエミットする
 
 				// output results
 				console.log('connection.query insertScore results');
-				console.log(results);
+				console.log(insertScoreData);
 
 				// output err
 				console.log('connection.query insertScore err');
 				console.log(err);
+
+				// 得点合計の挿入処理
+				connection.query(updateScoreTotalSql, function (err, updateScoreTotalData) {
+					console.log('connection.query updateScore results');
+					console.log(updateScoreTotalData);
+
+					console.log('connection.query updateScore err');
+					console.log(err);
+
+					// 挿入された値を抽出し、ブロードキャストでエミットするためのSQL文
+					var broadcastInsertScoreSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, scorePerEnd.perEnd, scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.subTotal, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scorePerEnd`, `scoreTotal` where scorePerEnd.sc_id = ' + connection.escape(data.sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(data.p_id) + ' and scorePerEnd.perEnd = ' + connection.escape(data.perEnd) + ' and scoreTotal.sc_id = ' + connection.escape(data.sc_id) + ' and scoreTotal.p_id = ' + connection.escape(data.p_id) + ';';
+
+					// broadcast Emit		
+					connection.query(broadcastInsertScoreSql, function (err, broadcastInsertScoreData) {
+
+						console.log('Emit : broadcastInsertScoreData');
+						console.log(broadcastInsertScoreData[0]);
+
+						socket.broadcast.emit('broadcastInsertScore', broadcastInsertScoreData[0]);
+					});
+				});
 			}); 
 
-			// 得点合計の挿入処理
-			connection.query(updateScoreTotalSql, function (err, results) {
-				console.log('connection.query updateScore results');
-				console.log(results);
-
-				console.log('connection.query updateScore err');
-				console.log(err);
-			});
 		});
 	
 		// 得点表修正

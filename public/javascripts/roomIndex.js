@@ -68,6 +68,13 @@ socket.on('extractScoreCard', function (data) {
 
 });
 
+socket.on('broadcastInsertScore', function (data) {
+
+  console.log('on boradcastInsertScore');
+  console.log(data);
+
+});
+
 // Emit Extract ScoreCard Index
 function extractScoreCardIndex(){
 
