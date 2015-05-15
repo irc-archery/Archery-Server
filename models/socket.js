@@ -49,6 +49,7 @@ function socketio(server) {
 
 				// 試合一覧のデータを抽出するSQL文
 				var matchIndexDataSql = 'select `match`.m_id, `match`.matchName, `match`.sponsor, `match`.created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[0].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[0].m_id);
+
 				// 試合の数に応じてselect文を追加
 				for (var i = 1; i < matchIndexId.length; i++) {
 					matchIndexDataSql += ' union select `match`.m_id, `match`.matchName, `match`.sponsor, `match`.created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[i].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[i].m_id);
@@ -226,35 +227,54 @@ function socketio(server) {
 			// where文を追加
 			updateScoreSql += ' subTotal = ' + connection.escape(data.subTotal) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id) + ';';
 
-			console.log(updateScoreSql);
-
 			// 得点合計を更新するためのSQL文
 			var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + connection.escape(data.ten) + ', x = ' + connection.escape(data.x) + ', total = ' + connection.escape(data.total) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id);
 
 			// 得点の更新処理
-			connection.query(updateScoreSql, function (err, results) {
+			connection.query(updateScoreSql, function (err, updateScoreData) {
 
 				// 後にこのコールバック関数で、挿入された得点をブロードキャストでエミットする
 
 				// output results
 				console.log('connection.query updateScore results');
-				console.log(results);
+				console.log(updateScoreData);
 
 				// output err
 				console.log('connection.query updateScore err');
 				console.log(err);
+
+				// 得点合計の挿入処理
+				connection.query(updateScoreTotalSql, function (err, updateScoreTotalData) {
+
+					// output results
+					console.log('connection.query updateScore results');
+					console.log(updateScoreTotalData);
+
+					// output err
+					console.log('connection.query updateScore err');
+					console.log(err);
+
+					// 挿入された値を抽出し、ブロードキャストでエミットするためのSQL文
+					var broadcastUpdateScoreSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, scorePerEnd.perEnd, '
+
+					for(var i = 1; i <= 6; i++){
+						if( 'updatedScore_' + i in data ) {
+							broadcastUpdateScoreSql += ' updatedScore_' + i + ',';
+						}
+					}
+
+					broadcastUpdateScoreSql += ' scorePerEnd.subTotal, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scorePerEnd`, `scoreTotal` where scorePerEnd.sc_id = ' + connection.escape(data.sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(data.p_id) + ' and scorePerEnd.perEnd = ' + connection.escape(data.perEnd) + ' and scoreTotal.sc_id = ' + connection.escape(data.sc_id) + ' and scoreTotal.p_id = ' + connection.escape(data.p_id) + ';';
+
+					connection.query(broadcastUpdateScoreSql, function(err, broadcastUpdateScoreData) {
+
+						// Emit log
+						console.log('Emit : broadcastUpdateScore');
+						console.log(broadcastUpdateScoreData[0]);
+
+						socket.emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);
+					});
+				});
 			}); 
-
-			// 得点合計の挿入処理
-			connection.query(updateScoreTotalSql, function (err, results) {
-
-				console.log('connection.query updateScore results');
-				console.log(results);
-
-				console.log('connection.query updateScore err');
-				console.log(err);
-			});
-
 		});
 
 		// 得点表 取得
