@@ -118,6 +118,7 @@ function socketio(server) {
 			});
 		});
 
+		// 得点表の抽出
 		socket.on('extractScoreCard', function(data) {
 
 			// On log

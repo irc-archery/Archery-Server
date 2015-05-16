@@ -52,7 +52,7 @@ socket.on('extractScoreCardIndex', function(data){
     code += '<td>' + data[i]['sc_id'] + '</td>';
     code += '<td>' + data[i]['firstName'] + '</td>';
     code += '<td>' + data[i]['lastName'] + '</td>';
-    code += '<td>' + data[i]['scoreTotal'] + '</td>';
+    code += '<td>' + data[i]['total'] + '</td>';
 
     code += '</tr>';
   }

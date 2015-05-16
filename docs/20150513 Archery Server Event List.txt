@@ -58,6 +58,28 @@ On Data Format : {'results': bool }
 クライアントが参加したい試合のidをイベント名 'joinMatch'でemitすると、そのクライアントのsocketを送られてきたidの試合に参加させる。
 
 
+試合::作成による更新
+
+Emit Event Name : 
+Emit Data Format :
+
+On Event Name : broadcastInsertMatch
+On Data Format : 
+{
+	'p_id': int,		// 試合作成者のID
+	'matchName': string,// 試合名
+	'sponsor': string,	// 主催
+	'arrows': int,		// 射数
+	'perEnd': int,		// セット数
+	'length': int 		// 距離
+}
+
+概要 : 
+試合作成時に発生するイベント。
+誰かが試合を作成したときに、その試合の情報がリアルタイムで一覧画面に表示されるためにその作成された試合の情報をサーバーがEmitする。
+また、試合一覧を閲覧している端末のみで発生する。
+
+
 得点表
 
 得点表::一覧取得
