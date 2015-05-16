@@ -44,3 +44,7 @@ select scoreCard.sc_id, scoreCard.p_id, scoreCard.m_id from `scoreCard` where sc
 select scorePerEnd.sc_id, scorePerEnd.p_id, scorePerEnd.perEnd, scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.subTotal, scoreTotal.ten, scoreTotal.x, scoreTotal.total
 from `scorePerEnd`, `scoreTotal`
 where scorePerEnd.sc_id = 1 and scorePerEnd.p_id = 1 and scorePerEnd.perEnd = 1 and scoreTotal.sc_id = 1 and scoreTotal.p_id = 1;
+
+
+# 試合情報の抽出
+select `match`.m_id, `match`.matchName, `match`.sponsor, `match`.created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[0].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[0].m_id);

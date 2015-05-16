@@ -26,11 +26,26 @@ function socketio(server) {
 				
 				// 試合データを挿入
 				connection.query(insertMatchSql, function(err, insertMatchResults) {
+
+					// output results 
 					console.log('connection.query insertMatch results');
 					console.log(insertMatchResults);
+
+					// output err
 					console.log('connection.query insertMatch err');
 					console.log(err);
-					socket.emit('insertMatch', {'err': err});
+
+					var broadcastInsertMatchSql  = 'select `match`.m_id, `match`.matchName, `match`.sponsor, `match`.created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + insertMatchResults.insertId  + ' and `scoreCard`.m_id = ' + insertMatchResults.insertId;
+
+					connection.query(broadcastInsertMatchSql , function(err, broadcastInsertMatchData) {
+
+						// Emit log
+						console.log('broadcastInsertMatchData');
+						console.log(broadcastInsertMatchData[0]);
+
+						// Emit
+						socket.emit('broadcastInsertMatch', broadcastInsertMatchData[0]);
+					});
 				});
 			});
 		});
