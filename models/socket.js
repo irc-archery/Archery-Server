@@ -182,7 +182,7 @@ function socketio(server) {
 			console.log(data);
 
 			// 得点を挿入するためのSQL文
-			var insertScoreSql = 'insert into `scorePerEnd`(sc_id, p_id, o_id, perEnd, score_1, score_2, score_3, score_4, score_5, score_6, subTotal) values(' + connection.escape(data.sc_id) + ', ' + connection.escape(data.p_id) + ', (select o_id from `organization` where p_id = ' + connection.escape(data.p_id) + '), ' + connection.escape(data.perEnd) + ', "' + connection.escape(data.score_1) + '", "' + connection.escape(data.score_2) + '", "' + connection.escape(data.score_3) + '", "' + connection.escape(data.score_4) + '", "' + connection.escape(data.score_5) + '", "' + connection.escape(data.score_6) + '", ' + connection.escape(data.subTotal) + ');';
+			var insertScoreSql = 'insert into `scorePerEnd`(sc_id, p_id, o_id, perEnd, score_1, score_2, score_3, score_4, score_5, score_6, subTotal) values(' + connection.escape(data.sc_id) + ', ' + connection.escape(data.p_id) + ', (select o_id from `organization` where p_id = ' + connection.escape(data.p_id) + '), ' + connection.escape(data.perEnd) + ', ' + connection.escape(data.score_1) + ', ' + connection.escape(data.score_2) + ', ' + connection.escape(data.score_3) + ', ' + connection.escape(data.score_4) + ', ' + connection.escape(data.score_5) + ', ' + connection.escape(data.score_6) + ', ' + connection.escape(data.subTotal) + ');';
 
 			// 得点合計を更新するためのSQL文
 			var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + connection.escape(data.ten) + ', x = ' + connection.escape(data.x) + ', total = ' + connection.escape(data.total) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id);
