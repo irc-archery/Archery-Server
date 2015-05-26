@@ -241,13 +241,16 @@ function socketio(server) {
 			}
 
 			// where文を追加
-			updateScoreSql += ' subTotal = ' + connection.escape(data.subTotal) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id) + ';';
+			updateScoreSql += ' subTotal = ' + connection.escape(data.subTotal) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id) + ' and perEnd = ' + connection.escape(data.perEnd) + ';';
 
 			// 得点合計を更新するためのSQL文
 			var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + connection.escape(data.ten) + ', x = ' + connection.escape(data.x) + ', total = ' + connection.escape(data.total) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id);
 
 			console.log('updateScoreSql');
 			console.log(updateScoreSql);
+
+			console.log('updateScoreTotalSql');
+			console.log(updateScoreTotalSql);
 
 			// 得点の更新処理
 			connection.query(updateScoreSql, function (err, updateScoreData) {
