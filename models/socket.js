@@ -236,7 +236,7 @@ function socketio(server) {
 
 			for(var i = 1; i <= 6; i++){
 				if( 'updatedScore_' + i in data ) {
-					updateScoreSql += ' updatedScore_' + i + ' = "' + connection.escape(data['updatedScore_' + i]) + '",';
+					updateScoreSql += ' updatedScore_' + i + ' = ' + connection.escape(data['updatedScore_' + i]) + ',';
 				}
 			}
 
@@ -245,6 +245,9 @@ function socketio(server) {
 
 			// 得点合計を更新するためのSQL文
 			var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + connection.escape(data.ten) + ', x = ' + connection.escape(data.x) + ', total = ' + connection.escape(data.total) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id);
+
+			console.log('updateScoreSql');
+			console.log(updateScoreSql);
 
 			// 得点の更新処理
 			connection.query(updateScoreSql, function (err, updateScoreData) {
@@ -287,7 +290,7 @@ function socketio(server) {
 						console.log('Emit : broadcastUpdateScore');
 						console.log(broadcastUpdateScoreData[0]);
 
-						socket.emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);
+						socket.broadcast.emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);
 					});
 				});
 			}); 

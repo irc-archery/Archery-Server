@@ -75,6 +75,11 @@ socket.on('broadcastInsertScore', function (data) {
 
 });
 
+socket.on('broadcastUpdateScore', function (data) {
+  console.log('on broadcasetUpdateScore');
+  console.log(data);
+})
+
 // Emit Extract ScoreCard Index
 function extractScoreCardIndex(){
 
@@ -103,7 +108,7 @@ function insertMatch() {
   data['perEnd'] = $('#insertMatchPerEnd').val();
   data['length'] = $('#length').val();
 
-  console.log('insertMatch');
+  console.log('emit insertMatch');
   console.log(data);
 
   socket.emit('insertMatch', data);
@@ -112,7 +117,6 @@ function insertMatch() {
 // Emit Insert Score Card
 function insertScoreCard() {
 
-  var data = new Object();
 
 }
 
@@ -134,7 +138,7 @@ function insertScore() {
   data['x'] = $('#x').val();
   data['total'] = $('#total').val();
 
-  console.log('insertScore')
+  console.log('emit insertScore')
   console.log(data);
 
   socket.emit('insertScore', data);
@@ -160,7 +164,7 @@ function updateScore() {
   data['x'] = $('#updatedX').val();
   data['total'] = $('#updatedTotal').val();
 
-  console.log('updateScore');
+  console.log('emit updateScore');
   console.log(data);
 
   socket.emit('updateScore', data);
