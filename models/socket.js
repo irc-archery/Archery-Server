@@ -174,6 +174,14 @@ function socketio(server) {
 			});
 		});
 
+		// the event for debug
+		socket.on('extractAllScore', function() {
+			var extractAllScoreSql = 'select * from scorePerEnd;';
+			connection.query(extractAllScoreSql, function(err, results) {
+				socket.emit('extractAllScore', results);
+			});
+		});
+
 		// 得点表記入
 		socket.on('insertScore', function (data) {
 
@@ -181,47 +189,57 @@ function socketio(server) {
 			console.log('on insertScore');
 			console.log(data);
 
-			// 得点を挿入するためのSQL文
-			var insertScoreSql = 'insert into `scorePerEnd`(sc_id, p_id, o_id, perEnd, score_1, score_2, score_3, score_4, score_5, score_6, subTotal) values(' + connection.escape(data.sc_id) + ', ' + connection.escape(data.p_id) + ', (select o_id from `organization` where p_id = ' + connection.escape(data.p_id) + '), ' + connection.escape(data.perEnd) + ', ' + connection.escape(data.score_1) + ', ' + connection.escape(data.score_2) + ', ' + connection.escape(data.score_3) + ', ' + connection.escape(data.score_4) + ', ' + connection.escape(data.score_5) + ', ' + connection.escape(data.score_6) + ', ' + connection.escape(data.subTotal) + ');';
+			// データがすでに存在しないかどうか確認する
+			var checkExistSql = 'select sc_id from `scorePerEnd` where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id) + ' and perEnd = ' + connection.escape(data.perEnd);
 
-			// 得点合計を更新するためのSQL文
-			var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + connection.escape(data.ten) + ', x = ' + connection.escape(data.x) + ', total = ' + connection.escape(data.total) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id);
+			connection.query(checkExistSql, function(err, checkExistData) {
 
-			// 得点の挿入処理
-			connection.query(insertScoreSql, function (err, insertScoreData) {
+				// 送られてきた得点表のセットが存在しなければデータを挿入する
+				if(checkExistData == '') {
 
-				// 後にこのコールバック関数で、挿入された得点をブロードキャストでエミットする
+					// 得点を挿入するためのSQL文
+					var insertScoreSql = 'insert into `scorePerEnd`(sc_id, p_id, o_id, perEnd, score_1, score_2, score_3, score_4, score_5, score_6, subTotal) values(' + connection.escape(data.sc_id) + ', ' + connection.escape(data.p_id) + ', (select o_id from `organization` where p_id = ' + connection.escape(data.p_id) + '), ' + connection.escape(data.perEnd) + ', ' + connection.escape(data.score_1) + ', ' + connection.escape(data.score_2) + ', ' + connection.escape(data.score_3) + ', ' + connection.escape(data.score_4) + ', ' + connection.escape(data.score_5) + ', ' + connection.escape(data.score_6) + ', ' + connection.escape(data.subTotal) + ');';
 
-				// output results
-				console.log('connection.query insertScore results');
-				console.log(insertScoreData);
 
-				// output err
-				console.log('connection.query insertScore err');
-				console.log(err);
+					// 得点合計を更新するためのSQL文
+					var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + connection.escape(data.ten) + ', x = ' + connection.escape(data.x) + ', total = ' + connection.escape(data.total) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id);
 
-				// 得点合計の挿入処理
-				connection.query(updateScoreTotalSql, function (err, updateScoreTotalData) {
-					console.log('connection.query updateScore results');
-					console.log(updateScoreTotalData);
+					// 得点の挿入処理
+					connection.query(insertScoreSql, function (err, insertScoreData) {
 
-					console.log('connection.query updateScore err');
-					console.log(err);
+						// 後にこのコールバック関数で、挿入された得点をブロードキャストでエミットする
 
-					// 挿入された値を抽出し、ブロードキャストでエミットするためのSQL文
-					var broadcastInsertScoreSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, scorePerEnd.perEnd, scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.subTotal, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scorePerEnd`, `scoreTotal` where scorePerEnd.sc_id = ' + connection.escape(data.sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(data.p_id) + ' and scorePerEnd.perEnd = ' + connection.escape(data.perEnd) + ' and scoreTotal.sc_id = ' + connection.escape(data.sc_id) + ' and scoreTotal.p_id = ' + connection.escape(data.p_id) + ';';
+						// output results
+						console.log('connection.query insertScore results');
+						console.log(insertScoreData);
 
-					// broadcast Emit		
-					connection.query(broadcastInsertScoreSql, function (err, broadcastInsertScoreData) {
+						// output err
+						console.log('connection.query insertScore err');
+						console.log(err);
 
-						console.log('Emit : broadcastInsertScoreData');
-						console.log(broadcastInsertScoreData[0]);
+						// 得点合計の挿入処理
+						connection.query(updateScoreTotalSql, function (err, updateScoreTotalData) {
+							console.log('connection.query updateScore results');
+							console.log(updateScoreTotalData);
 
-						socket.broadcast.emit('broadcastInsertScore', broadcastInsertScoreData[0]);
-					});
-				});
-			}); 
+							console.log('connection.query updateScore err');
+							console.log(err);
 
+							// 挿入された値を抽出し、ブロードキャストでエミットするためのSQL文
+							var broadcastInsertScoreSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, scorePerEnd.perEnd, scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.subTotal, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scorePerEnd`, `scoreTotal` where scorePerEnd.sc_id = ' + connection.escape(data.sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(data.p_id) + ' and scorePerEnd.perEnd = ' + connection.escape(data.perEnd) + ' and scoreTotal.sc_id = ' + connection.escape(data.sc_id) + ' and scoreTotal.p_id = ' + connection.escape(data.p_id) + ';';
+
+							// broadcast Emit		
+							connection.query(broadcastInsertScoreSql, function (err, broadcastInsertScoreData) {
+
+								console.log('Emit : broadcastInsertScoreData');
+								console.log(broadcastInsertScoreData[0]);
+
+								socket.broadcast.emit('broadcastInsertScore', broadcastInsertScoreData[0]);
+							});
+						});
+					}); 
+				}
+			});
 		});
 	
 		// 得点表修正

@@ -3,6 +3,41 @@ var socket = io.connect();
 // Emit Extract Match Index
 socket.emit('extractMatchIndex');
 
+// debug
+socket.emit('extractAllScore');
+
+socket.on('extractAllScore', function (data) {
+
+  console.log('on extractALlScore for debug');
+  console.log(data);
+
+  var code = '';
+
+  code += '<tr>';
+
+  Object.keys(data[0]).forEach(function (key) {
+      code += "<th>" + key + "</th>";
+  });
+
+  code += "</tr>";
+
+  for (var i = 0; i < data.length; i++) {
+
+    code += "<tr>";
+
+    Object.keys(data[i]).forEach(function (key) {
+      code += "<td>" + data[i][key] + "</td>";
+    });
+
+    code += "</tr>";
+  }
+
+  console.log(code);
+
+  $('#extractAllScoreArea').append(code);
+
+});
+
 // On Extract Match Index
 socket.on('extractMatchIndex', function (data) {
 
