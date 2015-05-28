@@ -11,15 +11,15 @@ insert into account(o_id, firstName, lastName, email, password) values(3, '渡�
 
 
 # sample data of match
-insert into `match`(p_id, o_id, matchName, sponsor, created, arrows, perEnd, length) values(1, 1, '試合 1', '仙台工業高校', now(), 6, 6, 70);
-insert into `match`(p_id, o_id, matchName, sponsor, created, arrows, perEnd, length) values(2, 2, '試合 2', '情報研究部', now(), 6, 6, 70);
-insert into `match`(p_id, o_id, matchName, sponsor, created, arrows, perEnd, length) values(4, 3, '試合 3', 'ふにっと部', now(), 6, 6, 70);
+#insert into `match`(p_id, o_id, matchName, sponsor, created, arrows, perEnd, length) values(1, 1, '試合 1', '仙台工業高校', now(), 6, 6, 70);
+#insert into `match`(p_id, o_id, matchName, sponsor, created, arrows, perEnd, length) values(2, 2, '試合 2', '情報研究部', now(), 6, 6, 70);
+#insert into `match`(p_id, o_id, matchName, sponsor, created, arrows, perEnd, length) values(4, 3, '試合 3', 'ふにっと部', now(), 6, 6, 70);
 
 # sample data of scoreCard
-insert into scoreCard(p_id, m_id, created, place) values(1, 1, now(), '原ノ町');
-insert into scoreCard(p_id, m_id, created, place) values(2, 2, now(), '米ケ袋');
-insert into scoreCard(p_id, m_id, created, place) values(4, 3, now(), 'ふに町');
-insert into scoreCard(p_id, m_id, created, place) values(3, 1, now(), '原ノ町');
+#insert into scoreCard(p_id, m_id, created, place) values(1, 1, now(), '原ノ町');
+#insert into scoreCard(p_id, m_id, created, place) values(2, 2, now(), '米ケ袋');
+#insert into scoreCard(p_id, m_id, created, place) values(4, 3, now(), 'ふに町');
+#insert into scoreCard(p_id, m_id, created, place) values(3, 1, now(), '原ノ町');
 
 # sample data of scorePerEnd
 #insert into scorePerEnd(sc_id, p_id, o_id, perEnd, score_1, score_2, score_3,score_4,score_5,score_6,subTotal) values(1, 1, 1, 1, 'x','10','8','2','m','m', 20);

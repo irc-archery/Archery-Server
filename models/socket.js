@@ -22,7 +22,7 @@ function socketio(server) {
 			connection.query(extractOrganizationId, function(err, organization) {
 
 				// 試合データを挿入するためのSQL文
-				var insertMatchSql = 'insert into `match`(p_id, o_id, matchName, sponsor, created, arrows, perEnd, length) values(' + connection.escape(data.p_id) + ', ' + connection.escape(organization[0].id) + ', "' + connection.escape(data.matchName) + '", "' + connection.escape(data.sponsor) + '", now(), ' + connection.escape(data.arrows) + ', ' + connection.escape(data.perEnd) + ', ' + connection.escape(data.length) + ');';
+				var insertMatchSql = 'insert into `match`(p_id, o_id, matchName, sponsor, created, arrows, perEnd, length) values(' + connection.escape(data.p_id) + ', ' + connection.escape(organization[0].id) + ', ' + connection.escape(data.matchName) + ', ' + connection.escape(data.sponsor) + ', now(), ' + connection.escape(data.arrows) + ', ' + connection.escape(data.perEnd) + ', ' + connection.escape(data.length) + ');';
 				
 				// 試合データを挿入
 				connection.query(insertMatchSql, function(err, insertMatchResults) {
@@ -96,7 +96,23 @@ function socketio(server) {
 			console.log('on insertScoreCard');
 			console.log(data);
 
-			//connection.query
+			// 擬似的にp_idを送ってもらうことで実装
+			// 本来はemialとpasswordを送ってもらいそのユーザーのp_idを取得してから以下の機能を実装する
+			var insertScoreCardSql = 'insert into scoreCard(p_id, m_id, created, place) values(' + connection.escape(data.p_id) + ', ' + connection.escape(data.m_id) + ', now(), "ふにっと競技場")';
+
+			connection.query(insertScoreCardSql, function (err, insertScoreCardData) {
+				console.log('insertScoreCard results');
+				console.log(insertScoreCardData);
+
+				var insertScoreTotalSql = 'insert into scoreTotal(sc_id, p_id, o_id) values(' + insertScoreCardData.insertId + ', ' + connection.escape(data.p_id) + ', ' + connection.escape(data.m_id) + ');';
+
+				connection.query(insertScoreTotalSql, function(err, insertScoreTotalData) {
+
+					// 得点表のIDをemitする
+					//console.log('emit insertScoreTotal');
+					//socket.emit('insertScoreCard', {'sc_id': insertScoreCardData.insertId});
+				});
+			});
 		});
 
 		//  得点表 一覧取得
@@ -175,10 +191,40 @@ function socketio(server) {
 		});
 
 		// the event for debug
-		socket.on('extractAllScore', function() {
+		socket.on('extractAllScore', function(data) {
 			var extractAllScoreSql = 'select * from scorePerEnd;';
 			connection.query(extractAllScoreSql, function(err, results) {
 				socket.emit('extractAllScore', results);
+			});
+		});
+
+		// the event for debug
+		socket.on('extractAllScoreTotal', function(data) {
+			var extractAllScoreTotalSql = 'select * from scoreTotal';
+			connection.query(extractAllScoreTotalSql, function(err, results) {
+				socket.emit('extractAllScoreTotal', results);
+			});
+		});
+
+		// the event for debug
+		socket.on('extractAccountTable', function(data) {
+			var extractAccountTableSql = 'select * from account';
+			connection.query(extractAccountTableSql, function(err, results) {
+				socket.emit('extractAccountTable', results);
+			});
+		});
+
+		socket.on('extractOrganizationTable', function(data) {
+			var extractOrganizationTableSql = 'select * from organization';
+			connection.query(extractOrganizationTableSql, function(err, results) {
+				socket.emit('extractOrganizationTable', results);
+			});
+		});
+
+		socket.on('extractScoreCardTable', function(data) {
+			var extractScoreCardTableSql = 'select * from scoreCard';
+			connection.query(extractScoreCardTableSql, function(err, results) {
+				socket.emit('extractScoreCardTable', results);
 			});
 		});
 
@@ -199,7 +245,6 @@ function socketio(server) {
 
 					// 得点を挿入するためのSQL文
 					var insertScoreSql = 'insert into `scorePerEnd`(sc_id, p_id, o_id, perEnd, score_1, score_2, score_3, score_4, score_5, score_6, subTotal) values(' + connection.escape(data.sc_id) + ', ' + connection.escape(data.p_id) + ', (select o_id from `organization` where p_id = ' + connection.escape(data.p_id) + '), ' + connection.escape(data.perEnd) + ', ' + connection.escape(data.score_1) + ', ' + connection.escape(data.score_2) + ', ' + connection.escape(data.score_3) + ', ' + connection.escape(data.score_4) + ', ' + connection.escape(data.score_5) + ', ' + connection.escape(data.score_6) + ', ' + connection.escape(data.subTotal) + ');';
-
 
 					// 得点合計を更新するためのSQL文
 					var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + connection.escape(data.ten) + ', x = ' + connection.escape(data.x) + ', total = ' + connection.escape(data.total) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id);
@@ -238,6 +283,10 @@ function socketio(server) {
 							});
 						});
 					}); 
+				}
+
+				else {
+					console.log('データの重複が発生したためデータを挿入しませんでした');
 				}
 			});
 		});
