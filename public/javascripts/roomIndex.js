@@ -9,11 +9,14 @@ socket.emit('extractAllScoreTotal');
 socket.emit('extractAccountTable');
 socket.emit('extractOrganizationTable');
 socket.emit('extractScoreCardTable');
+socket.emit('extractMatchTable');
 
 socket.on('extractAllScore', function (data) {
 
   console.log('on extractALlScore for debug');
   console.log(data);
+
+  if(data != '') {
 
   var code = '';
 
@@ -40,6 +43,8 @@ socket.on('extractAllScore', function (data) {
 
   $('#extractAllScoreArea').append(code);
 
+  }
+
 });
 
 socket.on('extractAllScoreTotal', function (data) {
@@ -47,6 +52,7 @@ socket.on('extractAllScoreTotal', function (data) {
   console.log('on extractALlScoreTotal for debug');
   console.log(data);
 
+  if(data != '') {
   var code = '';
 
   code += '<tr>';
@@ -71,6 +77,7 @@ socket.on('extractAllScoreTotal', function (data) {
   console.log(code);
 
   $('#extractAllScoreTotalArea').append(code);
+  }
 
 });
 
@@ -79,6 +86,7 @@ socket.on('extractAccountTable', function (data) {
   console.log('on extractAccountTable for debug');
   console.log(data);
 
+  if(data != '') {
   var code = '';
 
   code += '<tr>';
@@ -104,6 +112,8 @@ socket.on('extractAccountTable', function (data) {
 
   $('#extractAccountTable').append(code);
 
+  }
+
 });
 
 socket.on('extractOrganizationTable', function (data) {
@@ -111,6 +121,7 @@ socket.on('extractOrganizationTable', function (data) {
   console.log('on extractOrganizationTable for debug');
   console.log(data);
 
+  if(data != '') {
   var code = '';
 
   code += '<tr>';
@@ -135,6 +146,7 @@ socket.on('extractOrganizationTable', function (data) {
   console.log(code);
 
   $('#extractOrganizationTable').append(code);
+  }
 
 });
 
@@ -143,6 +155,7 @@ socket.on('extractScoreCardTable', function (data) {
   console.log('on extractScoreCardTable for debug');
   console.log(data);
 
+  if(data != '') {
   var code = '';
 
   code += '<tr>';
@@ -164,17 +177,48 @@ socket.on('extractScoreCardTable', function (data) {
     code += "</tr>";
   }
 
-  console.log(code);
-
   $('#extractScoreCardTable').append(code);
+  }
 
 });
 
+socket.on('extractMatchTable', function (data) {
+
+  console.log('on extractMatchTable for debug');
+  console.log(data);
+
+  if(data != '') {
+  var code = '';
+
+  code += '<tr>';
+
+  Object.keys(data[0]).forEach(function (key) {
+      code += "<th>" + key + "</th>";
+  });
+
+  code += "</tr>";
+
+  for (var i = 0; i < data.length; i++) {
+
+    code += "<tr>";
+
+    Object.keys(data[i]).forEach(function (key) {
+      code += "<td>" + data[i][key] + "</td>";
+    });
+
+    code += "</tr>";
+  }
+
+  $('#extractMatchTable').append(code);
+  }
+
+});
 // On Extract Match Index
 socket.on('extractMatchIndex', function (data) {
 
   console.log(data);
 
+  if(data != '') {
   var code = '';
 
   // table
@@ -198,6 +242,7 @@ socket.on('extractMatchIndex', function (data) {
   }
 
   $("#matchIndexArea").append(code);
+  }
 });
 
 // On Extract ScoreCard Index
