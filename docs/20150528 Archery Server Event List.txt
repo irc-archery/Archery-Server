@@ -1,0 +1,301 @@
+Archery Server HTTP & WebSocket Event
+2015 05 28
+
+アカウント作成
+
+HttpMethod : POST
+RequestURI : http://hostname/app/createAccount
+Data Format :
+{
+	'firstName':	string,	// 名
+	'lastName':		string,	// 姓
+	'rubyFirstName':string,	// ふりがな - 名
+	'rubyLastName':	string,	// ふりがな - 姓
+	'email':		string,	// ログイン用のEmail
+	'password':		string,	// ログイン用のpassword (パスワードの再入力は各クライアント毎に実装する)
+	'birth':		date,	// 生年月日 format : 1997-08-06
+	'sex':			int 	// 男性 : 0, 女性 : 1, その他 : 8, 未設定 : 9
+}
+
+
+ログイン
+
+HttpMethod : POST
+RequestURI : http://hostname/app/login
+Data Format :
+{
+	'email':	string,
+	'password':	string
+}
+
+
+試合
+
+試合::一覧取得
+
+Emit  Event Name  : extractMatchIndex
+Emit Data Format :  null
+
+On Event Name : extractMatchIndex
+On Data Format :  
+{ 
+  'm_id' : int,			// 試合ID
+  'matchName' : string,	// 試合名
+  'sponsor': string,	// 主催
+  'created': string,	// 試合開始日
+  'arrows': int,		// 射数
+  'perEnd': int,		// セット数
+  'length': int,		// 距離
+  'players': int		// 参加人数 (得点表の数)
+}
+
+概要  : 
+試合一覧データの取得。クライアントがイベント名'extractMatchIndex'でemitし、同じイベント名でonすることで試合一覧のデータ上記のフォーマットで得ることができる。
+
+
+試合::作成
+
+Emit Event Name : insertMatch
+Emit Data Format :  
+{
+	'p_id': int,		// 試合作成者のID
+	'matchName': string,// 試合名
+	'sponsor': string,	// 主催
+	'arrows': int,		// 射数
+	'perEnd': int,		// セット数
+	'length': int 		// 距離
+}
+
+On Event Name : 
+On Data Format : 
+
+概要 :
+試合作成。作成時に必要な上記のデータをEmitすることで試合のデータベースに新たな試合が追加される。
+
+
+試合::参加 ※未実装
+
+Emit Event Name : joinMatch
+Emit Data Format : {'m_id' : int }
+
+On Event Name : joinMatch
+On Data Format : {'results': bool }
+
+概要 : 
+試合へ参加するためのイベント。未実装。
+クライアントが参加したい試合のidをイベント名 'joinMatch'でemitすると、そのクライアントのsocketを送られてきたidの試合に参加させる。
+
+
+試合::作成による更新
+
+Emit Event Name : 
+Emit Data Format :
+
+On Event Name : broadcastInsertMatch
+On Data Format : 
+{
+	'p_id': int,		// 試合作成者のID
+	'matchName': string,// 試合名
+	'sponsor': string,	// 主催
+	'arrows': int,		// 射数
+	'perEnd': int,		// セット数
+	'length': int 		// 距離
+}
+
+概要 : 
+試合作成時に発生するイベント。
+誰かが試合を作成したときに、その試合の情報がリアルタイムで一覧画面に表示されるためにその作成された試合の情報をサーバーがEmitする。
+また、試合一覧を閲覧している端末のみで発生する。
+
+
+得点表
+
+得点表::一覧取得
+
+Emit Event Name : extractScoreCardIndex
+Emit Data Format : {'m_id': int } // ほしい試合のIDをkey:'m_id'でEmitする。
+
+On Event Name : extractScoreCardIndex
+On Data Format : 
+[
+	{ 
+		'sc_id', int,		// 得点表ID
+		'playerName': string,	// 選手名
+		'scoreTotal': int 	// 得点合計
+	},
+	{ ... },
+	{ ... }
+]
+
+概要 : 
+得点表一覧で返すデータ。
+イベント名'extractScoreCardIndex'で試合IDを送ると、同じイベント名で得点表ID, 選手名, 得点合計が格納されているObjectの配列が送られてくる
+
+
+id:xの得点表の取得
+
+Emit Event Name : extractScoreCard
+Emit Data Format : { 'sc_id': int } // ほしい得点表のIDをEmitする
+
+On Event Name : extractScoreCard
+On Data Format :
+{
+	'sc_id': int,			// 得点表ID
+	'p_id': int,			// 選手ID
+	'playerName': string,	// 選手名
+	'length': int,			// 距離
+	'countPerEnd': int, 	// 現在のセット (テーブルに格納されているカラムの数e
+	'ten': int,				// 10数
+	'x': int, 				// X数
+	'sum': int,				// 合計
+	'score': [
+		{ 
+			'score_1': string,			// 1射目の得点
+			...,
+			'score_6': string,			// 6射目の得点
+			'updatedScore_1': string,	// 1射目の修正された得点 (DEFAULT VALUE : NULL)
+			...,
+			'updatedScore_6': string,	// 6射目の修正された得点
+			'subTotal': int,			// このセットの小計
+			'perEnd': int 				// このオブジェクトの得点が属するセット数
+		},
+		{ ... },
+		{ ... }
+	]
+}
+
+概要 : 
+得点表データ。
+ユーザーは得点表一覧より閲覧したい得点表をタップするので、クライアント側はイベント名 'extractScoreCard'でその得点表のID(sc_id)をEmitする。
+サーバーは受け取った得点表のIDの得点表データを同じイベント名で上記のフォーマットに従ってEmitする。
+
+
+得点表::作成
+
+Emit Event Name : insertScoreCard
+Emit Data Format : 
+{ 
+	'm_id': int,		// どの試合で得点表を作成したのか, その試合のID
+	'email': string,	// ユーザーログイン用のemail
+	'password': string	// ユーザーログイン用のpassword
+}
+
+On Event Name : 
+On Data Format
+
+概要 :
+得点表作成。誰の得点表を作成するのか, そのでログインするためのemailとpassword、
+どの試合で得点表を作成するのか、その試合のIDをEmitする。
+
+
+得点
+
+得点::挿入
+
+Emit Event Name : insertScore
+Emit Data Format : 
+{
+	'sc_id': int,		// 得点表のID
+	'p_id': int,		// 得点表の作成者ID
+	'perEnd': int,		// 何セット目の得点か
+	'score_1': string,	// 1射目の得点
+	'score_2': string,	// 2射目の得点
+	'score_3': string,	// 3射目の得点
+	'score_4': string,	// 4射目の得点
+	'score_5': string,	// 5射目の得点
+	'score_6': string,	// 6射目の得点
+	'subTotal': int 	// そのセットの小計
+	'ten': int,			// 全セットの10数
+	'x': int,			// 全セットのx数
+	'total': int 		// 全セットの合計
+}
+
+On Event Name : 
+On Data Format : 
+
+概要 :
+得点の挿入。どの得点表の得点なのか、誰の得点表の得点なのか、その情報とともに、それぞれの射の得点とそのセットの小計を送る。
+また、その得点表全体の合計点数、10数, x数も同時に送信する。
+
+
+得点::修正
+
+Emit Event Name : updateScore
+Emit Data Format : 
+{
+	'sc_id': int,				// 得点表のID
+	'p_id': int,				// 得点表の作成者ID
+	'perEnd': int,				// 何セット目の得点か
+	'updatedScore_x': string,	// x射目の得点 (ただし、xは何射目なのかを表す)
+	'subTotal': int 	// そのセットの小計
+	'ten': int,			// 全セットの10数
+	'x': int,			// 全セットのx数
+	'total': int 		// 全セットの合計
+}
+
+On Event Name : 
+On Data Format : 
+
+概要 :
+得点の修正。修正したい得点がある得点表のID, その得点表の作成者ID, セット数を送る。
+修正したい得点はupdatedScore_xとして送信する。(ただし、xは何射目なのかを表す)
+また、updatedScore_1〜6までのすべての得点を送る必要はなく、修正された得点のみを送る。 
+
+
+得点::得点挿入による更新
+
+Emit Event Name : 
+Emit Data Format :
+
+On Event Name : broadcastInsertScore
+On Data Format : 
+{
+	'sc_id': int,				// 得点表のID
+	'p_id': int,				// 得点表の作成者ID
+	'perEnd': int,				// 何セット目の得点か
+	'score_1': string,	// 1射目の得点
+	'score_2': string,	// 2射目の得点
+	'score_3': string,	// 3射目の得点
+	'score_4': string,	// 4射目の得点
+	'score_5': string,	// 5射目の得点
+	'score_6': string,	// 6射目の得点
+	'subTotal': int 	// そのセットの小計
+	'ten': int,			// 全セットの10数
+	'x': int,			// 全セットのx数
+	'total': int 		// 全セットの合計
+}
+
+発生条件 : その得点表が更新された時(insertScore)に、この得点表を閲覧している人に送られるイベント
+
+概要 : 
+得点表閲覧中に、その得点表が更新された時に閲覧者の端末で発生するイベント。
+更新された1セット文のスコアをEmitする。
+
+
+
+得点::得点修正による更新
+
+Emit Event Name : 
+Emit Data Format :
+
+On Event Name : broadcastUpdateScore
+On Data Format : 
+{
+	'sc_id': int,				// 得点表のID
+	'p_id': int,				// 得点表の作成者ID
+	'perEnd': int,				// 何セット目の得点か
+	'updatedScore_x': string,	// x射目の得点 (ただし、xは何射目なのかを表す)
+	'subTotal': int 	// そのセットの小計
+	'ten': int,			// 全セットの10数
+	'x': int,			// 全セットのx数
+	'total': int 		// 全セットの合計
+}
+
+発生条件 : その得点表が更新された時(updateScore)に、この得点表を閲覧している人に送られるイベント
+
+概要 : 
+得点表閲覧中に、その得点表が更新された時に閲覧者の端末で発生するイベント。
+修正された得点とそれによって影響を受ける可能性がある小計、合計点数, 10数, x数をEmitする
+
+
+

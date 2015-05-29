@@ -12,12 +12,19 @@ router.get('/login', function(req, res) {
 
 // browser用のログイン処理
 router.post('/login', function(req, res) {
-	
+	console.log('post /login');
+	console.log(req.body);
 });
 
+// ユーザーの登録を行うフォームをsend
+router.get('/createAccount', function(req, res) {
+	res.render('createAccount.ejs');
+})
+
 // ユーザーの登録を行うPOSTの処理
-router.post('/add', function(req, res) {
-	
+router.post('/createAccount', function(req, res) {
+	console.log('post /createAccount');
+	console.log(req.body);
 });
 
 router.get('/logout', function(req, res) {
