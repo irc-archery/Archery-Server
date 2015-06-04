@@ -18,33 +18,32 @@ socket.on('extractAllScore', function (data) {
 
   if(data != '') {
 
-  var code = '';
+    var code = '';
 
-  code += '<tr>';
+    code += '<tr>';
 
-  Object.keys(data[0]).forEach(function (key) {
-      code += "<th>" + key + "</th>";
-  });
-
-  code += "</tr>";
-
-  for (var i = 0; i < data.length; i++) {
-
-    code += "<tr>";
-
-    Object.keys(data[i]).forEach(function (key) {
-      code += "<td>" + data[i][key] + "</td>";
+    Object.keys(data[0]).forEach(function (key) {
+        code += "<th>" + key + "</th>";
     });
 
     code += "</tr>";
+
+    for (var i = 0; i < data.length; i++) {
+
+      code += "<tr>";
+
+      Object.keys(data[i]).forEach(function (key) {
+        code += "<td>" + data[i][key] + "</td>";
+      });
+
+      code += "</tr>";
+    }
+
+    console.log(code);
+
+    $('#extractAllScoreArea').append(code);
+
   }
-
-  console.log(code);
-
-  $('#extractAllScoreArea').append(code);
-
-  }
-
 });
 
 socket.on('extractAllScoreTotal', function (data) {
