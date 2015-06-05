@@ -2,6 +2,13 @@ var express = require('express');
 var connection = require('../models/mysql.js')();
 var router = express.Router();
 
+connection.query('show tables;', function(err, results) {
+	console.log('results');
+	console.log(results);
+	console.log('err');
+	console.log(err);
+})
+
 // ホーム
 router.get('/', function(req, res) {
 	res.redirect('/login');
@@ -51,8 +58,11 @@ router.post('/login', function(req, res) {
 		console.log('results of loginSql');
 		console.log(results);
 
+
+		console.log(results !== undefined);
+
 		// ログイン成功
-		if(results != '') {
+		if(results !== undefined) {
 			console.log('success to login');	
 			req.session.p_id = results[0].p_id;
 			res.redirect('/matchIndex');
@@ -60,7 +70,7 @@ router.post('/login', function(req, res) {
 		// ログイン失敗
 		else {
 			console.log('faild to login');
-			res.render('/login');
+			res.redirect('/login');
 		}
 	});
 });

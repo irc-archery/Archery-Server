@@ -9,7 +9,8 @@ function socketio(server) {
   //var scoreCardIndex = require('./scoreCardIndexModel.js')(io.of('/scoreCardIndex'));
   //var scoreCard = require('./scoreCard')(io.of('/scoreCard'));
 
-/*// クライアントとの接続が確立
+  /*
+  // クライアントとの接続が確立
   io.sockets.on('connection', function(socket) {
 
 		// 接続成功時のログ
@@ -351,8 +352,8 @@ function socketio(server) {
 
 		// 得点表 取得
   });
-*/
 	//--- End Socket.IO ---//
+  */
 };
 
 module.exports = socketio;
