@@ -10,11 +10,7 @@ router.post('/createAccount', function(req, res) {
 	console.log(createAccountSql);
 
 	connection.query(createAccountSql, function(err, results) {
-		console.log('results');
-		console.log(results);
-		console.log('err');
-		console.log(err); 
-
+		
 		var data = {};
 
 		// 作成成功
@@ -30,13 +26,13 @@ router.post('/createAccount', function(req, res) {
 			data['err'] = err;
 		}
 
-		res.sender(data);
+		res.send(data);
 	});
 });
 
 // app用のログイン処理
 router.post('/login', function(req, res) {
-	console.log('post /login');
+	console.log('post /app/login');
 	console.log(req.body);
 
 	var loginSql = 'select * from account where email = ' + connection.escape(req.body.email) + ' and password = ' + connection.escape(req.body.password) + ';';
@@ -63,9 +59,7 @@ router.post('/login', function(req, res) {
 			data['err'] = err;
 		}
 
-		console.log(res.headers);
-
-		res.sender(data);
+		res.send(data);
 	});
 });
 

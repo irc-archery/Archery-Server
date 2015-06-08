@@ -86,9 +86,6 @@ router.post('/login', function(req, res) {
 		console.log('results of loginSql');
 		console.log(results);
 
-		console.log('results !== undefined');
-		console.log(Object.keys(results).length !== 0);
-
 		// ログイン成功
 		if(Object.keys(results).length !== 0) {
 			console.log('success to login');	
