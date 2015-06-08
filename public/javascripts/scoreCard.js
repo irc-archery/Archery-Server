@@ -34,8 +34,9 @@ function insertScore() {
 
   var data = new Object();
 
+  data['sessionID'] = document.cookie;
   data['sc_id'] = getQueryString().sc_id;
-  data['p_id'] = $('#insertScoreP_id').val();
+
   data['perEnd'] = $('#insertScorePerEnd').val();
 
   for(var i = 1; i <= 6; i++) {
@@ -58,8 +59,9 @@ function updateScore() {
 
   var data = new Object();
 
-  data['sc_id'] = $('#updateScoreSc_id').val();
-  data['p_id'] = $('#updateScoreP_id').val();
+  data['sessionID'] = document.cookie;
+  data['sc_id'] = getQueryString().sc_id;
+
   data['perEnd'] = $('#updateScorePerEnd').val();
 
   for(var i = 1; i <= 6; i++) {

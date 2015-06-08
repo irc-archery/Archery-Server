@@ -1,5 +1,5 @@
 Archery Server HTTP & WebSocket Event
-2015 06 08
+2015 06 08 ver.2
 
 ログイン画面
 
@@ -116,6 +116,7 @@ On Data Format :
 参加が完了すると、イベント extractScoreCardIndex がクライアント側でonするのでそのイベントで得点表一覧データを取得し表示する。
 接続中に新たな試合が作成されたら、broadcastInsertScoreCardイベントがクライアント側でonし、データとしてその追加された試合の情報を受け取る。
 得点表を閲覧・編集したい場合は、次のページ(アクティビティ)の/scoreCardでextractScoreCardイベントを得点表のID(sc_id)とsessionIDとともにemitする。
+For Android Client : 得点表一覧画面で、各得点表のアクセス権(編集モード or 閲覧モード)を調べるためには、イベント 
 
 試合::参加
 
@@ -148,6 +149,21 @@ On Data Format :
 	'sc_id', int,		// 得点表ID
 	'playerName': string,	// 選手名
 	'scoreTotal': int 	// 得点合計
+}
+
+得点表::編集モード、閲覧モードのチェック (for Android Client)
+
+Emit Event Name : checkPermission
+Emit Data Format : 
+{
+	'sc_id' : int,
+	'sessionID' : string
+}
+
+On Event Name : checkPermission
+On Data Format : 
+{
+	'permission': bool		// true: 編集可, false: 閲覧のみ
 }
 
 
@@ -197,7 +213,6 @@ On Event Name : extractScoreCard
 On Data Format :
 {
 	'sc_id': int,			// 得点表ID
-	'p_id': int,			// 選手ID
 	'playerName': string,	// 選手名
 	'length': int,			// 距離
 	'countPerEnd': int, 	// 現在のセット (テーブルに格納されているカラムの数e
@@ -262,7 +277,6 @@ On Event Name : broadcastInsertScore
 On Data Format : 
 {
 	'sc_id': int,				// 得点表のID
-	'p_id': int,				// 得点表の作成者ID
 	'perEnd': int,				// 何セット目の得点か
 	'score_1': string,	// 1射目の得点
 	'score_2': string,	// 2射目の得点
@@ -282,7 +296,6 @@ On Event Name : broadcastUpdateScore
 On Data Format : 
 {
 	'sc_id': int,				// 得点表のID
-	'p_id': int,				// 得点表の作成者ID
 	'perEnd': int,				// 何セット目の得点か
 	'updatedScore_x': string,	// x射目の得点 (ただし、xは何射目なのかを表す)
 	'subTotal': int 	// そのセットの小計
@@ -290,3 +303,12 @@ On Data Format :
 	'x': int,			// 全セットのx数
 	'total': int 		// 全セットの合計
 }
+
+
+認証エラー
+
+Websocket通信の際に送信するsessionIDが無効だった場合は、以下のイベントエミットする。
+これを受け取ったクライアントはログイン画面へ強制的に遷移させなければならない。
+
+On Event Name : authorizationError
+On Data Format : 特になし

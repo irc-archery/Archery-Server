@@ -13,41 +13,90 @@ function scoreCardModel(io, connection) {
 			console.log('on extractScoreCard');
 			console.log(data);
 
-			// sessionIDを用いたユーザー認証処理
-			// ...
+			/* Get p_id related SessionID */
 
-			// 得点表データの抽出に使用するIDを抽出するSQL文
-			var scoreCardIdSql = 'select scoreCard.sc_id, scoreCard.p_id, scoreCard.m_id from `scoreCard` where scoreCard.sc_id = ' + connection.escape(data.sc_id);
+			var addPrefix = require('./addPrefix');
 
-			// IDを抽出
-			connection.query(scoreCardIdSql, function (err, scoreCardIdData) {
+			var id = addPrefix(data.sessionID);
+			console.log('id');
+			console.log(id);
 
-				console.log('scoreCardIdData');
-				console.log(scoreCardIdData);
+			var dbName = process.env.COUCHDB_NAME || 'archery-server-sessions';
 
-				// 得点表データの抽出を行うSQL文
-				var scoreCardSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, `match`.length, count(spe_id) as countPerEnd, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scoreCard`, `account`, `match`, `scoreTotal`, `scorePerEnd` where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and account.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' and `match`.m_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' and scorePerEnd.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' and scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scoreTotal.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ';';
+			// options for connection couchdb
+			var options = {
+				hostname: '127.0.0.1',
+				port: 5984,
+				method: 'GET',
+				path: '/' + dbName + '/' + id,
+				headers: {'Accept': 'application/json'}
+			};
 
-				// 得点データの抽出を行うSQL文
-				var scorePerEndSql = 'select scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.updatedScore_1, scorePerEnd.updatedScore_2, scorePerEnd.updatedScore_3, scorePerEnd.updatedScore_4, scorePerEnd.updatedScore_5, scorePerEnd.updatedScore_6, scorePerEnd.subTotal, scorePerEnd.perEnd from `scorePerEnd` where scorePerEnd.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' order by scorePerEnd.perEnd asc;';
+			// CouchDBよりSessionに紐付けられたp_idを取得する
+			var getReq = http.request(options, function(response) {
+				response.setEncoding('utf8');
+				response.on('data', function(chunk) {
 
-				// 得点表データの抽出
-				connection.query(scoreCardSql, function (err, scoreCardData) {
-					// 得点データの抽出
-					connection.query(scorePerEndSql, function (err, scorePerEndData) {
+					// p_idの抽出
+					var p_id = JSON.parse(chunk).sess.p_id;
 
-						// ２つのSQL文の結果を結合
-						scoreCardData[0]['score'] = scorePerEndData;
+					console.log('p_id');
+					console.log(p_id);
 
-						// Emit log
-						console.log('emit : extractScoreCard');
-						console.log(scoreCardData[0]);
+					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
+					if(p_id !== undefined) {
 
-						// 得点表データのEmit
-						socket.emit('extractScoreCard', scoreCardData[0]);
-					});
+						// 得点表データの抽出に使用するidを抽出するsql文
+						var scoreCardIdSql = 'select scoreCard.sc_id, scoreCard.p_id, scoreCard.m_id from `scoreCard` where scoreCard.sc_id = ' + connection.escape(data.sc_id);
+
+						console.log('scoreCardIdSql');
+						console.log(scoreCardIdSql);
+
+						// idを抽出
+						connection.query(scoreCardIdSql, function (err, scoreCardIdData) {
+
+							console.log('scoreCardIdData');
+							console.log(scoreCardIdData);
+
+							// 得点表データの抽出を行うSQL文
+							var scoreCardSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, `match`.length, count(spe_id) as countPerEnd, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scoreCard`, `account`, `match`, `scoreTotal`, `scorePerEnd` where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and account.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' and `match`.m_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' and scorePerEnd.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' and scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scoreTotal.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ';';
+
+							// 得点データの抽出を行うSQL文
+							var scorePerEndSql = 'select scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.updatedScore_1, scorePerEnd.updatedScore_2, scorePerEnd.updatedScore_3, scorePerEnd.updatedScore_4, scorePerEnd.updatedScore_5, scorePerEnd.updatedScore_6, scorePerEnd.subTotal, scorePerEnd.perEnd from `scorePerEnd` where scorePerEnd.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' order by scorePerEnd.perEnd asc;';
+
+							// 得点表データの抽出
+							connection.query(scoreCardSql, function (err, scoreCardData) {
+								// 得点データの抽出
+								connection.query(scorePerEndSql, function (err, scorePerEndData) {
+
+									// ２つのSQL文の結果を結合
+									scoreCardData[0]['score'] = scorePerEndData;
+
+									// パーミッションを追加
+									scoreCardData[0]['permission'] = scoreCardIdData[0].p_id === p_id ? true : false;
+
+									// Emit log
+									console.log('emit : extractScoreCard');
+									console.log(scoreCardData[0]);
+
+									// 得点表データのEmit
+									socket.emit('extractScoreCard', scoreCardData[0]);
+								});
+							});
+						});
+					}
+					// p_idを取得できていない = ログインができていない ∴ ログイン画面に遷移する
+					else {
+						socket.emit('authorizationError');
+					}
 				});
 			});
+
+			getReq.on('error', function(e) {
+				console.log(e);
+			});
+
+			getReq.end();
 		});
 
 		// 得点表記入
@@ -57,60 +106,111 @@ function scoreCardModel(io, connection) {
 			console.log('on insertScore');
 			console.log(data);
 
-			// データがすでに存在しないかどうか確認する
-			var checkExistSql = 'select sc_id from `scorePerEnd` where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id) + ' and perEnd = ' + connection.escape(data.perEnd);
+			/* Get p_id related SessionID */
 
-			connection.query(checkExistSql, function(err, checkExistData) {
+			var addPrefix = require('./addPrefix');
 
-				// 送られてきた得点表のセットが存在しなければデータを挿入する
-				if(checkExistData == '') {
+			var id = addPrefix(data.sessionID);
+			console.log('id');
+			console.log(id);
 
-					// 得点を挿入するためのSQL文
-					var insertScoreSql = 'insert into `scorePerEnd`(sc_id, p_id, o_id, perEnd, score_1, score_2, score_3, score_4, score_5, score_6, subTotal) values(' + connection.escape(data.sc_id) + ', ' + connection.escape(data.p_id) + ', (select o_id from `organization` where p_id = ' + connection.escape(data.p_id) + '), ' + connection.escape(data.perEnd) + ', ' + connection.escape(data.score_1) + ', ' + connection.escape(data.score_2) + ', ' + connection.escape(data.score_3) + ', ' + connection.escape(data.score_4) + ', ' + connection.escape(data.score_5) + ', ' + connection.escape(data.score_6) + ', ' + connection.escape(data.subTotal) + ');';
+			var dbName = process.env.COUCHDB_NAME || 'archery-server-sessions';
 
-					// 得点合計を更新するためのSQL文
-					var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + connection.escape(data.ten) + ', x = ' + connection.escape(data.x) + ', total = ' + connection.escape(data.total) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id);
+			// options for connection couchdb
+			var options = {
+				hostname: '127.0.0.1',
+				port: 5984,
+				method: 'GET',
+				path: '/' + dbName + '/' + id,
+				headers: {'Accept': 'application/json'}
+			};
 
-					// 得点の挿入処理
-					connection.query(insertScoreSql, function (err, insertScoreData) {
+			// CouchDBよりSessionに紐付けられたp_idを取得する
+			var getReq = http.request(options, function(response) {
 
-						// 後にこのコールバック関数で、挿入された得点をブロードキャストでエミットする
+				response.setEncoding('utf8');
+				response.on('data', function(chunk) {
 
-						// output results
-						console.log('connection.query insertScore results');
-						console.log(insertScoreData);
+					// p_idの抽出
+					var p_id = JSON.parse(chunk).sess.p_id;
+					var o_id = JSON.parse(chunk).sess.o_id;
 
-						// output err
-						console.log('connection.query insertScore err');
-						console.log(err);
+					console.log('p_id');
+					console.log(p_id);
 
-						// 得点合計の挿入処理
-						connection.query(updateScoreTotalSql, function (err, updateScoreTotalData) {
-							console.log('connection.query updateScore results');
-							console.log(updateScoreTotalData);
+					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
+					if(p_id !== undefined) {
 
-							console.log('connection.query updateScore err');
-							console.log(err);
+						// データがすでに存在しないかどうか確認する
+						var checkExistSql = 'select sc_id from `scorePerEnd` where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(p_id) + ' and perEnd = ' + connection.escape(data.perEnd);
 
-							// 挿入された値を抽出し、ブロードキャストでエミットするためのSQL文
-							var broadcastInsertScoreSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, scorePerEnd.perEnd, scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.subTotal, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scorePerEnd`, `scoreTotal` where scorePerEnd.sc_id = ' + connection.escape(data.sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(data.p_id) + ' and scorePerEnd.perEnd = ' + connection.escape(data.perEnd) + ' and scoreTotal.sc_id = ' + connection.escape(data.sc_id) + ' and scoreTotal.p_id = ' + connection.escape(data.p_id) + ';';
+						connection.query(checkExistSql, function(err, checkExistData) {
 
-							// broadcast Emit		
-							connection.query(broadcastInsertScoreSql, function (err, broadcastInsertScoreData) {
+							// 送られてきた得点表のセットが存在しなければデータを挿入する
+							if(Object.keys(checkExistData).length === 0) {
 
-								console.log('Emit : broadcastInsertScoreData');
-								console.log(broadcastInsertScoreData[0]);
+								// 得点を挿入するためのSQL文
+								var insertScoreSql = 'insert into `scorePerEnd`(sc_id, p_id, o_id, perEnd, score_1, score_2, score_3, score_4, score_5, score_6, subTotal) values(' + connection.escape(data.sc_id) + ', ' + connection.escape(p_id) + ', (select o_id from `organization` where p_id = ' + connection.escape(p_id) + '), ' + connection.escape(data.perEnd) + ', ' + connection.escape(data.score_1) + ', ' + connection.escape(data.score_2) + ', ' + connection.escape(data.score_3) + ', ' + connection.escape(data.score_4) + ', ' + connection.escape(data.score_5) + ', ' + connection.escape(data.score_6) + ', ' + connection.escape(data.subTotal) + ');';
 
-								socket.broadcast.emit('broadcastInsertScore', broadcastInsertScoreData[0]);
-							});
+								// 得点合計を更新するためのSQL文
+								var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + connection.escape(data.ten) + ', x = ' + connection.escape(data.x) + ', total = ' + connection.escape(data.total) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(p_id);
+
+								// 得点の挿入処理
+								connection.query(insertScoreSql, function (err, insertScoreData) {
+
+									// 後にこのコールバック関数で、挿入された得点をブロードキャストでエミットする
+
+									// output results
+									console.log('connection.query insertScore results');
+									console.log(insertScoreData);
+
+									// output err
+									console.log('connection.query insertScore err');
+									console.log(err);
+
+									// 得点合計の挿入処理
+									connection.query(updateScoreTotalSql, function (err, updateScoreTotalData) {
+										console.log('connection.query updateScore results');
+										console.log(updateScoreTotalData);
+
+										console.log('connection.query updateScore err');
+										console.log(err);
+
+										// 挿入された値を抽出し、ブロードキャストでエミットするためのSQL文
+										var broadcastInsertScoreSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, scorePerEnd.perEnd, scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.subTotal, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scorePerEnd`, `scoreTotal` where scorePerEnd.sc_id = ' + connection.escape(data.sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(p_id) + ' and scorePerEnd.perEnd = ' + connection.escape(data.perEnd) + ' and scoreTotal.sc_id = ' + connection.escape(data.sc_id) + ' and scoreTotal.p_id = ' + connection.escape(p_id) + ';';
+
+										console.log('broadcastInsertScoreSql');
+										console.log(broadcastInsertScoreSql);
+
+										// broadcast Emit		
+										connection.query(broadcastInsertScoreSql, function (err, broadcastInsertScoreData) {
+
+											console.log('Emit : broadcastInsertScoreData');
+											console.log(broadcastInsertScoreData[0]);
+
+											socket.broadcast.emit('broadcastInsertScore', broadcastInsertScoreData[0]);
+										});
+									});
+								}); 
+							}
+							else {
+								console.log('データの重複が発生したためデータを挿入しませんでした');
+							}
 						});
-					}); 
-				}
+					}
 
-				else {
-					console.log('データの重複が発生したためデータを挿入しませんでした');
-				}
+					// p_idを取得できていない = ログインができていない ∴ ログイン画面に遷移する
+					else {
+						socket.emit('authorizationError');
+					}
+				});
 			});
+
+			getReq.on('error', function(e) {
+				console.log(e);
+			});
+
+			getReq.end();
 		});
 	
 		// 得点表修正
@@ -120,72 +220,123 @@ function scoreCardModel(io, connection) {
 			console.log('on updateScore');
 			console.log(data);
 
-			// 得点を挿入するためのSQL文
-			var updateScoreSql = 'update `scorePerEnd` set';
+			/* Get p_id related SessionID */
 
-			for(var i = 1; i <= 6; i++){
-				if( 'updatedScore_' + i in data ) {
-					updateScoreSql += ' updatedScore_' + i + ' = ' + connection.escape(data['updatedScore_' + i]) + ',';
-				}
-			}
+			var addPrefix = require('./addPrefix');
 
-			// where文を追加
-			updateScoreSql += ' subTotal = ' + connection.escape(data.subTotal) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id) + ' and perEnd = ' + connection.escape(data.perEnd) + ';';
+			var id = addPrefix(data.sessionID);
+			console.log('id');
+			console.log(id);
 
-			// 得点合計を更新するためのSQL文
-			var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + connection.escape(data.ten) + ', x = ' + connection.escape(data.x) + ', total = ' + connection.escape(data.total) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(data.p_id);
+			var dbName = process.env.COUCHDB_NAME || 'archery-server-sessions';
 
-			console.log('updateScoreSql');
-			console.log(updateScoreSql);
+			// options for connection couchdb
+			var options = {
+				hostname: '127.0.0.1',
+				port: 5984,
+				method: 'GET',
+				path: '/' + dbName + '/' + id,
+				headers: {'Accept': 'application/json'}
+			};
 
-			console.log('updateScoreTotalSql');
-			console.log(updateScoreTotalSql);
+			// CouchDBよりSessionに紐付けられたp_idを取得する
+			var getReq = http.request(options, function(response) {
 
-			// 得点の更新処理
-			connection.query(updateScoreSql, function (err, updateScoreData) {
+				response.setEncoding('utf8');
+				response.on('data', function(chunk) {
 
-				// 後にこのコールバック関数で、挿入された得点をブロードキャストでエミットする
+					// p_idの抽出
+					var p_id = JSON.parse(chunk).sess.p_id;
+					var o_id = JSON.parse(chunk).sess.o_id;
 
-				// output results
-				console.log('connection.query updateScore results');
-				console.log(updateScoreData);
+					console.log('p_id');
+					console.log(p_id);
 
-				// output err
-				console.log('connection.query updateScore err');
-				console.log(err);
+					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
+					if(p_id !== undefined) {
 
-				// 得点合計の挿入処理
-				connection.query(updateScoreTotalSql, function (err, updateScoreTotalData) {
+						// 得点を挿入するためのSQL文
+						var updateScoreSql = 'update `scorePerEnd` set';
 
-					// output results
-					console.log('connection.query updateScore results');
-					console.log(updateScoreTotalData);
-
-					// output err
-					console.log('connection.query updateScore err');
-					console.log(err);
-
-					// 挿入された値を抽出し、ブロードキャストでエミットするためのSQL文
-					var broadcastUpdateScoreSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, scorePerEnd.perEnd, '
-
-					for(var i = 1; i <= 6; i++){
-						if( 'updatedScore_' + i in data ) {
-							broadcastUpdateScoreSql += ' updatedScore_' + i + ',';
+						for(var i = 1; i <= 6; i++){
+							if( 'updatedScore_' + i in data ) {
+								updateScoreSql += ' updatedScore_' + i + ' = ' + connection.escape(data['updatedScore_' + i]) + ',';
+							}
 						}
+
+						// where文を追加
+						updateScoreSql += ' subTotal = ' + connection.escape(data.subTotal) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(p_id) + ' and perEnd = ' + connection.escape(data.perEnd) + ';';
+
+						// 得点合計を更新するためのSQL文
+						var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + connection.escape(data.ten) + ', x = ' + connection.escape(data.x) + ', total = ' + connection.escape(data.total) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(p_id);
+
+						console.log('updateScoreSql');
+						console.log(updateScoreSql);
+
+						console.log('updateScoreTotalSql');
+						console.log(updateScoreTotalSql);
+
+						// 得点の更新処理
+						connection.query(updateScoreSql, function (err, updateScoreData) {
+
+							// 後にこのコールバック関数で、挿入された得点をブロードキャストでエミットする
+
+							// output results
+							console.log('connection.query updateScore results');
+							console.log(updateScoreData);
+
+							// output err
+							console.log('connection.query updateScore err');
+							console.log(err);
+
+							// 得点合計の挿入処理
+							connection.query(updateScoreTotalSql, function (err, updateScoreTotalData) {
+
+								// output results
+								console.log('connection.query updateScore results');
+								console.log(updateScoreTotalData);
+
+								// output err
+								console.log('connection.query updateScore err');
+								console.log(err);
+
+								// 挿入された値を抽出し、ブロードキャストでエミットするためのSQL文
+								var broadcastUpdateScoreSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, scorePerEnd.perEnd, '
+
+								for(var i = 1; i <= 6; i++){
+									if( 'updatedScore_' + i in data ) {
+										broadcastUpdateScoreSql += ' updatedScore_' + i + ',';
+									}
+								}
+
+								broadcastUpdateScoreSql += ' scorePerEnd.subTotal, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scorePerEnd`, `scoreTotal` where scorePerEnd.sc_id = ' + connection.escape(data.sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(p_id) + ' and scorePerEnd.perEnd = ' + connection.escape(data.perEnd) + ' and scoreTotal.sc_id = ' + connection.escape(data.sc_id) + ' and scoreTotal.p_id = ' + connection.escape(p_id) + ';';
+
+								connection.query(broadcastUpdateScoreSql, function(err, broadcastUpdateScoreData) {
+
+									// Emit log
+									console.log('Emit : broadcastUpdateScore');
+									console.log(broadcastUpdateScoreData[0]);
+
+									socket.broadcast.emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);
+								});
+							});
+						}); 
 					}
 
-					broadcastUpdateScoreSql += ' scorePerEnd.subTotal, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scorePerEnd`, `scoreTotal` where scorePerEnd.sc_id = ' + connection.escape(data.sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(data.p_id) + ' and scorePerEnd.perEnd = ' + connection.escape(data.perEnd) + ' and scoreTotal.sc_id = ' + connection.escape(data.sc_id) + ' and scoreTotal.p_id = ' + connection.escape(data.p_id) + ';';
-
-					connection.query(broadcastUpdateScoreSql, function(err, broadcastUpdateScoreData) {
-
-						// Emit log
-						console.log('Emit : broadcastUpdateScore');
-						console.log(broadcastUpdateScoreData[0]);
-
-						socket.broadcast.emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);
-					});
+					// p_idを取得できていない = ログインができていない ∴ ログイン画面に遷移する
+					else {
+						socket.emit('authorizationError');
+					}
 				});
-			}); 
+			});
+
+			getReq.on('error', function(e) {
+				console.log(e);
+			});
+
+			getReq.end();
+
+			
 		});
 
 

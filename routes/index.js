@@ -90,6 +90,7 @@ router.post('/login', function(req, res) {
 		if(Object.keys(results).length !== 0) {
 			console.log('success to login');	
 			req.session.p_id = results[0].p_id;
+			req.session.o_id = results[0].o_id;
 			res.redirect('/matchIndex');
 		}
 		// ログイン失敗
