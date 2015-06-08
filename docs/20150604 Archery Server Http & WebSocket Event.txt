@@ -78,7 +78,7 @@ On Data Format :
 	'sponsor': string,	// 主催
 	'arrows': int,		// 射数
 	'perEnd': int,		// セット数
-	'length': int 		// 距離
+	'length': int, 		// 距離
 	'players': int		// 参加人数 (得点表の数)
 }
 

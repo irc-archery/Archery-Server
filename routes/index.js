@@ -86,11 +86,11 @@ router.post('/login', function(req, res) {
 		console.log('results of loginSql');
 		console.log(results);
 
-
-		console.log(results !== undefined);
+		console.log('results !== undefined');
+		console.log(Object.keys(results).length !== 0);
 
 		// ログイン成功
-		if(results !== undefined) {
+		if(Object.keys(results).length !== 0) {
 			console.log('success to login');	
 			req.session.p_id = results[0].p_id;
 			res.redirect('/matchIndex');
@@ -130,7 +130,7 @@ router.post('/createAccount', function(req, res) {
 });
 
 router.get('/logout', function(req, res) {
-	//req.session.destroy();
+	req.session.destroy();
 	console.log('deleted session');
 	res.redirect('/');
 });

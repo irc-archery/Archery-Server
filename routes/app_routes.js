@@ -34,8 +34,7 @@ router.post('/createAccount', function(req, res) {
 	});
 });
 
-
-// browser用のログイン処理
+// app用のログイン処理
 router.post('/login', function(req, res) {
 	console.log('post /login');
 	console.log(req.body);
@@ -51,21 +50,22 @@ router.post('/login', function(req, res) {
 		var data = {};
 
 		// ログイン成功
-		if(results != '') {
+		if(Object.keys(results).length !== 0) {
 			console.log('success to login');	
 			req.session.p_id = results[0].p_id;
 			data['result'] = true;
 			data['err'] = null;
-			res.sender('fnit');
 		}
 		// ログイン失敗
 		else {
 			console.log('faild to login');
-			res.render('/login');
 			data['result'] = false;
 			data['err'] = err;
-			res.sender('fnit');
 		}
+
+		console.log(res.headers);
+
+		res.sender(data);
 	});
 });
 

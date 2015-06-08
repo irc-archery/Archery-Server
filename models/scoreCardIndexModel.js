@@ -5,8 +5,6 @@ function scoreCardIndexModel(io, connection) {
 	io.on('connection', function(socket) {
 
 		console.log('connection scoreCardIndex');
-		console.log('handshake');
-		console.log(JSON.stringify(socket.handshake));	
 
 		//  得点表 一覧取得
 		socket.on('joinMatch', function(data) {

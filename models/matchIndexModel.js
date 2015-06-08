@@ -3,8 +3,6 @@ function matchIndexModel(io, connection) {
 	io.on('connection', function(socket) {
 
 		console.log('connection matchIndexModel');
-		console.log('handshake');
-		console.log(JSON.stringify(socket.handshake));	
 
 		// 試合一覧データの取得
 		socket.on('extractMatchIndex', function(data){
@@ -17,8 +15,6 @@ function matchIndexModel(io, connection) {
 
 			// 試合一覧のIDを抽出
 			connection.query(matchIndexIdSql, function(err, matchIndexId) {
-				console.log('matchIndexId');
-				console.log(matchIndexId);
 				if(matchIndexId != '') {
 
 					var matchIndexDataSql = 'select `match`.m_id, `match`.matchName, `match`.sponsor, `match`.created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[0].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[0].m_id);
@@ -27,7 +23,6 @@ function matchIndexModel(io, connection) {
 					for (var i = 1; i < matchIndexId.length; i++) {
 						matchIndexDataSql += ' union select `match`.m_id, `match`.matchName, `match`.sponsor, `match`.created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[i].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[i].m_id);
 					}
-
 
 					// 試合一覧のデータを抽出
 					connection.query(matchIndexDataSql, function (err, matchIndexData) {

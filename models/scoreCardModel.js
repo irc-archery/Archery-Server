@@ -5,8 +5,6 @@ function scoreCardModel(io, connection) {
 	io.on('connection', function(socket) {
 
 		console.log('connection scoreCard');
-		console.log('handshake');
-		console.log(JSON.stringify(socket.handshake));	
 
 		// 得点表の抽出
 		socket.on('extractScoreCard', function(data) {
