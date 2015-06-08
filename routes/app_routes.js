@@ -56,6 +56,7 @@ router.post('/login', function(req, res) {
 			req.session.p_id = results[0].p_id;
 			data['result'] = true;
 			data['err'] = null;
+			res.sender('fnit');
 		}
 		// ログイン失敗
 		else {
@@ -63,6 +64,7 @@ router.post('/login', function(req, res) {
 			res.render('/login');
 			data['result'] = false;
 			data['err'] = err;
+			res.sender('fnit');
 		}
 	});
 });

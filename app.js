@@ -27,11 +27,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(cookieParser());
+app.use(cookieParser('secret'));
 app.use(session({
 	name: "sessionID",
 	secret: process.env.session_sercret || 'secret',
-  	saveUninitialized: true,
+  	saveUninitialized: false,
 	cookie: {
 		httpOnly: false
     		// bellow is a recommended option. however, it requires an https-enabled website...

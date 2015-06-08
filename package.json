@@ -16,6 +16,8 @@
     "express-session": "*",
     "socket.io": "*",
     "mysql": "*",
-    "connect-couchdb": "*"
+    "connect-couchdb": "*",
+    "connect": "*",
+    "cookie": "*"
   }
 }

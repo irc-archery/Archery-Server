@@ -53,3 +53,8 @@ table {
 
 .debugArea{
 }
+
+tr:hover{
+  background: #eee;
+  cursor: pointer;
+}

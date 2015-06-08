@@ -265,34 +265,7 @@ socket.on('extractMatchIndex', function (data) {
   }
 });
 
-// On Extract ScoreCard Index
-socket.on('extractScoreCardIndex', function(data){
 
-  console.log(data);
-
-  var code = '';
-
-  code += '<tbody>';
-
-  code += '<tr><td colspan="4" style="text-align: center;">m_id : ' + $('#matchNumber').val() + '</td></tr>';
-
-  code += '<tr><th>sc_id</th><th>firstName</th><th>lastName</th><th>scoreTotal</th></tr>';
-
-  for (var i = 0; i < data.length; i++) {
-    
-    code += '<tr>';
-    code += '<td>' + data[i]['sc_id'] + '</td>';
-    code += '<td>' + data[i]['firstName'] + '</td>';
-    code += '<td>' + data[i]['lastName'] + '</td>';
-    code += '<td>' + data[i]['total'] + '</td>';
-
-    code += '</tr>';
-  }
-
-  code += '</tbody>';
-
-  $("#scoreCardIndexArea").append(code);
-});
 
 socket.on('extractScoreCard', function (data) {
 
@@ -312,13 +285,6 @@ socket.on('broadcastUpdateScore', function (data) {
   console.log(data);
 })
 
-// Emit Extract ScoreCard Index
-function extractScoreCardIndex(){
-
-  var id = $('#matchNumber').val();
-
-  socket.emit('extractScoreCardIndex', {'m_id': id});
-};
 
 function extractScoreCard () {
 

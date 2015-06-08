@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<title>Archery</title>
+	<meta content="yes" name="apple-mobile-web-app-capable">
+	<meta content=
+	"user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport">
+	<link href="/stylesheets/style.css" rel="stylesheet" type="text/css">
+	<link href="/components/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	<div id="topBar">
+        <p class="container col-sm-offset-2 col-sm-4"><a href="/createAccount">アカウント作成</a></p>
+        <p class="container col-sm-offset-2 col-sm-4"><a href="/login">ログイン</a></p>
+    </div>
+
+	<div class="container col-sm-offset-2 col-sm-8">
+		<h1><a href="/">Archery-Web-Client</a></h1>
+
+		<h2>insertMatch for emit</h2>
+		<div class="form-inline">
+			<label for="insertMatchP_id">作成者ID(p_id) : </label>
+			<input class="form-control" type="number" id="insertMatchP_id">
+		</div>
+
+		<div class="form-inline">
+			<label for="matchName">試合名(matchName) : </label>
+			<input class="form-control" type="text" id="matchName">
+		</div>
+
+		<div class="form-inline">
+			<label for="sponsor">主催(sponsor) : </label>
+			<input class="form-control" type="text" id="sponsor">
+		</div>
+
+		<div class="form-inline">
+			<label for="arrows">射数(arrows) : </label>
+			<input class="form-control" type="number" id="arrows">
+		</div>
+
+		<div class="form-inline">
+			<label for="insertMatchPerEnd">セット数(perEnd) : </label>
+			<input class="form-control" type="number" id="insertMatchPerEnd">
+		</div>
+
+		<div class="form-inline">
+			<label for="length">距離(length) : </label>
+			<input class="form-control" type="number" id="length">
+		</div>
+
+		<div class="form-inline">
+			<input class="btn btn-primary" type="button" onclick="insertMatch()" value="Emit">
+		</div>
+
+		<h2>insertMatch for on</h2>
+		<div id="insertMatchArea"></div>
+	</div>
+
+    <script src="/javascripts/jquery.min.js"></script>
+    <script src="/components/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/javascripts/insertMatch.js"></script>
+</body>
+</html>

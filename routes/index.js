@@ -2,21 +2,38 @@ var express = require('express');
 var connection = require('../models/mysql.js')();
 var router = express.Router();
 
-connection.query('show tables;', function(err, results) {
-	console.log('results');
-	console.log(results);
-	console.log('err');
-	console.log(err);
-})
+var loginCheck = function(req, res, next) {
+
+	console.log('bellow is req.session.p_id');
+	console.log(req.session.p_id);
+
+	if(req.session.p_id) {
+		console.log('success loginCheck with sessionID');
+		next();
+	}
+	else {
+		console.log('faild loginCheck with sessionID. redirect login form');
+		res.redirect('/login');
+	}
+}
 
 // ホーム
-router.get('/', function(req, res) {
+router.get('/', loginCheck, function(req, res) {
 	res.redirect('/login');
 });
 
 // ログイン画面
-router.get('/login', function(req, res) {
-    res.render('login');
+router.get('/login', function(req, res, next) {
+	console.log('bellow is req.session.p_id');
+	console.log(req.session.p_id);
+	// すでにログイン済み
+	if(req.session.p_id) {
+		console.log('already logged in ')
+		res.redirect('/matchIndex');
+	}
+	else {
+	    res.render('login');
+	}	
 });
 
 // ユーザー作成画面
@@ -25,17 +42,28 @@ router.get('/createAccount', function(req, res) {
 })
 
 // 試合一覧画面
-router.get('/matchIndex', function(req, res) {
+router.get('/matchIndex', loginCheck, function(req, res, next) {
 	res.render('matchIndex');
 });
 
-// 得点表一覧
-router.get('/scoreCardIndex', function(req, res) {
-	res.render('scoreCardIndex');
+router.get('/insertMatch', loginCheck, function(req, res, next) {
+	res.render('insertMatch');
 });
 
+// 得点表一覧
+router.get('/scoreCardIndex', loginCheck, function(req, res) {
+	console.log('req.query')
+	console.log(req.query);
+	res.render('scoreCardIndex', req.query);
+});
+
+// 得点表作成画面
+router.get('/insertScoreCard', loginCheck, function(req, res) {
+	res.render('insertScoreCard')
+})
+
 // 得点表画面
-router.get('/scoreCard', function(req, res) {
+router.get('/scoreCard', loginCheck, function(req, res) {
 	res.render('scoreCard');
 });
 

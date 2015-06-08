@@ -85,7 +85,7 @@ On Data Format :
 
 試合作成画面
 
-/insertMatchにwebsocketで接続。
+/matchIndexにwebsocketで接続。
 試合作成に必要なデータをイベント名 insertMatch でEmitする。
 試合作成が成功したら、同じイベント名でその試合に参加するためのm_idが送られてくるので、得点表一覧画面でm_idをjoinMatchでemitする。
 
@@ -139,6 +139,16 @@ On Data Format :
 	{ ... },
 	{ ... }
 ]
+
+得点表::作成による更新
+
+On Event Name : broadcastInsertScoreCard
+On Data Format : 
+{
+	'sc_id', int,		// 得点表ID
+	'playerName': string,	// 選手名
+	'scoreTotal': int 	// 得点合計
+}
 
 
 得点表作成画面

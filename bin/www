@@ -34,7 +34,6 @@ server.on('listening', onListening);
  **/
 
 var socketio = require('../models/socket.js')(server);
-//var debugio = require('../models/debugio.js')(server);
 
 /**
  * Normalize a port into a number, string, or false.
