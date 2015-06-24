@@ -5,12 +5,13 @@ function insertMatch() {
 
   var data = new Object();
 
-  data['p_id'] = $('#insertMatchP_id').val();
+  data['sessionID'] = document.cookie;
   data['matchName'] = $('#matchName').val();
   data['sponsor'] = $('#sponsor').val();
   data['arrows'] = $('#arrows').val();
   data['perEnd'] = $('#insertMatchPerEnd').val();
   data['length'] = $('#length').val();
+  data['permission'] = $('#permission').val();
 
   console.log('emit insertMatch');
   console.log(data);

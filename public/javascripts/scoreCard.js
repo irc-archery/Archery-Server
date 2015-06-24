@@ -48,7 +48,7 @@ function insertScore() {
   data['x'] = $('#x').val();
   data['total'] = $('#total').val();
 
-  console.log('emit insertScore')
+  console.log('emit insertScore');
   console.log(data);
 
   socket.emit('insertScore', data);
