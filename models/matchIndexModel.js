@@ -25,7 +25,7 @@ function matchIndexModel(io, connection) {
 
 			// options for connection couchdb
 			var options = {
-				hostname: process.env.OUCHDB_HOST || '127.0.0.1',
+				hostname: process.env.COUCHDB_HOST || '127.0.0.1',
 				port: 5984,
 				method: 'GET',
 				path: '/' + dbName + '/' + id,
@@ -127,7 +127,7 @@ function matchIndexModel(io, connection) {
 
 			// options for connection couchdb
 			var options = {
-				hostname: '127.0.0.1',
+				hostname: process.env.COUCHDB_HOST || '127.0.0.1',
 				port: 5984,
 				method: 'GET',
 				path: '/' + dbName + '/' + id,
