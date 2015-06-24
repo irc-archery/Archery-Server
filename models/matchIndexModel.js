@@ -90,6 +90,12 @@ function matchIndexModel(io, connection) {
 
 									// 試合一覧データをEmit
 									socket.emit('extractMatchIndex', matchIndexData);
+
+									// ユーザーが団体に所属していたら
+									if(o_id !== undefined) {
+										// ユーザーが追加の試合データを受け取れるようにroomにjoinさせる
+										socket.join('matchIndexRoom' + o_id);
+									}
 								});
 							}
 						});
@@ -184,8 +190,16 @@ function matchIndexModel(io, connection) {
 								console.log('broadcastInsertMatchData');
 								console.log(broadcastInsertMatchData[0]);
 
-								// namespace内の送信元以外の全員にemit
-								socket.broadcast.emit('broadcastInsertMatch', broadcastInsertMatchData[0]);
+								// 試合のパーミッションはpublic
+								if(data.permission == 0){
+									// namespace内の送信元以外の全員にemit
+									socket.broadcast.emit('broadcastInsertMatch', broadcastInsertMatchData[0]);
+								}
+								// 試合のパーミッションはlocal
+								else if(data.permission == 1) {
+									// 同じ団体の人にのみ送る
+									socket.broadcast.to('matchIndexRoom' + o_id).emit('broadcastInsertMatch', broadcastInsertMatchData[0]);
+								}
 							});
 						});
 					}

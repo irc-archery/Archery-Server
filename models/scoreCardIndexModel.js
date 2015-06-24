@@ -43,11 +43,10 @@ function scoreCardIndexModel(io, connection) {
 					console.log('p_id');
 					console.log(p_id);
 
-					// p_idが取得できている前提 (今後idが取得できなかった場合の処理)
 					if(p_id !== undefined) {
 
 						// 試合に参加
-						socket.join('matchRoom' + data.m_id);
+						socket.join('scoreCardIndexRoom' + data.m_id);
 
 						// 得点表一覧のEmit
 
@@ -145,7 +144,7 @@ function scoreCardIndexModel(io, connection) {
 								console.log('emit broadcastInsertScoreCard');
 								console.log(scoreCardData);
 
-								socket.broadcast.emit('broadcastInsertScoreCard', scoreCardData[0]);
+								socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastInsertScoreCard', scoreCardData[0]);
 							});
 						});
 					});

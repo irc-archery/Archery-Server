@@ -46,6 +46,8 @@ function scoreCardModel(io, connection) {
 					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
 					if(p_id !== undefined) {
 
+						socket.join('scoreCardRoom' + data.sc_id);
+
 						// 得点表データの抽出に使用するidを抽出するsql文
 						var scoreCardIdSql = 'select scoreCard.sc_id, scoreCard.p_id, scoreCard.m_id from `scoreCard` where scoreCard.sc_id = ' + connection.escape(data.sc_id);
 
@@ -188,7 +190,7 @@ function scoreCardModel(io, connection) {
 											console.log('Emit : broadcastInsertScoreData');
 											console.log(broadcastInsertScoreData[0]);
 
-											socket.broadcast.emit('broadcastInsertScore', broadcastInsertScoreData[0]);
+											socket.broadcast.to('scoreCardRoom' + data.sc_id).emit('broadcastInsertScore', broadcastInsertScoreData[0]);
 										});
 									});
 								}); 
@@ -317,7 +319,7 @@ function scoreCardModel(io, connection) {
 									console.log('Emit : broadcastUpdateScore');
 									console.log(broadcastUpdateScoreData[0]);
 
-									socket.broadcast.emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);
+									socket.broadcast.to('scoreCardRoom' + data.sc_id).emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);
 								});
 							});
 						}); 

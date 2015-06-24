@@ -1,5 +1,5 @@
 Archery Server HTTP & WebSocket Event
-2015 06 08 ver.2
+2015 06 24
 
 ログイン画面
 
@@ -88,6 +88,22 @@ On Data Format :
 /matchIndexにwebsocketで接続。
 試合作成に必要なデータをイベント名 insertMatch でEmitする。
 試合作成が成功したら、同じイベント名でその試合に参加するためのm_idが送られてくるので、得点表一覧画面でm_idをjoinMatchでemitする。
+また、試合作成画面を表示する前に、イベント checkOrganization でそのユーザーが団体に所属しているかどうかを確認することができる。
+falseだった場合はその人は団体に所属していないので、permissionの'所属団体のみ'を無効化し、trueの場合は、permissionの'所属団体のみ'も選ぶことができる
+
+試合::団体所属確認
+
+Emit Event Name : checkOrganization
+Emit Data Format : 
+{
+	'sessionID': string
+}
+
+On Event Name : checkOrganization
+On Data Format : 
+{
+	'belongs' : bool
+}
 
 試合::作成
 
@@ -100,6 +116,7 @@ Emit Data Format :
 	'arrows': int,		// 射数
 	'perEnd': int,		// セット数
 	'length': int 		// 距離
+	'permission' : int 	// 試合のアクセス権限(誰がその試合に参加できるか)
 }
 
 On Event Name : insertMatch
@@ -151,7 +168,7 @@ On Data Format :
 	'scoreTotal': int 	// 得点合計
 }
 
-得点表::編集モード、閲覧モードのチェック (for Android Client)
+得点表::編集モード、閲覧モードのチェック
 
 Emit Event Name : checkPermission
 Emit Data Format : 
@@ -169,8 +186,7 @@ On Data Format :
 
 得点表作成画面
 
-/scoreCardIndex or /insertScoreCardにwebsocketで接続。
-(得点表一覧画面で新たな得点表を作成する場合は前者、ページを移動してから得点表を作成する場合は後者。)
+/scoreCardIndexにwebsocketで接続。
 得点表を作成したい選手のsessionID、もしくは、emailとpasswordを送信する。
 成功したら、同じイベント名でその得点表のIDが送信されてくる。
 
@@ -215,7 +231,7 @@ On Data Format :
 	'sc_id': int,			// 得点表ID
 	'playerName': string,	// 選手名
 	'length': int,			// 距離
-	'countPerEnd': int, 	// 現在のセット (テーブルに格納されているカラムの数e
+	'countPerEnd': int, 	// 現在のセット (テーブルに格納されているカラムの数)
 	'ten': int,				// 10数
 	'x': int, 				// X数
 	'sum': int,				// 合計
