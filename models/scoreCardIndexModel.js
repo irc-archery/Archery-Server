@@ -161,8 +161,6 @@ function scoreCardIndexModel(io, connection) {
 			console.log('on insertOwnScoreCard');
 			console.log(data);
 
-
-
 			/* Get p_id related SessionID */
 
 			var addPrefix = require('./addPrefix');
@@ -200,49 +198,55 @@ function scoreCardIndexModel(io, connection) {
 
 					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
 					if(p_id !== undefined) {
+						// ユーザーデータの抽出
+						var accountSql = 'select * from account where p_id = ' + p_id;
+						console.log('accountSql');
+						console.log(accountSql);
 
-						// 試合データを挿入するためのSQL文
-						var insertMatchSql = 'insert into `match`(p_id, o_id, matchName, sponsor, created, arrows, perEnd, length, permission) values(' + connection.escape(p_id) + ', ' + connection.escape(o_id) + ', ' + connection.escape(data.matchName) + ', ' + connection.escape(data.sponsor) + ', now(), ' + connection.escape(data.arrows) + ', ' + connection.escape(data.perEnd) + ', ' + connection.escape(data.length) + ', ' + connection.escape(data.permission) + ');';
+						connection.query(accountSql, function(err, results) {
+							console.log('results of loginSql');
+							console.log(results);
 
-						console.log(insertMatchSql);
-						
-						// 試合データを挿入
-						connection.query(insertMatchSql, function(err, insertMatchResults) {
+							// データが正常に抽出完了
+							if(results !== undefined) {
+								console.log('success to login');	
 
-							// output results 
-							console.log('connection.query insertMatch results');
-							console.log(insertMatchResults);
+								// 得点表作成
+								var insertScoreCardSql = 'insert into scoreCard(p_id, m_id, created, place) values(' + connection.escape(results[0].p_id) + ', ' + connection.escape(data.m_id) + ', now(), "ふにっと競技場")';
 
-							// output err
-							console.log('connection.query insertMatch err');
-							console.log(err);
+								connection.query(insertScoreCardSql, function (err, insertScoreCardData) {
+									console.log('insertScoreCard results');
+									console.log(insertScoreCardData);
 
-							// 作成された試合のm_idをemit
-							console.log('emit insertMatch');
-							console.log(insertMatchResults.insertId);
+									// 得点表データに対応するscoreTotalのrecordをinsertする
+									var insertScoreTotalSql = 'insert into scoreTotal(sc_id, p_id, o_id) values(' + insertScoreCardData.insertId + ', ' + connection.escape(results[0].p_id) + ', ' + connection.escape(data.m_id) + ');';
 
-							socket.emit('insertMatch', {'m_id': insertMatchResults.insertId});
+									connection.query(insertScoreTotalSql, function(err, insertScoreTotalData) {
 
-							// 作成された試合データをbroadcast.emit
-							var broadcastInsertMatchSql  = 'select `match`.m_id, `match`.matchName, `match`.sponsor, `match`.created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + insertMatchResults.insertId  + ' and `scoreCard`.m_id = ' + insertMatchResults.insertId;
+										// 得点表のIDをemitする
+										console.log('emit insertScoreCard');
+										socket.emit('insertScoreCard', {'sc_id': insertScoreCardData.insertId});
 
-							connection.query(broadcastInsertMatchSql , function(err, broadcastInsertMatchData) {
+										// broadcast scoreCard information: added now
 
-								// Emit log
-								console.log('broadcastInsertMatchData');
-								console.log(broadcastInsertMatchData[0]);
+										// 得点表データを抽出するためのSQL文 
+										var scoreCardDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
 
-								// 試合のパーミッションはpublic
-								if(data.permission == 0){
-									// namespace内の送信元以外の全員にemit
-									socket.broadcast.emit('broadcastInsertMatch', broadcastInsertMatchData[0]);
-								}
-								// 試合のパーミッションはlocal
-								else if(data.permission == 1) {
-									// 同じ団体の人にのみ送る
-									socket.broadcast.to('matchIndexRoom' + o_id).emit('broadcastInsertMatch', broadcastInsertMatchData[0]);
-								}
-							});
+										// 得点表データを抽出
+										connection.query(scoreCardDataSql, function(err, scoreCardData) {
+
+											console.log('emit broadcastInsertScoreCard');
+											console.log(scoreCardData);
+
+											socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastInsertScoreCard', scoreCardData[0]);
+										});
+									});
+								});
+							}
+							// ログイン失敗
+							else {
+								console.log('faild to login');
+							}
 						});
 					}
 
@@ -258,58 +262,6 @@ function scoreCardIndexModel(io, connection) {
 			});
 
 			getReq.end();
-
-
-
-
-
-
-
-			connection.query(loginSql, function(err, results) {
-				console.log('results of loginSql');
-				console.log(results);
-
-				// ログイン成功
-				if(results !== undefined) {
-					console.log('success to login');	
-
-					// 得点表作成
-					var insertScoreCardSql = 'insert into scoreCard(p_id, m_id, created, place) values(' + connection.escape(results[0].p_id) + ', ' + connection.escape(data.m_id) + ', now(), "ふにっと競技場")';
-
-					connection.query(insertScoreCardSql, function (err, insertScoreCardData) {
-						console.log('insertScoreCard results');
-						console.log(insertScoreCardData);
-
-						// 得点表データに対応するscoreTotalのrecordをinsertする
-						var insertScoreTotalSql = 'insert into scoreTotal(sc_id, p_id, o_id) values(' + insertScoreCardData.insertId + ', ' + connection.escape(results[0].p_id) + ', ' + connection.escape(data.m_id) + ');';
-
-						connection.query(insertScoreTotalSql, function(err, insertScoreTotalData) {
-
-							// 得点表のIDをemitする
-							console.log('emit insertScoreCard');
-							socket.emit('insertScoreCard', {'sc_id': insertScoreCardData.insertId});
-
-							// broadcast scoreCard information: added now
-
-							// 得点表データを抽出するためのSQL文 
-							var scoreCardDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
-
-							// 得点表データを抽出
-							connection.query(scoreCardDataSql, function(err, scoreCardData) {
-
-								console.log('emit broadcastInsertScoreCard');
-								console.log(scoreCardData);
-
-								socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastInsertScoreCard', scoreCardData[0]);
-							});
-						});
-					});
-				}
-				// ログイン失敗
-				else {
-					console.log('faild to login');
-				}
-			});
 		});
 
 		// 受け取ったsc_idのpermissionを返すイベント
