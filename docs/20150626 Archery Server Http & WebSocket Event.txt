@@ -200,6 +200,22 @@ On Data Format :
 得点表を作成したい選手のsessionID、もしくは、emailとpasswordを送信する。
 成功したら、同じイベント名でその得点表のIDが送信されてくる。
 
+
+現在ログインしているユーザーの得点表作成
+
+Emit Event Name : insertOwnScoreCard
+Emit Data Format : 
+{ 
+	'sessionID': string,
+	'm_id': int,		// どの試合で得点表を作成したのか, その試合のID
+}
+
+On Event Name : insertOwnScoreCard
+On Data Format : 
+{
+	'sc_id': int
+}
+
 得点表作成
 
 Emit Event Name : insertScoreCard
