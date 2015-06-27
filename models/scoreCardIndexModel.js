@@ -195,12 +195,15 @@ function scoreCardIndexModel(io, connection) {
 					if(p_id !== undefined) {
 
 						// idを抽出するsql文
-						var scoreCardIdSql = 'select scorecard.p_id from `scorecard` where scorecard.sc_id = ' + connection.escape(data.sc_id);
+						var scoreCardIdSql = 'select scoreCard.p_id from `scoreCard` where scoreCard.sc_id = ' + connection.escape(data.sc_id);
 
 						// idを抽出
 						connection.query(scoreCardIdSql, function (err, scoreCardIdData) {
 
 							var emitData = {'permission' : scoreCardIdData[0].p_id === p_id ? true : false};
+
+							console.log('checkPermission');
+							console.log(emitData);
 
 							socket.emit('checkPermission', emitData);
 						});
@@ -211,6 +214,12 @@ function scoreCardIndexModel(io, connection) {
 					}
 				});
 			});
+
+			getReq.on('error', function(e) {
+				console.log(e);
+			});
+
+			getReq.end();
 		});
 	});
 };

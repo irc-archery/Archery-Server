@@ -71,11 +71,11 @@ function matchIndexModel(io, connection) {
 						connection.query(matchIndexIdSql, function(err, matchIndexId) {
 							if(matchIndexId != '') {
 
-								var matchIndexDataSql = 'select `match`.m_id, `match`.matchName, `match`.sponsor, `match`.created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[0].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[0].m_id);
+								var matchIndexDataSql = 'select `match`.m_id, `match`.matchName, `match`.sponsor, DATE_FORMAT(`match`.created, "%Y/%m/%d %H:%i:%S") as created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[0].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[0].m_id);
 
 								// 試合の数に応じてselect文を追加
 								for (var i = 1; i < matchIndexId.length; i++) {
-									matchIndexDataSql += ' union select `match`.m_id, `match`.matchName, `match`.sponsor, `match`.created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[i].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[i].m_id);
+									matchIndexDataSql += ' union select `match`.m_id, `match`.matchName, `match`.sponsor, DATE_FORMAT(`match`.created, "%Y/%m/%d %H:%i:%S") as created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[i].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[i].m_id);
 								}
 
 								console.log('matchIndexDataSql');
@@ -217,6 +217,74 @@ function matchIndexModel(io, connection) {
 
 			getReq.end();
 		});
+
+		// 受け取ったsc_idのpermissionを返すイベント
+		socket.on('checkOrganization', function(data) {
+
+			// On log
+			console.log('on checkPermission');
+			console.log(data);
+
+			/* Get p_id related SessionID */
+
+			var addPrefix = require('./addPrefix');
+
+			var id = addPrefix(data.sessionID);
+
+			var dbName = process.env.COUCHDB_NAME || 'archery-server-sessions';
+
+			// options for connection couchdb
+			var options = {
+				hostname: process.env.COUCHDB_HOST || '127.0.0.1',
+				port: 5984,
+				method: 'GET',
+				path: '/' + dbName + '/' + id,
+				headers: {'Accept': 'application/json'}
+			};
+
+			// CouchDBよりSessionに紐付けられたp_idを取得する
+			var getReq = http.request(options, function(response) {
+				response.setEncoding('utf8');
+				response.on('data', function(chunk) {
+
+					// p_idの抽出
+					var p_id = JSON.parse(chunk).sess.p_id;
+
+					console.log('p_id');
+					console.log(p_id);
+
+					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
+					if(p_id !== undefined) {
+
+						// ユーザーのo_idを抽出
+						var checkOrganizationSql = "select o_id from account where p_id = " + connection.escape(p_id);
+
+						// idを抽出
+						connection.query(checkOrganizationSql, function (err, checkOrganizationData) {
+
+							var emitData = {'belongs' : checkOrganizationData[0].o_id != NULL ? true : false};
+
+							console.log('checkOrganization');
+							console.log(emitData);
+
+							socket.emit('checkOrganization', emitData);
+						});
+					}
+					// p_idを取得できていない = ログインができていない ∴ ログイン画面に遷移する
+					else {
+						socket.emit('authorizationError');
+					}
+				});
+			});
+
+			getReq.on('error', function(e) {
+				console.log(e);
+			});
+
+			getReq.end();
+		});
+
+		
 	});
 };
 

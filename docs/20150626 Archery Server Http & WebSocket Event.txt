@@ -1,5 +1,5 @@
 Archery Server HTTP & WebSocket Event
-2015 06 24
+2015 06 26
 
 ログイン画面
 
@@ -46,6 +46,16 @@ Data Format :
 試合一覧データを取得するイベント  extractMatchIndexでsessionIDを送信すると、そのユーザーが参加できる試合一覧のデータが同じイベント名で返ってくる。
 また、接続中に試合が作成された場合は、 broadcastInsertMatchのイベント名でデータを受け取る。
 試合に参加したい場合は次のページ(アクティビティ)の /scoreCardIndex で イベント joinMatch をsessionIDとその試合のID(m_id)とともにEmitすることでその試合に参加したことになり得点表一覧データが送られてくる。
+
+length
+0 : 90m
+1 : 70m
+2 : 60m
+3 : 50m
+4 : 40m
+5 : 30m
+6 : 70m前
+7 : 70m後
 
 試合::一覧取得
 
