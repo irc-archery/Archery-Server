@@ -222,7 +222,7 @@ function matchIndexModel(io, connection) {
 		socket.on('checkOrganization', function(data) {
 
 			// On log
-			console.log('on checkPermission');
+			console.log('on checkOrganization');
 			console.log(data);
 
 			/* Get p_id related SessionID */
@@ -262,9 +262,12 @@ function matchIndexModel(io, connection) {
 						// idを抽出
 						connection.query(checkOrganizationSql, function (err, checkOrganizationData) {
 
-							var emitData = {'belongs' : checkOrganizationData[0].o_id != NULL ? true : false};
+							console.log('checkOrganizationData');
+							console.log(checkOrganizationData);
 
-							console.log('checkOrganization');
+							var emitData = {'belongs' : checkOrganizationData[0].o_id != null ? true : false};
+
+							console.log('emit checkOrganization');
 							console.log(emitData);
 
 							socket.emit('checkOrganization', emitData);
