@@ -1,4 +1,4 @@
-var socket = io('/scoreCard');
+var socket = io('/scoreCard/' + getQueryString().sc_id);
 
 // 得点表データの要求 & Sessionによるユーザー認証
 socket.emit('extractScoreCard', {'sessionID': document.cookie, 'sc_id': getQueryString().sc_id});

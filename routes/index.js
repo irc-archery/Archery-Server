@@ -14,7 +14,56 @@ var loginCheck = function(req, res, next) {
 		console.log('faild loginCheck with sessionID. redirect login form');
 		res.redirect('/login');
 	}
-}
+};
+
+var mIdCheck = function(req, res, next) {
+
+	//req.session.p_idのユーザーがreq.query.m_idに参加できるかどうかチェック
+	// 参加できれば、ren.render, できなければ res.redirect /matchIndex
+
+	// ユーザーが参加しようとしている試合id
+	var m_id = req.query.m_id;
+	console.log('m_id');
+	console.log(m_id);
+
+	// m_idのオプションが存在しないGET
+	if(m_id == undefined) {
+		// 不正なGETなのでリダイレクト
+		res.redirect('/matchIndex');
+	}
+	else {
+		// ユーザーが所属している団体のo_id
+		var o_id = req.session.o_id;
+
+		// この試合にユーザーが参加できるかどうか確かめるためのSQL文
+		var matchIndexIdSql = '';
+
+		// ユーザが団体に所属している
+		if(o_id !== undefined) {
+			matchIndexIdSql = 'select m_id from `match` where (m_id = ' + m_id + ') and ( (`match`.permission = 0) or (`match`.permission = 1 and `match`.o_id = '+ o_id + ') )';
+		}
+
+		// 団体に所属していない
+		else {
+			matchIndexIdSql = 'select m_id from `match` where (`match`.m_id = ' + m_id + ') and (`match`.permission = 0)';
+		}
+
+		// データを抽出
+		connection.query(matchIndexIdSql, function(err, matchIndexId) {
+
+			// データが存在する ∴ そのユーザーは試合に参加できる
+			if(matchIndexId != '') {
+				// レンダリング
+				next();
+			}
+			// データが存在しない ∴ そのユーザーは試合に参加できない
+			else {
+				// 試合一覧にリダイレクトする
+				res.redirect('/matchIndex');
+			}
+		});
+	}
+};
 
 // ホーム
 router.get('/', loginCheck, function(req, res) {
@@ -38,31 +87,30 @@ router.get('/login', function(req, res, next) {
 // ユーザー作成画面
 router.get('/createAccount', function(req, res) {
 	res.render('createAccount');
-})
+});
 
 // 試合一覧画面
 router.get('/matchIndex', loginCheck, function(req, res, next) {
 	res.render('matchIndex');
 });
 
+// 試合作成画面
 router.get('/insertMatch', loginCheck, function(req, res, next) {
 	res.render('insertMatch');
 });
 
 // 得点表一覧
-router.get('/scoreCardIndex', loginCheck, function(req, res) {
-	console.log('req.query')
-	console.log(req.query);
+router.get('/scoreCardIndex', loginCheck, mIdCheck, function(req, res) {
 	res.render('scoreCardIndex', req.query);
 });
 
 // 得点表作成画面
-router.get('/insertScoreCard', loginCheck, function(req, res) {
-	res.render('insertScoreCard')
-})
+router.get('/insertScoreCard', loginCheck, mIdCheck, function(req, res) {
+	res.render('insertScoreCard');
+});
 
 // 得点表画面
-router.get('/scoreCard', loginCheck, function(req, res) {
+router.get('/scoreCard', loginCheck, mIdCheck, function(req, res) {
 	res.render('scoreCard');
 });
 
@@ -70,7 +118,7 @@ router.get('/scoreCard', loginCheck, function(req, res) {
 router.get('/socket', function(req, res) {
 	console.log(req.session);
 	res.render('socket');
-})
+});
 
 // browser用のログイン処理
 router.post('/login', function(req, res) {
