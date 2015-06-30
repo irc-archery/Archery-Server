@@ -106,8 +106,6 @@ function scoreCardIndexModel(io, connection) {
 
 			// ログイン処理
 			var loginSql = 'select * from account where email = ' + connection.escape(data.email) + ' and password = ' + connection.escape(data.password) + ';';
-			console.log('loginSql');
-			console.log(loginSql);
 
 			connection.query(loginSql, function(err, results) {
 				console.log('results of loginSql');
@@ -120,18 +118,10 @@ function scoreCardIndexModel(io, connection) {
 					// 得点表作成
 					var insertScoreCardSql = 'insert into scoreCard(p_id, m_id, created, place) values(' + connection.escape(results[0].p_id) + ', ' + connection.escape(data.m_id) + ', now(), "ふにっと競技場")';
 
-					console.log('insertScoreCardSql');
- 					console.log(insertScoreCardSql);
-
 					connection.query(insertScoreCardSql, function (err, insertScoreCardData) {
-						console.log('insertScoreCard results');
-						console.log(insertScoreCardData);
 
 						// 得点表データに対応するscoreTotalのrecordをinsertする
 						var insertScoreTotalSql = 'insert into scoreTotal(sc_id, p_id, o_id) values(' + insertScoreCardData.insertId + ', ' + connection.escape(results[0].p_id) + ', ' + connection.escape(results[0].o_id) + ');';
-
-						console.log('insertScoreTotalSql');
-						console.log(insertScoreTotalSql);
 
 						connection.query(insertScoreTotalSql, function(err, insertScoreTotalData) {
 							// 得点表のIDをemitする
@@ -142,9 +132,6 @@ function scoreCardIndexModel(io, connection) {
 
 							// 得点表データを抽出するためのSQL文 
 							var scoreCardDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
-
-							console.log('scoreCardDataSql');
-							console.log(scoreCardDataSql);
 
 							// 得点表データを抽出
 							connection.query(scoreCardDataSql, function(err, scoreCardData) {
