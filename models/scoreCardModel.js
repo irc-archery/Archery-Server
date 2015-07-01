@@ -1,6 +1,7 @@
 var http = require('http');
+var addPrefix = require('./addPrefix');
 
-function scoreCardModel(io, connection) {
+function scoreCardModel(io, connection, sessions) {
 
 	io.on('connection', function(socket) {
 
@@ -14,34 +15,13 @@ function scoreCardModel(io, connection) {
 			console.log(data);
 
 			/* Get p_id related SessionID */
+			sessions.get(addPrefix(data.sessionID), function(err, body) {
+				if(!err) {
+					console.log('nano');
+					console.log(body);	
 
-			var addPrefix = require('./addPrefix');
-
-			var id = addPrefix(data.sessionID);
-			console.log('id');
-			console.log(id);
-
-			var dbName = process.env.COUCHDB_NAME || 'archery-server-sessions';
-
-			// options for connection couchdb
-			var options = {
-				hostname: process.env.COUCHDB_HOST || '127.0.0.1',
-				port: 5984,
-				method: 'GET',
-				path: '/' + dbName + '/' + id,
-				headers: {'Accept': 'application/json'}
-			};
-
-			// CouchDBよりSessionに紐付けられたp_idを取得する
-			var getReq = http.request(options, function(response) {
-				response.setEncoding('utf8');
-				response.on('data', function(chunk) {
-
-					// p_idの抽出
-					var p_id = JSON.parse(chunk).sess.p_id;
-
-					console.log('p_id');
-					console.log(p_id);
+					var p_id = body.sess.p_id;
+					var o_id = body.sess.o_id;
 
 					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
 					if(p_id !== undefined) {
@@ -118,14 +98,8 @@ function scoreCardModel(io, connection) {
 					else {
 						socket.emit('authorizationError');
 					}
-				});
+				}
 			});
-
-			getReq.on('error', function(e) {
-				console.log(e);
-			});
-
-			getReq.end();
 		});
 
 		// 得点表記入
@@ -136,36 +110,13 @@ function scoreCardModel(io, connection) {
 			console.log(data);
 
 			/* Get p_id related SessionID */
+			sessions.get(addPrefix(data.sessionID), function(err, body) {
+				if(!err) {
+					console.log('nano');
+					console.log(body);	
 
-			var addPrefix = require('./addPrefix');
-
-			var id = addPrefix(data.sessionID);
-			console.log('id');
-			console.log(id);
-
-			var dbName = process.env.COUCHDB_NAME || 'archery-server-sessions';
-
-			// options for connection couchdb
-			var options = {
-				hostname: process.env.COUCHDB_HOST || '127.0.0.1',
-				port: 5984,
-				method: 'GET',
-				path: '/' + dbName + '/' + id,
-				headers: {'Accept': 'application/json'}
-			};
-
-			// CouchDBよりSessionに紐付けられたp_idを取得する
-			var getReq = http.request(options, function(response) {
-
-				response.setEncoding('utf8');
-				response.on('data', function(chunk) {
-
-					// p_idの抽出
-					var p_id = JSON.parse(chunk).sess.p_id;
-					var o_id = JSON.parse(chunk).sess.o_id;
-
-					console.log('p_id');
-					console.log(p_id);
+					var p_id = body.sess.p_id;
+					var o_id = body.sess.o_id;
 
 					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
 					if(p_id !== undefined) {
@@ -232,7 +183,7 @@ function scoreCardModel(io, connection) {
 					else {
 						socket.emit('authorizationError');
 					}
-				});
+				}
 			});
 
 			getReq.on('error', function(e) {
@@ -250,36 +201,13 @@ function scoreCardModel(io, connection) {
 			console.log(data);
 
 			/* Get p_id related SessionID */
+			sessions.get(addPrefix(data.sessionID), function(err, body) {
+				if(!err) {
+					console.log('nano');
+					console.log(body);	
 
-			var addPrefix = require('./addPrefix');
-
-			var id = addPrefix(data.sessionID);
-			console.log('id');
-			console.log(id);
-
-			var dbName = process.env.COUCHDB_NAME || 'archery-server-sessions';
-
-			// options for connection couchdb
-			var options = {
-				hostname: process.env.COUCHDB_HOST || '127.0.0.1',
-				port: 5984,
-				method: 'GET',
-				path: '/' + dbName + '/' + id,
-				headers: {'Accept': 'application/json'}
-			};
-
-			// CouchDBよりSessionに紐付けられたp_idを取得する
-			var getReq = http.request(options, function(response) {
-
-				response.setEncoding('utf8');
-				response.on('data', function(chunk) {
-
-					// p_idの抽出
-					var p_id = JSON.parse(chunk).sess.p_id;
-					var o_id = JSON.parse(chunk).sess.o_id;
-
-					console.log('p_id');
-					console.log(p_id);
+					var p_id = body.sess.p_id;
+					var o_id = body.sess.o_id;
 
 					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
 					if(p_id !== undefined) {
@@ -298,12 +226,6 @@ function scoreCardModel(io, connection) {
 
 						// 得点合計を更新するためのSQL文
 						var updateScoreTotalSql = 'update `scoreTotal` set ten = ' + connection.escape(data.ten) + ', x = ' + connection.escape(data.x) + ', total = ' + connection.escape(data.total) + ' where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(p_id);
-
-						console.log('updateScoreSql');
-						console.log(updateScoreSql);
-
-						console.log('updateScoreTotalSql');
-						console.log(updateScoreTotalSql);
 
 						// 得点の更新処理
 						connection.query(updateScoreSql, function (err, updateScoreData) {
@@ -356,14 +278,8 @@ function scoreCardModel(io, connection) {
 					else {
 						socket.emit('authorizationError');
 					}
-				});
+				}
 			});
-
-			getReq.on('error', function(e) {
-				console.log(e);
-			});
-
-			getReq.end();
 		});
 	});
 };

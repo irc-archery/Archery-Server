@@ -18,6 +18,7 @@
     "mysql": "*",
     "connect-couchdb": "*",
     "connect": "*",
-    "cookie": "*"
+    "cookie": "*",
+    "nano": "*"
   }
 }

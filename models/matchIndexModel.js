@@ -1,6 +1,7 @@
 var http = require('http');
+var addPrefix = require('./addPrefix');
 
-function matchIndexModel(io, connection) {
+function matchIndexModel(io, connection, sessions) {
 
 	io.on('connection', function(socket) {
 
@@ -14,39 +15,13 @@ function matchIndexModel(io, connection) {
 			console.log(data);
 
 			/* Get p_id related SessionID */
+			sessions.get(addPrefix(data.sessionID), function(err, body) {
+				if(!err) {
+					console.log('nano');
+					console.log(body);	
 
-			var addPrefix = require('./addPrefix');
-
-			var id = addPrefix(data.sessionID);
-			console.log('id');
-			console.log(id);
-
-			var dbName = process.env.COUCHDB_NAME || 'archery-server-sessions';
-
-			// options for connection couchdb
-			var options = {
-				hostname: process.env.COUCHDB_HOST || '127.0.0.1',
-				port: 5984,
-				method: 'GET',
-				path: '/' + dbName + '/' + id,
-				headers: {'Accept': 'application/json'}
-			};
-
-			// CouchDBよりSessionに紐付けられたp_idを取得する
-			var getReq = http.request(options, function(response) {
-				response.setEncoding('utf8');
-				response.on('data', function(chunk) {
-
-					// p_idの抽出
-					var p_id = JSON.parse(chunk).sess.p_id;
-					// o_idの抽出
-					var o_id = JSON.parse(chunk).sess.o_id;
-
-					console.log('p_id');
-					console.log(p_id);
-
-					console.log('o_id');
-					console.log(o_id);
+					var p_id = body.sess.p_id;
+					var o_id = body.sess.o_id;
 
 					// ユーザーはすでにログイン済み
 					if(p_id !== undefined) {
@@ -64,9 +39,6 @@ function matchIndexModel(io, connection) {
 							matchIndexIdSql = 'select m_id from `match` where `match`.permission = 0';
 						}
 
-						console.log('matchIndexIdSql');
-						console.log(matchIndexIdSql);
-
 						// 試合一覧のIDを抽出
 						connection.query(matchIndexIdSql, function(err, matchIndexId) {
 							if(matchIndexId != '') {
@@ -77,9 +49,6 @@ function matchIndexModel(io, connection) {
 								for (var i = 1; i < matchIndexId.length; i++) {
 									matchIndexDataSql += ' union select `match`.m_id, `match`.matchName, `match`.sponsor, DATE_FORMAT(`match`.created, "%Y/%m/%d %H:%i:%S") as created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[i].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[i].m_id);
 								}
-
-								console.log('matchIndexDataSql');
-								console.log(matchIndexDataSql);
 
 								// 試合一覧のデータを抽出
 								connection.query(matchIndexDataSql, function (err, matchIndexData) {
@@ -103,15 +72,9 @@ function matchIndexModel(io, connection) {
 					// ログインしていないユーザーからのアクセス
 					else{
 						socket.emit('authorizationError');
-					}
-				});
+					}	
+				}
 			});
-
-			getReq.on('error', function(e) {
-				console.log(e);
-			});
-
-			getReq.end();
 		});
 
 		// 試合 作成
@@ -122,39 +85,13 @@ function matchIndexModel(io, connection) {
 			console.log(data);
 
 			/* Get p_id related SessionID */
+			sessions.get(addPrefix(data.sessionID), function(err, body) {
+				if(!err) {
+					console.log('nano');
+					console.log(body);	
 
-			var addPrefix = require('./addPrefix');
-
-			var id = addPrefix(data.sessionID);
-			console.log('id');
-			console.log(id);
-
-			var dbName = process.env.COUCHDB_NAME || 'archery-server-sessions';
-
-			// options for connection couchdb
-			var options = {
-				hostname: process.env.COUCHDB_HOST || '127.0.0.1',
-				port: 5984,
-				method: 'GET',
-				path: '/' + dbName + '/' + id,
-				headers: {'Accept': 'application/json'}
-			};
-
-			// CouchDBよりSessionに紐付けられたp_idを取得する
-			var getReq = http.request(options, function(response) {
-
-				response.setEncoding('utf8');
-				response.on('data', function(chunk) {
-
-					// p_idの抽出
-					var p_id = JSON.parse(chunk).sess.p_id;
-					var o_id = JSON.parse(chunk).sess.o_id;
-
-					console.log('p_id');
-					console.log(p_id);
-
-					console.log('o_id');
-					console.log(o_id);
+					var p_id = body.sess.p_id;
+					var o_id = body.sess.o_id;
 
 					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
 					if(p_id !== undefined) {
@@ -162,8 +99,6 @@ function matchIndexModel(io, connection) {
 						// 試合データを挿入するためのSQL文
 						var insertMatchSql = 'insert into `match`(p_id, o_id, matchName, sponsor, created, arrows, perEnd, length, permission) values(' + connection.escape(p_id) + ', ' + connection.escape(o_id) + ', ' + connection.escape(data.matchName) + ', ' + connection.escape(data.sponsor) + ', now(), ' + connection.escape(data.arrows) + ', ' + connection.escape(data.perEnd) + ', ' + connection.escape(data.length) + ', ' + connection.escape(data.permission) + ');';
 
-						console.log(insertMatchSql);
-						
 						// 試合データを挿入
 						connection.query(insertMatchSql, function(err, insertMatchResults) {
 
@@ -208,14 +143,8 @@ function matchIndexModel(io, connection) {
 					else {
 						socket.emit('authorizationError');
 					}
-				});
+				}
 			});
-
-			getReq.on('error', function(e) {
-				console.log(e);
-			});
-
-			getReq.end();
 		});
 
 		// 受け取ったsc_idのpermissionを返すイベント
@@ -226,32 +155,13 @@ function matchIndexModel(io, connection) {
 			console.log(data);
 
 			/* Get p_id related SessionID */
+			sessions.get(addPrefix(data.sessionID), function(err, body) {
+				if(!err) {
+					console.log('nano');
+					console.log(body);	
 
-			var addPrefix = require('./addPrefix');
-
-			var id = addPrefix(data.sessionID);
-
-			var dbName = process.env.COUCHDB_NAME || 'archery-server-sessions';
-
-			// options for connection couchdb
-			var options = {
-				hostname: process.env.COUCHDB_HOST || '127.0.0.1',
-				port: 5984,
-				method: 'GET',
-				path: '/' + dbName + '/' + id,
-				headers: {'Accept': 'application/json'}
-			};
-
-			// CouchDBよりSessionに紐付けられたp_idを取得する
-			var getReq = http.request(options, function(response) {
-				response.setEncoding('utf8');
-				response.on('data', function(chunk) {
-
-					// p_idの抽出
-					var p_id = JSON.parse(chunk).sess.p_id;
-
-					console.log('p_id');
-					console.log(p_id);
+					var p_id = body.sess.p_id;
+					var o_id = body.sess.o_id;
 
 					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
 					if(p_id !== undefined) {
@@ -277,17 +187,9 @@ function matchIndexModel(io, connection) {
 					else {
 						socket.emit('authorizationError');
 					}
-				});
+				}
 			});
-
-			getReq.on('error', function(e) {
-				console.log(e);
-			});
-
-			getReq.end();
 		});
-
-		
 	});
 };
 

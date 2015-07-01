@@ -35,7 +35,7 @@ Data Format :
 	'rubyLastName':	string,	// ふりがな - 姓
 	'email':		string,	// ログイン用のEmail
 	'password':		string,	// ログイン用のpassword (パスワードの再入力は各クライアント毎に実装する)
-	'birth':		date,	// 生年月日 format : 1997-08-06
+	'birth':		string,	// 生年月日 format : 1997-08-06
 	'sex':			int 	// 男性 : 0, 女性 : 1, その他 : 8, 未設定 : 9
 }
 
