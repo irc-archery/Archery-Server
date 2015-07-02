@@ -185,12 +185,6 @@ function scoreCardModel(io, connection, sessions) {
 					}
 				}
 			});
-
-			getReq.on('error', function(e) {
-				console.log(e);
-			});
-
-			getReq.end();
 		});
 	
 		// 得点表修正
@@ -273,7 +267,6 @@ function scoreCardModel(io, connection, sessions) {
 							});
 						}); 
 					}
-
 					// p_idを取得できていない = ログインができていない ∴ ログイン画面に遷移する
 					else {
 						socket.emit('authorizationError');

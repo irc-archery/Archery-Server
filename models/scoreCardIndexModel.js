@@ -192,7 +192,6 @@ function scoreCardIndexModel(io, connection, sessions) {
 							}
 						});
 					}
-
 					// p_idを取得できていない = ログインができていない ∴ ログイン画面に遷移する
 					else {
 						socket.emit('authorizationError');
