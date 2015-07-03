@@ -40,15 +40,20 @@ function scoreCardIndexModel(io, connection, sessions) {
 							if(Object.keys(scoreCardIndexId).length !== 0) {
 
 								// 得点表データを抽出するためのSQL文
-								var scoreCardIndexDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName , scoreTotal.total from account, scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIndexId[0].sc_id) + ' and account.p_id = ' + connection.escape(scoreCardIndexId[0].p_id);
+								var scoreCardIndexDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName , scoreTotal.total, (select count(scorePerEnd.perEnd) from scorePerEnd where scorePerEnd.sc_id = ' + connection.escape(scoreCardIndexId[0].sc_id) + ') as perEnd from account, scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIndexId[0].sc_id) + ' and account.p_id = ' + connection.escape(scoreCardIndexId[0].p_id);
 
 								// 得点表の数に応じてselectするSQL文を追加
 								for(var i = 1; i < scoreCardIndexId.length; i++){
-									scoreCardIndexDataSql += ' union select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total from account, scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIndexId[i].sc_id) + ' and account.p_id = ' + connection.escape(scoreCardIndexId[i].p_id);
+									scoreCardIndexDataSql += ' union all select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName , scoreTotal.total, (select count(scorePerEnd.perEnd) from scorePerEnd where scorePerEnd.sc_id = ' + connection.escape(scoreCardIndexId[i].sc_id) + ') as perEnd from account, scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIndexId[i].sc_id) + ' and account.p_id = ' + connection.escape(scoreCardIndexId[i].p_id);
 								}
+
+								console.log('scoreCardIndexDataSql');
+								console.log(scoreCardIndexDataSql);
 
 								// 構築した得点表データ抽出のSQL文でデータ抽出
 								connection.query(scoreCardIndexDataSql, function(err, scoreCardIndexData){
+									console.log('scoreCardIndexData');
+									console.log(scoreCardIndexData);
 
 									// Emit log
 									console.log('emit : extractScoreCardIndex');
@@ -61,7 +66,6 @@ function scoreCardIndexModel(io, connection, sessions) {
 
 							// 得点表は存在しない
 							else {
-
 
 							}
 						});

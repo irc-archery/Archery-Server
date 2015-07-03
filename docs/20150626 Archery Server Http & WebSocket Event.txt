@@ -175,6 +175,7 @@ On Data Format :
 {
 	'sc_id', int,		// 得点表ID
 	'playerName': string,	// 選手名
+	'perEnd': int,		// 現在のセット数
 	'scoreTotal': int 	// 得点合計
 }
 
