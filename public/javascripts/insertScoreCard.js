@@ -21,3 +21,12 @@ socket.on('insertScoreCard', function(data) {
   console.log(data);
   $('#insertScoreCardArea').append('<p>{ sc_id: ' + data.sc_id + ' }</p>');
 });
+
+function showForm(flag){
+
+  if(flag) {
+  }
+  else{
+    
+  }
+}
