@@ -21,13 +21,17 @@
 
 		<h2>insertScoreCard for emit</h2>
 		<div class="radio">
-			<label for="me">現在ログインしているアカウントの得点表を作成</label>
-			<input type="radio" name="radio" id="me" value="me" onClick="showForm(0)" checked>
+			<label for="me">
+				<input type="radio" name="radio" id="me" value="me" onClick="showForm(0)">
+				現在ログインしているユーザーの得点表を作成		
+			</label>
 		</div>
 
 		<div class="radio">
-			<label for="others">新たにログインして得点表を作成</label>
-			<input type="radio" name="radio" id="others" value="others" onClick="showForm(1)">
+			<label for="others">
+				<input type="radio" name="radio" id="others" value="others" onClick="showForm(1)" checked>
+				新たにログインするユーザーの得点表を作成
+			</label>
 		</div>
 
 		<div class="others-form">	
@@ -39,11 +43,10 @@
 				<label for="password">Password : </label>
 				<input class="form-control" type="password" id="password">
 			</div>	
-			<div class="form-inline">
-				<input type="submit" class="btn btn-primary" value="Emit" onclick="insertScoreCard()">
-			</div>
 		</div>
-
+		<div class="form-inline">
+			<input type="submit" class="btn btn-primary" value="Emit" onclick="insertScoreCard()">
+		</div>
 		<h2>insertScoreCard for on</h2>
 		<div id="insertScoreCardArea"></div>
 
