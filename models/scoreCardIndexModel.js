@@ -160,13 +160,15 @@ function scoreCardIndexModel(io, connection, sessions) {
 
 								// 得点表作成
 								var insertScoreCardSql = 'insert into scoreCard(p_id, m_id, created, place) values(' + connection.escape(results[0].p_id) + ', ' + connection.escape(data.m_id) + ', now(), "ふにっと競技場")';
+								console.log(insertScoreCardSql);
 
 								connection.query(insertScoreCardSql, function (err, insertScoreCardData) {
 									console.log('insertScoreCard results');
 									console.log(insertScoreCardData);
 
 									// 得点表データに対応するscoreTotalのrecordをinsertする
-									var insertScoreTotalSql = 'insert into scoreTotal(sc_id, p_id, o_id) values(' + insertScoreCardData.insertId + ', ' + connection.escape(results[0].p_id) + ', ' + connection.escape(data.m_id) + ');';
+									var insertScoreTotalSql = 'insert into scoreTotal(sc_id, p_id, o_id) values(' + insertScoreCardData.insertId + ', ' + connection.escape(results[0].p_id) + ', ' + connection.escape(results[0].o_id) + ');';
+									console.log(insertScoreTotalSql);
 
 									connection.query(insertScoreTotalSql, function(err, insertScoreTotalData) {
 
