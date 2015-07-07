@@ -47,14 +47,8 @@ function scoreCardIndexModel(io, connection, sessions) {
 									scoreCardIndexDataSql += ' union all select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName , scoreTotal.total, (select count(scorePerEnd.perEnd) from scorePerEnd where scorePerEnd.sc_id = ' + connection.escape(scoreCardIndexId[i].sc_id) + ') as perEnd from account, scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIndexId[i].sc_id) + ' and account.p_id = ' + connection.escape(scoreCardIndexId[i].p_id);
 								}
 
-								console.log('scoreCardIndexDataSql');
-								console.log(scoreCardIndexDataSql);
-
 								// 構築した得点表データ抽出のSQL文でデータ抽出
 								connection.query(scoreCardIndexDataSql, function(err, scoreCardIndexData){
-									console.log('scoreCardIndexData');
-									console.log(scoreCardIndexData);
-
 									// Emit log
 									console.log('emit : extractScoreCardIndex');
 									console.log(scoreCardIndexData);
@@ -90,7 +84,7 @@ function scoreCardIndexModel(io, connection, sessions) {
 				console.log(results);
 
 				// ログイン成功
-				if(results !== undefined) {
+				if(results != '') {
 					console.log('success to login');	
 
 					// 得点表作成
@@ -109,11 +103,10 @@ function scoreCardIndexModel(io, connection, sessions) {
 							// broadcast scoreCard information: added now
 
 							// 得点表データを抽出するためのSQL文 
-							var scoreCardDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
+							var scoreCardDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total, (select count(scorePerEnd.perEnd) from scorePerEnd where scorePerEnd.sc_id = ' + insertScoreCardData.insertId + ') as perEnd from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
 
 							// 得点表データを抽出
 							connection.query(scoreCardDataSql, function(err, scoreCardData) {
-
 								console.log('emit broadcastInsertScoreCard');
 								console.log(scoreCardData);
 
@@ -147,15 +140,13 @@ function scoreCardIndexModel(io, connection, sessions) {
 					if(p_id !== undefined) {
 						// ユーザーデータの抽出
 						var accountSql = 'select * from account where p_id = ' + p_id;
-						console.log('accountSql');
-						console.log(accountSql);
 
 						connection.query(accountSql, function(err, results) {
 							console.log('results of loginSql');
 							console.log(results);
 
 							// データが正常に抽出完了
-							if(results !== undefined) {
+							if(results != '') {
 								console.log('success to login');	
 
 								// 得点表作成
@@ -179,7 +170,7 @@ function scoreCardIndexModel(io, connection, sessions) {
 										// broadcast scoreCard information: added now
 
 										// 得点表データを抽出するためのSQL文 
-										var scoreCardDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
+										var scoreCardDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total, (select count(scorePerEnd.perEnd) from scorePerEnd where scorePerEnd.sc_id = ' + insertScoreCardData.insertId + ') as perEnd from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
 
 										// 得点表データを抽出
 										connection.query(scoreCardDataSql, function(err, scoreCardData) {
