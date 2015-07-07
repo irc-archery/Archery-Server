@@ -1,0 +1,253 @@
+Archery マイページ・団体 内部設計書
+2015 07 06
+
+
+マイページ画面
+
+ログインが完了したら、このページに自動的に遷移する。
+アプリを起動した時に、ログインがすでに完了している場合は、この画面がホーム画面になる
+以下のAPIの仕様に沿って、HTTPメソッドのGETをするとマイページ画面に表示される氏名や成績などのデータをレスポンスとして取得することができる。
+// 全ページにおいてSession情報が無効だった場合は、HTTP エラーコード401を送信する
+// Http Status Code
+// 200 : Success 通常のコード
+// 401 : Unauthorized 認証失敗のコード
+
+マイページ情報取得API
+
+HttpMethod : GET
+RequestURI(for browser) : http://hostname/personal
+RequestURI(for app) : http://hostname/app/personal
+※ヘッダ情報にセッションIDを送付する。
+
+Response Data Format: 
+{
+	"playerName": string,		// 氏名
+	"rubyPlayerName": string, 	// ふりがな
+	"email": string,			// E-mail
+	"birth": string,			// 生年月日
+	"sex": int,					// 性別 男性: 0, 女性: 1, その他: 8, 未設定: 9
+	"organizationName": string, // ユーザーが所属している団体名
+	"record": [					// 最新5件までの試合の結果
+		{
+			"matchName": string,// 得点表が作成された試合名
+			"created": string,	// 得点表が作成された日時
+			"sum": int,			// 得点合計
+			"avg": int 			// 得点平均
+		}
+		{ ... },
+		{ ... },
+		{ ... },
+		{ ... }
+	]				
+}
+
+アカウント削除API
+
+HttpMethod : DELETE
+RequestURI(for browser) : http://hostname/personal
+RequestURI(for app) : http://hostname/app/personal
+※ヘッダ情報にセッションIDを送付する。
+// sessionIDで参照できるログインしているアカウントを削除する
+
+Response Data Format: 
+{
+	"results": bool,	// true or false
+	"err": string		// error message 
+}
+
+
+
+団体ページ画面
+
+団体の情報が閲覧できるページ。
+ログインしているユーザーが団体に所属している場合、その団体の団体名、成績、メンバー一覧などを閲覧できる。
+ログインしているユーザーが団体に所属していない場合は、このページは表示されず、団体作成ページヘのリンクが貼ってあるページを表示する。
+
+団体ページ情報取得API
+
+HttpMethod : GET
+RequestURI(for browser) : http://hostname/organization
+RequestURI(for app) : http://hostname/app/organization
+※ヘッダ情報にセッションIDを送付する。
+
+Response Data Format: 
+{
+	"organizationName": string, // ユーザーが所属している団体名
+	"establish": string,		// 団体設立日
+	"members": int,				// メンバー数
+	"admin": string,			// 責任者氏名(団体設立者の名前、おそらく先生の名前)
+	"place": string,			// 活動場所 
+	"email": string,			// 連絡用のemail(任意)
+}
+
+団体削除API
+
+HttpMethod : DELETE
+RequestURI(for browser) : http://hostname/organization/x 	// xは削除したい団体のo_id
+RequestURI(for app) : http://hostname/app/organization/x
+※ヘッダ情報にセッションIDを送付する。
+
+Response Data Format: 
+{
+	"results": bool,	// true or false
+	"err": string		// error message or null
+}
+
+
+
+団体作成画面
+
+団体を作成するためのページ
+団体に所属していないユーザーがこのページで新たに団体を設立することができる
+
+団体作成API
+
+HttpMethod : POST
+RequestURI(for browser) : http://hostname/organization/
+RequestURI(for app) : http://hostname/app/organization/
+Request Data Format: 
+{
+	"organizationName": string, // ユーザーが所属している団体名
+	"place": string,			// 活動場所 
+	"email": string,			// 連絡用のemail(任意)
+}
+※ヘッダ情報にセッションIDを送付する。
+// 団体を作成したユーザーが責任者になる
+
+Response Data Format:
+{
+	"results": bool,	// true or false
+	"err": string		// error message when faild to login or other errors
+}
+
+
+
+メンバー管理画面
+
+団体に所属しているメンバーの管理を行うことができるページ。
+団体に所属しているメンバーの一覧が表示される。
+権限があるユーザーは、メンバーの追加や削除を行うことができる
+
+メンバー一覧データ取得API
+
+HttpMethod : GET
+RequestURI(for browser) : http://hostname/organization/members/
+RequestURI(for app) : http://hostname/app/organization/members/
+※ヘッダ情報にセッションIDを送付する。
+
+Response Data Format: 
+{
+	"organizationName": string, // ユーザーが所属している団体名
+	"members": int,				// メンバー数
+	"memberList": [				// メンバーデータの一覧. array of object.
+		{
+			"p_id":	int,		// 選手ID(非表示、削除時に使用)
+			"playerName": string,// 選手名
+			"birth": string,	// 生年月日
+			"email": string		// E-mail
+		}
+	]
+}
+
+メンバー追加API
+
+HttpMethod : POST
+RequestURI(for browser) : http://hostname/organization/members/
+RequestURI(for app) : http://hostname/app/organization/members/
+Request Data Format: 
+{
+	"email": string,
+	"password": string
+}
+※ヘッダ情報にセッションIDを送付する。
+// sessionで参照できるo_idの団体に以下のemail, passwordでログインできたユーザーを追加する
+
+Response Data Format:
+{
+	"results": bool,	// true or false
+	"err": string		// error message when faild to login or other errors
+}
+
+メンバー削除API
+
+HttpMethod : DELETE
+RequestURI(for browser) : http://hostname/organization/members/x 	// xは削除したいユーザーのp_id
+RequestURI(for app) : http://hostname/app/organization/members/x
+※ヘッダ情報にセッションIDを送付する。
+// sessionで参照できるo_idの団体に所属しているp_idのユーザーを、団体から脱退させるる
+
+
+
+過去の得点表閲覧画面
+
+過去に作成した自分の得点表一覧が閲覧できるページ
+マイページからこの画面に移動することができる
+
+得点表一覧取得API
+
+HttpMethod : GET
+RequestURI(for browser) : http://hostname/personal/record/
+RequestURI(for app) : http://hostname/app/personal/record/
+※ヘッダ情報にセッションIDを送付する。
+
+Response Data Format: 
+[
+	{
+			"sc_id": int,		// 得点表ID
+			"matchName": string,// 得点表が作成された試合名
+			"created": string,	// 得点表が作成された日時
+			"sum": int,			// 得点合計
+			"avg": int 			// 得点平均
+		}
+		{ ... },
+		{ ... },
+		{ ... },
+		{ ... }
+]
+
+得点表取得API
+
+HttpMethod : GET
+RequestURI(for browser) : http://hostname/personal/record/x	// xは閲覧したい得点表のsc_id
+RequestURI(for app) : http://hostname/app/personal/record/x
+※ヘッダ情報にセッションIDを送付する。
+
+Response Data Format:	// extractScoreCardと同じフォーマット
+{
+	'sc_id': int,			// 得点表ID
+	'playerName': string,	// 選手名
+	'length': int,			// 距離
+	'countPerEnd': int, 	// 現在のセット (テーブルに格納されているカラムの数)
+	'ten': int,				// 10数
+	'x': int, 				// X数
+	'sum': int,				// 合計
+	'score': [
+		{ 
+			'score_1': string,			// 1射目の得点
+			...,
+			'score_6': string,			// 6射目の得点
+			'updatedScore_1': string,	// 1射目の修正された得点 (DEFAULT VALUE : null)
+			...,
+			'updatedScore_6': string,	// 6射目の修正された得点
+			'subTotal': int,			// このセットの小計
+			'perEnd': int 				// このオブジェクトの得点が属するセット数
+		},
+		{ ... },
+		{ ... }
+	]
+}
+
+得点表削除API
+
+HttpMethod : DELETE
+RequestURI(for browser) : http://hostname/personal/record/x	// xは削除したい得点表のsc_id
+RequestURI(for app) : http://hostname/app/personal/record/x
+※ヘッダ情報にセッションIDを送付する。
+
+Response Data Format: 
+{
+	"results": bool,	// true or false
+	"err": stinrg
+}
+
+
