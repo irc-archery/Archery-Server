@@ -65,9 +65,9 @@ var mIdCheck = function(req, res, next) {
 	}
 };
 
-// ホーム
+//ホーム (マイページ) 
 router.get('/', loginCheck, function(req, res) {
-	res.redirect('/login');
+	res.redirect('/personal');
 });
 
 // ログイン画面
@@ -88,6 +88,8 @@ router.get('/login', function(req, res, next) {
 router.get('/createAccount', function(req, res) {
 	res.render('createAccount');
 });
+
+/* Web Socket */
 
 // 試合一覧画面
 router.get('/matchIndex', loginCheck, function(req, res, next) {

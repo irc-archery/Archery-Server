@@ -42,9 +42,20 @@ app.use(session({
 );
 
 var routes = require('./routes/index');
+var personal = require('./routes/personal');
+var organization = require('./routes/organization');
+
 var app_routes = require('./routes/app_routes');
+var app_personal = require('./routes/app_personal');
+var app_organization = require('./routes/app_organization');
+
 app.use('/', routes);
+app.use('/personal', personal);
+app.use('/organization', organization);
+
 app.use('/app', app_routes);
+app.use('/app/personal', app_personal);
+app.use('/app/organization', app_organization);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
