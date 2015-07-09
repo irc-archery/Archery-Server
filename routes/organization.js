@@ -32,6 +32,8 @@ router.get('/', loginCheck, function(req, res) {
 			var organizationDataSql = 'select organizationName, DATE_FORMAT(establish, "%Y/%m/%d") as establish, (select count(*) from account where o_id = ' + connection.escape(o_id) + ') as members, (select concat(account.lastName, account.firstName) as admin from account where account.p_id = ' + organizationAdminIdResults[0].p_id + ') as admin, place, email from organization where organization.o_id = ' + connection.escape(o_id);
 
 			connection.query(organizationDataSql, function(err, organizationDataResults) {
+				
+				organizationDataResults[0]['status'] = 1;
 
 				console.log('organizationDataResults[0]');
 				console.log(organizationDataResults[0]);
@@ -41,8 +43,8 @@ router.get('/', loginCheck, function(req, res) {
 		});
 	}
 	else{
-		res.send('you are not belong to organization. place join or <a href="/organization/create">create</a>.')
-	}
+		res.send('you are not belong to organization. place join or <a href="/organization/create">create</a>.');
+	};
 });
 
 // get /organization/create
@@ -119,13 +121,5 @@ router.post('/members', loginCheck, function(req, res) {
 router.delete('/members/:id', loginCheck, function(req, res) {
 	// :idのメンバーを団体から脱退させる
 });
-
-
-
-
-
-
-
-
 
 module.exports = router;
