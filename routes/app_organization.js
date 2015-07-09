@@ -33,6 +33,8 @@ router.get('/', loginCheck, function(req, res) {
 
 			connection.query(organizationDataSql, function(err, organizationDataResults) {
 
+				organizationDataResults[0]['status'] = 1;
+
 				console.log('organizationDataResults[0]');
 				console.log(organizationDataResults[0]);
 
@@ -42,7 +44,7 @@ router.get('/', loginCheck, function(req, res) {
 	} 
 	else{
 		// アプリ側のo_idに所属していない時の処理
-		//res.send('');
+		res.send({"status": 0});
 	}
 });
 
