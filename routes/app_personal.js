@@ -51,14 +51,10 @@ router.get('/', loginCheck, function(req, res) {
 					console.log('userRecordResults');
 					console.log(userRecordResults);
 
-					userDataResults[0]['record'] = userRecordResults;
-					//userDataResults[0]['record'] = [];
+					userDataResults[0]['record'] = userRecordMatchResults;
 
 					for(var i = 0; i < userRecordMatchResults.length; i++) {
-						//userDataResults[0]['record'][i]['matchName'] = userRecordMatchResults[i]['matchName'];
-						//userDataResults[0]['record'][i]['created'] = userRecordMatchResults[i]['created'];
-						//userDataResults[0]['record'][i]['sum'] = userRecordResults[i]['sum'];
-						//userDataResults[0]['record'][i]['avg'] = userRecordMatchResults[i]['sum'] / userRecordResults[i]['perEnd'] / userRecordMatchResults[i]['arrows'];
+						userDataResults[0]['record'][i]['sum'] = userRecordResults[i]['sum'];
 					}
 					console.log('response of GET /personal/')
 					console.log(userDataResults[0]);
@@ -67,6 +63,7 @@ router.get('/', loginCheck, function(req, res) {
 				});
 			}
 			else {
+				userDataResults[0]['record'] = [];
 				res.send(userDataResults[0]);
 			}
 		});
