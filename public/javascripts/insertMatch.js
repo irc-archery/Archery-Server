@@ -11,7 +11,7 @@ function insertMatch() {
   data['arrows'] = $('#arrows').val();
   data['perEnd'] = $('#insertMatchPerEnd').val();
   data['length'] = $('#length').val();
-  data['permission'] = $('#permission').val();
+  data['permission'] = $('input[name=radio]:checked').val();
 
   console.log('emit insertMatch');
   console.log(data);

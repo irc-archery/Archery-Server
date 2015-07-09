@@ -1,0 +1,53 @@
+@charset "utf-8";
+
+* {
+	font-family:"ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, Osaka, sans-serif;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+.ui-overlay-a, .ui-page-theme-a, .ui-page-theme-a .ui-panel-wrapper {
+    background-color: #F6F6F6;
+}
+
+table {
+	width: 100%;
+	max-width: 960px;
+	margin-left: auto;
+	margin-right: auto;
+    table-layout: fixed;
+}
+
+#index th {
+	width: 25%;
+	padding-left: 3px;
+	padding-right: 3px;
+	font-size: 90%;
+	text-align: center;
+}
+
+#index th:not(:last-child) {
+	border-right: 1px solid #ADADAD;
+}
+
+.indexList td:not(:last-child):not(:first-child) {
+	width: 30%;
+}
+
+.indexList td {
+	width: 25%;
+	padding-left: 3px;
+	padding-right: 3px;
+	text-align: center;
+    white-space: nowrap;
+    overflow:  hidden;
+    text-overflow: ellipsis;
+}
+
+#footer {
+	bottom: 0;
+	width: 100%;
+	position: absolute;
+}

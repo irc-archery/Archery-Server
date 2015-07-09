@@ -1,0 +1,155 @@
+@charset "utf-8";
+
+html
+{
+	font-size: 62.5%;
+	font-family:"ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, Osaka, sans-serif;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+	font-size: 1.4em;
+}
+
+#main {
+	max-width: 960px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.tbl {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#player {
+	width: 75%;
+	margin-top: 30px;
+	margin-bottom: 50px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 20px;
+	padding-bottom: 3px;
+	border-bottom: 1px solid #666666;
+}
+
+.tbl {
+	width: 95%;
+}
+
+.tbl th , .tbl td {
+	text-align: center;
+}
+
+#totalpoint .table-stroke tbody th , #totalpoint .table-stroke tbody td {
+    width: 5%;
+}
+
+.point .tbl th , .point .tbl td {
+	text-align: center;
+	width: 8%;
+}
+
+.point th:first-child , .point td:first-child {
+	width: 15%;
+}
+
+.tbl th:last-child {
+	width: 20%;
+}
+
+.ui-table-columntoggle-btn {
+	display: none;
+}
+
+#totalpoint {
+	margin-bottom: 60px;
+}
+
+.point {
+	margin-top: 30px;
+}
+
+.point .table-stroke thead {
+	border: 1px solid #A4A4A4;
+}
+
+.point .table-stroke thead th{
+	border: none;
+}
+
+.point .table-stroke tbody th , .point .table-stroke tbody td {
+	height: 23px;
+	border: 1px solid #A4A4A4;
+}
+
+.point .table-stroke .score td:not(:last-child) {
+	cursor: pointer;
+}
+
+.point .table-stroke .score td:not(:last-child):hover {
+	background-color:#F4E3B2; 
+	transition: all 0.2s;
+}
+
+.point table {
+	margin-bottom: 30px;
+}
+
+#footer {
+	bottom: 0;
+}
+
+#ime {
+    left: 0;
+	background-color: #F1F1F1;
+	position: fixed;
+    z-index: 1;
+}
+
+#ime ul {
+	width: 75%;
+	max-width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0;
+}
+
+#ime ul li {
+	width: 15%;
+	max-width: 100px;
+	min-width: 50px;
+	margin-bottom: 3%;
+	border: 1px solid #A4A4A4;
+	border-radius: 10px;
+	background-color: #F9F9F9;
+	list-style-type: none;
+	text-align: center;
+	display: inline-block;
+	cursor: pointer;
+}
+
+#ime ul li:hover {
+	border-color: #62FFF2;
+}
+
+#ime button {
+	width: 80%;
+	max-width: 600px;
+	height: 30px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #33495F;
+	color: #FFFFFF;
+	text-shadow: none;
+}
+
+#ime .ui-btn {
+	padding-top: 5px;
+	font-size: 1.0em;
+}

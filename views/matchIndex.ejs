@@ -1,34 +1,53 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="ja">
 <head>
-	<meta charset="utf-8">
-	<title>Archery</title>
-	<meta content="yes" name="apple-mobile-web-app-capable">
-	<meta content=
-	"user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport">
-	<link href="/stylesheets/style.css" rel="stylesheet" type="text/css">
-	<link href="/components/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Archery | 試合一覧</title>
+<link rel="shortcut icon" href="favicon.ico">
+<link type="text/css" rel="stylesheet" href="/stylesheets/jquery.mobile-1.4.5.min.css"/>
+<link type="text/css" rel="stylesheet" href="/stylesheets/gamelist.css"/>
 </head>
 
 <body>
-	<div id="topBar">
-        <p class="container col-sm-offset-2 col-sm-8" style="text-align: center;"><a href="/createAccount">アカウント作成</a>&nbsp;&nbsp;&nbsp;<a href="/login">ログイン</a>&nbsp;&nbsp;&nbsp;<a href="/logout">ログアウト</a></p>
-    </div>
+<!-- ページ領域 -->
+<div data-role="page" data-title="Archery | 試合一覧"> 
 
-	<div class="container col-sm-offset-2 col-sm-8">
-		<h1><a href="/">Archery-Web-Client</a></h1>
+  <!-- header -->
+  <div data-role="header" data-theme="b">
+    <h1>Archery</h1>
+    <a href="insertMatch" class="ui-btn ui-btn-a ui-btn-left" rel="external">新規試合作成</a>
+    <a href="/logout" class="ui-btn ui-btn-a ui-btn-right" rel="external">ログアウト</a>
+  </div>
+  <!-- //header --> 
+  <!-- main -->
+  <div id="main" data-role="main" data-role="content" class="ui-content">
+  <ul id="list" data-role="listview" class="ui-li-icon ui-icon-carat-r">
+    <li id="index" data-role="list-divider">
+      <table>
+          <tr>
+            <th>試合名</th>
+            <th>主催者</th>
+            <th>大会日</th>
+            <th>参加合計人数</th>
+          </tr>
+      </table>
+    </li>
+  </ul>
+</div>
+<!-- //main --> 
 
-		<h2>extractMatchIndex</h2>
-		<table id="matchIndexArea" class="table table-bordered"></table>
+<!-- footer -->
+<div id="footer" data-role="footer" data-theme="a" style="text-align:center;">
+  <p>Copyright 2015 IRC. All Rights Reserved.</p>
+</div>
+<!-- //footer -->
 
-		<a href="/insertMatch"><div class="btn btn-primary">Insert Match</div></a>
-		
-	</div>
-		
-    <script src="/javascripts/jquery.min.js"></script>
-    <script src="/components/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/javascripts/matchIndex.js"></script>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="/javascripts/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="/javascripts/matchIndex.js"></script>
+<script type="text/javascript" src="/javascripts/jquery.mobile-1.4.5.min.js"></script>
+</div>
+<!-- //ページ領域 -->
 </body>
 </html>

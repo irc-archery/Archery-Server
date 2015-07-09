@@ -1,0 +1,32 @@
+#main {
+	width: 80%;
+	max-width: 960px;
+	margin: 0 auto;
+}
+
+.name {
+	width: 49%;
+	display: inline-block;
+}
+
+.name > label {
+	width: 60%;
+}
+
+.name > input {
+	width: 39%;
+}
+
+#send {
+	margin-top: 40px;
+	font-weight: 300;
+    display: block;
+	background-color: #2DBE60;
+	color: #F4F4F4;
+}
+
+@media screen and (max-width: 960px) {
+	.name {
+		width: 99%;
+	}
+}

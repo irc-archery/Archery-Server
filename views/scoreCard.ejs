@@ -1,137 +1,150 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="ja">
 <head>
-	<meta charset="utf-8">
-	<title>Archery</title>
-	<meta content="yes" name="apple-mobile-web-app-capable">
-	<meta content=
-	"user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport">
-	<link href="/stylesheets/style.css" rel="stylesheet" type="text/css">
-	<link href="/components/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Archery | 得点表</title>
+<link rel="shortcut icon" href="favicon.ico">
+<link type="text/css" rel="stylesheet" href="/stylesheets/jquery.mobile-1.4.5.min.css" />
+<link type="text/css" rel="stylesheet" href="/stylesheets/scorebook.css"/>
+<script type="text/javascript" src="/javascripts/functions.js"></script>    
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="/javascripts/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="/javascripts/scoreCard.js"></script>
+<script type="text/javascript" src="/javascripts/jquery.mobile-1.4.5.min.js"></script>
 </head>
 
 <body>
-	<div id="topBar">
-        <p class="container col-sm-offset-2 col-sm-8" style="text-align: center;"><a href="/createAccount">アカウント作成</a>&nbsp;&nbsp;&nbsp;<a href="/login">ログイン</a>&nbsp;&nbsp;&nbsp;<a href="/logout">ログアウト</a></p>
+<!-- ページ領域 -->
+<div data-role="page" data-title="Archery | 得点表"> 
+  <!-- menu -->
+  <div id="panel" data-role="panel" data-position="right">
+    <button id="imeflg" onClick="imeFind()">入力機能OFF</button>
+    <a href="#" data-rel="close" class="ui-btn ui-corner-all ui-icon-delete ui-btn-icon-left">閉じる</a> </div>
+  <!-- //menu --> 
+  <!-- header -->
+  <div data-role="header" data-theme="b">
+    <h1>Archery</h1>
+    <a href="#panel" data-icon="bullets" class="ui-btn ui-btn-right ui-icon-bullets ui-btn-icon-notext"></a> </div>
+  <!-- //header --> 
+  <!-- main -->
+  <div id="main" role="main" data-role="content" class="ui-content">
+    <h2 id="player">選手名</h2>
+    <!-- 点数表（合計） -->
+    <div id="totalpoint"> 
+      <!-- スコア表をデザインするためにtableタグで作成する -->
+      <table data-role="table" data-mode="columntoggle" class="ui-responsive table-stroke tbl">
+        <tbody>
+          <tr>
+            <th>1回目</th>
+            <th>2回目</th>
+            <th>3回目</th>
+            <th>4回目</th>
+            <th>5回目</th>
+            <th>6回目</th>
+            <th>合計</th>
+          </tr>
+          <tr>
+            <td id="totalPoint_1">0</td>
+            <td id="totalPoint_2">0</td>
+            <td id="totalPoint_3">0</td>
+            <td id="totalPoint_4">0</td>
+            <td id="totalPoint_5">0</td>
+            <td id="totalPoint_6">0</td>
+            <td id="totalPoint_sum">0</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th>10数</th>
+            <th>X数</th>
+            <th></th>
+            <th></th>
+            <th></th><th></th>
+            <th>距離</th>
+          </tr>
+          <tr>
+            <td id="totalPoint_10">0</td>
+            <td id="totalPoint_X">0</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id="mator"></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-		
-
-	<div class="container col-sm-offset-2 col-sm-8">
-		<h1><a href="/">Archery-Web-Client</a></h1>
-
-		<h2>extractScoreCard</h2>
-		<table id="scoreCardArea" class="table table-bordered"></table>
-
-		<h2>broadcastInsertScore</h2>
-		<table id="broadcastInsertScoreArea" class="table table-bordered"></table>
-
-		<h2>broadcastUpdateScore</h2>
-		<table id="broadcastUpdateScoreArea" class="table table-bordered"></table>
-
-		<h2>insertScore</h2>
-		<div class="form-inline">
-			<label for="insertScorePerEnd">セット(perEnd)</label>
-			<input type="number" class="form-control" id="insertScorePerEnd">	
-		</div>
-		<div class="form-inline">
-			<label for="score_1">1射目の得点(score_1)</label>
-			<input type="text" class="form-control" id="score_1">	
-		</div>
-		<div class="form-inline">
-			<label for="score_2">2射目の得点(score_2)</label>
-			<input type="text" class="form-control" id="score_2">	
-		</div>
-		<div class="form-inline">
-			<label for="score_3">3射目の得点(score_3)</label>
-			<input type="text" class="form-control" id="score_3">	
-		</div>
-		<div class="form-inline">
-			<label for="score_4">4射目の得点(score_4)</label>
-			<input type="text" class="form-control" id="score_4">	
-		</div>
-		<div class="form-inline">
-			<label for="score_5">5射目の得点(score_5)</label>
-			<input type="text" class="form-control" id="score_5">	
-		</div>
-		<div class="form-inline">
-			<label for="score_6">6射目の得点(score_6)</label>
-			<input type="text" class="form-control" id="score_6">	
-		</div>
-		<div class="form-inline">
-			<label for="subTotal">小計(subTotal)</label>
-			<input type="number" class="form-control" id="subTotal">	
-		</div>
-		<div class="form-inline">
-			<label for="ten">10数(ten)</label>
-			<input type="number" class="form-control" id="ten">	
-		</div>
-		<div class="form-inline">
-			<label for="x">x数(x)</label>
-			<input type="number" class="form-control" id="x">	
-		</div>
-		<div class="form-inline">
-			<label for="total">合計(total)</label>
-			<input type="number" class="form-control" id="total">	
-		</div>
-		<div class="form-inline">
-			<input type="submit" class="btn btn-primary" value="Emit" onclick="insertScore()">
-		</div>
-
-		<h2>updateScore</h2>
-		<div class="form-inline">
-			<label for="updateScorePerEnd">セット(perEnd)</label>
-			<input type="number" class="form-control" id="updateScorePerEnd">	
-		</div>
-		<div class="form-inline">
-			<label for="updatedScore_1">1射目の得点(updatedScore_1)</label>
-			<input type="text" class="form-control" id="updatedScore_1">	
-		</div>
-		<div class="form-inline">
-			<label for="updatedScore_2">2射目の得点(updatedScore_2)</label>
-			<input type="text" class="form-control" id="updatedScore_2">	
-		</div>
-		<div class="form-inline">
-			<label for="updatedScore_3">3射目の得点(updatedScore_3)</label>
-			<input type="text" class="form-control" id="updatedScore_3">	
-		</div>
-		<div class="form-inline">
-			<label for="updatedScore_4">4射目の得点(updatedScore_4)</label>
-			<input type="text" class="form-control" id="updatedScore_4">	
-		</div>
-		<div class="form-inline">
-			<label for="updatedScore_5">5射目の得点(updatedScore_5)</label>
-			<input type="text" class="form-control" id="updatedScore_5">	
-		</div>
-		<div class="form-inline">
-			<label for="updatedScore_6">6射目の得点(updatedScore_6)</label>
-			<input type="text" class="form-control" id="updatedScore_6">	
-		</div>
-		<div class="form-inline">
-			<label for="updatedSubTotal">小計(subTotal)</label>
-			<input type="number" class="form-control" id="updatedSubTotal">	
-		</div>
-		<div class="form-inline">
-			<label for="updatedTen">10数(ten)</label>
-			<input type="number" class="form-control" id="updatedTen">	
-		</div>
-		<div class="form-inline">
-			<label for="updatedX">x数(x)</label>
-			<input type="number" class="form-control" id="updatedX">	
-		</div>
-		<div class="form-inline">
-			<label for="updatedTotal">合計(total)</label>
-			<input type="number" class="form-control" id="updatedTotal">	
-		</div>
-		<div class="form-inline">
-			<input type="submit" class="btn btn-primary" value="Emit" onclick="updateScore()">
-		</div>
-	</div>
-
-    <script src="/javascripts/jquery.min.js"></script>
-    <script src="/components/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/javascripts/functions.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/javascripts/scoreCard.js"></script>
+    <!-- 点数表（各回ごと） -->
+    <div class="point">
+      <table data-role="table" data-mode="columntoggle" class="ui-table ui-responsive table-stroke tbl">
+        <thead>
+          <tr class="border_not">
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>小計</th>
+          </tr>
+        </thead>
+        <tbody class="score">
+          <tr>
+            <th></th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+        <tbody class="revise_score">
+          <tr>
+            <th></th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- IME部分 -->
+    <div id="ime">
+      <ul>
+        <li id="x" class="number">X</li>
+        <li id="10" class="number">10</li>
+        <li id="9" class="number">9</li>
+        <li id="8" class="number">8</li>
+        <li id="7" class="number">7</li>
+        <li id="6" class="number">6</li>
+        <li id="5" class="number">5</li>
+        <li id="4" class="number">4</li>
+        <li id="3" class="number">3</li>
+        <li id="2" class="number">2</li>
+        <li id="1" class="number">1</li>
+        <li id="m" class="number">M</li>
+      </ul>
+      <button onClick="ban_add_score()">決定</button>
+    </div>
+    <!-- //IME部分 --> 
+  </div>
+  <!-- //main --> 
+  
+  <!-- footer -->
+  <div id="footer" data-role="footer" data-theme="a" style="text-align:center;">
+    <p>Copyright 2015 IRC. All Rights Reserved.</p>
+  </div>
+  <!-- //footer --> 
+</div>
+<!-- //ページ領域 -->
 </body>
 </html>
