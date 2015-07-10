@@ -6,6 +6,10 @@ var loginCheck = function(req, res, next) {
 
 	console.log('bellow is req.session.p_id');
 	console.log(req.session.p_id);
+
+	console.log('req.headers');
+	console.log(req.headers);
+
 	if(req.session.p_id) {
 		console.log('success loginCheck with sessionID');
 		next();

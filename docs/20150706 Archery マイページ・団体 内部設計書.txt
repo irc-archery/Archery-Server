@@ -18,6 +18,8 @@ HttpMethod : GET
 RequestURI(for browser) : http://hostname/personal
 RequestURI(for app) : http://hostname/app/personal
 ※ヘッダ情報にセッションIDを送付する。
+format
+cookie: 'sessionID=s%3...'
 
 Response Data Format: 
 {
