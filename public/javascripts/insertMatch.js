@@ -22,5 +22,6 @@ function insertMatch() {
 socket.on('insertMatch', function(data) {
   console.log('on insertMatch')
   console.log(data);
+  
   $('#insertMatchArea').append('<p>{ m_id: ' + data.m_id + ' }</p>');
 });
