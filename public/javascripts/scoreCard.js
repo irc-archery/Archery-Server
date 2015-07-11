@@ -409,6 +409,9 @@ var socket = io('/scoreCard');
 socket.emit('extractScoreCard', {'sessionID': document.cookie, 'sc_id': getQueryString().sc_id});
 
 socket.on('extractScoreCard', function(data) {
+
+	console.log(data);
+
     if (data.playerName != null)
     {
         $("#player").text("選手名 ： " + data.playerName);
