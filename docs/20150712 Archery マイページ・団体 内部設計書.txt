@@ -1,5 +1,5 @@
 Archery マイページ・団体 内部設計書
-2015 07 06
+2015 07 12 
 
 
 マイページ画面
@@ -72,14 +72,22 @@ RequestURI(for browser) : http://hostname/organization
 RequestURI(for app) : http://hostname/app/organization
 ※ヘッダ情報にセッションIDを送付する。
 
+// ユーザーが団体に所属している場合
 Response Data Format: 
 {
+	"status": 1,				// ユーザが団体に所属しているか 1: 所属している, 0: 所属していない
 	"organizationName": string, // ユーザーが所属している団体名
 	"establish": string,		// 団体設立日
 	"members": int,				// メンバー数
 	"admin": string,			// 責任者氏名(団体設立者の名前、おそらく先生の名前)
 	"place": string,			// 活動場所 
 	"email": string,			// 連絡用のemail(任意)
+}
+
+// ユーザーが団体に所属していない場合
+Response Data Format: 
+{
+	status: 0
 }
 
 団体削除API

@@ -11,7 +11,7 @@ router.post('/createAccount', function(req, res) {
 	console.log(createAccountSql);
 
 	connection.query(createAccountSql, function(err, results) {
-		
+
 		var data = {};
 
 		// 作成成功
@@ -48,8 +48,9 @@ router.post('/login', function(req, res) {
 
 		// ログイン成功
 		if(Object.keys(results).length !== 0) {
-			console.log('success to login');	
+			console.log('success to login');
 			req.session.p_id = results[0].p_id;
+			req.session.o_id = results[0].o_id;
 			data['result'] = true;
 			data['err'] = null;
 		}

@@ -16,7 +16,7 @@ var loginCheck = function(req, res, next) {
 	}
 };
 
-// get /organization/ 
+// get /organization/
 router.get('/', loginCheck, function(req, res) {
 	// 団体画面の出力
 	var o_id = req.session.o_id;
@@ -41,7 +41,7 @@ router.get('/', loginCheck, function(req, res) {
 				res.send(organizationDataResults[0]);
 			});
 		});
-	} 
+	}
 	else{
 		// アプリ側のo_idに所属していない時の処理
 		res.send({"status": 0});
@@ -87,7 +87,7 @@ router.post('/', loginCheck, function(req, res) {
 				req.session.o_id = insertOrganizationResults.insertId;
 			}
 			else {
-				responseData['results'] = false;	
+				responseData['results'] = false;
 				responseData['err'] = err;
 			}
 
@@ -106,9 +106,29 @@ router.delete('/:id', loginCheck, function(req, res) {
 
 // get /organization/members
 router.get('/members', loginCheck, function(req, res) {
-	// メンバー管理画面
 
-	res.send('get /organization/members')
+	// メンバー管理画面
+	var o_id = req.session.o_id;
+
+	// ユーザーが団体に所属している
+	if (o_id !== undefined) {
+		var extractMembersSql = 'select account.p_id, concat(account.lastName, account.firstName) as playerName, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, account.email from account where account.o_id = ' + connection.escape(o_id);
+
+		console.log('extractMembersSql');
+		console.log(extractMembersSql);
+
+		connection.query(extractMembersSql, function(err, extractMembersResults) {
+
+			console.log('extractMembersResults');
+			console.log(extractMembersResults);
+
+ 			res.send(extractMembersResults);
+		});
+	}
+	// ユーザーが団体に所属していない
+	else {
+		res.send(null);
+	}
 
 });
 

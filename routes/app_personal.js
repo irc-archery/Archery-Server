@@ -20,13 +20,18 @@ var loginCheck = function(req, res, next) {
 	}
 };
 
-// get /personal/ 
+// get /personal/
 router.get('/', loginCheck, function(req, res) {
 	// マイページ画面に必要な情報を提供するAPI
 
 	// sessionよりidを抽出
 	var p_id = req.session.p_id;
 	var o_id = req.session.o_id;
+
+	console.log('p_id');
+	console.log(p_id);
+	console.log('o_id');
+	console.log(o_id);
 
 	// ユーザー情報を抽出するためのSQL文
 	var userDataSql = 'select concat(account.lastName, account.firstName) as playerName, concat(account.rubyLastName, account.rubyFirstName) as rubyPlayerName, email, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, sex, (select organization.organizationName from organization where organization.o_id = ' + connection.escape(o_id) + ') as organizationName from account where account.p_id = ' + connection.escape(p_id);
@@ -68,6 +73,10 @@ router.get('/', loginCheck, function(req, res) {
 			}
 			else {
 				userDataResults[0]['record'] = [];
+
+				console.log('response of GET /personal/')
+				console.log(userDataResults[0]);
+
 				res.send(userDataResults[0]);
 			}
 		});

@@ -6,7 +6,7 @@ function debug(io, connection) {
 
 		console.log('connection debug');
 		console.log('handshake');
-		console.log(JSON.stringify(socket.handshake));	
+		console.log(JSON.stringify(socket.handshake));
 
 		// the event for debug
 		socket.on('extractAllScore', function(data) {

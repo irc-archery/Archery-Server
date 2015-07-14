@@ -110,9 +110,32 @@ router.delete('/:id', loginCheck, function(req, res) {
 router.get('/members', loginCheck, function(req, res) {
 	// メンバー管理画面
 
-	res.send('get /organization/members')
+	var o_id = req.session.o_id;
 
+	// ユーザーが団体に所属している
+	if (o_id !== undefined) {
+		var extractMembersSql = 'select account.p_id, concat(account.lastName, account.firstName) as playerName, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, account.email from account where account.o_id = ' + connection.escape(o_id);
+
+		console.log('extractMembersSql');
+		console.log(extractMembersSql);
+
+		connection.query(extractMembersSql, function(err, extractMembersResults) {
+
+			console.log('extractMembersResults');
+			console.log(extractMembersResults);
+
+ 			res.send(extractMembersResults + '<br><a href="organization/members/addMembers"></a>');
+		});
+	}
+
+	// ユーザーが団体に所属していない
+	else {
+		// 団体作成画面のリンクがあるページ
+		res.redirect('/organization');
+	}
 });
+
+router.get('/members/addMembers')
 
 router.post('/members', loginCheck, function(req, res) {
 	// メンバー追加API
