@@ -94,14 +94,127 @@ router.delete('/', loginCheck, function(req, res) {
 router.get('/record', loginCheck, function(req, res) {
 	// 過去の得点表一覧画面
 
-	res.send('get /personal/record/');
+	var p_id = req.session.p_id;
+
+	// ユーザーが過去に作成した得点表のidを抽出するためのSQL文
+	var scoreCardIdSql = 'select sc_id from scoreCard where p_id = ' + connection.escape(p_id);
+
+	// ユーザーが過去に作成した得点表のidを抽出する
+	connection.query(scoreCardIdSql, function(err, scoreCardIdData) {
+
+		if(scoreCardIdData != '') {
+
+			// 得点表一覧データを抽出するためのSQL文
+			var personalRecordSql = 'select (' + connection.escape(scoreCardIdData[0].sc_id) + ') as sc_id, `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, `match`.perEnd, `match`.arrows, (select scoreTotal.total from scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' limit 1) as sum from `match` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ')';
+
+			for(var i = 1; i < scoreCardIdData.length; i++) {
+				 personalRecordSql += 'union all select (' + connection.escape(scoreCardIdData[i].sc_id) + ') as sc_id, `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, `match`.perEnd, `match`.arrows, (select scoreTotal.total from scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[i].sc_id) + ' limit 1) as sum from `match` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[i].sc_id) + ')';
+			}
+
+			console.log('personalRecordSql');
+			console.log(personalRecordSql);
+
+			// 過去の得点表データを抽出する
+			connection.query(personalRecordSql, function(err, personalRecordData) {
+
+				console.log('personalRecordData');
+				console.log(personalRecordData);
+
+				var resData = {"status": 1, "record": personalRecordData};
+
+				// データの送信
+				res.send(resData);
+			});
+		}
+		else {
+			// 過去の得点表が存在しない
+			res.send({"status": 0});
+		}
+	});
 });
 
 // get /personal/record/:id
 router.get('/record/:id', loginCheck, function(req, res) {
 	// :idの得点表画面
 
-	res.send('get /record/' + req.params.id);
+	var p_id = req.session.p_id;
+	var o_id = req.session.o_id;
+	var sc_id = req.params.id;
+
+	// 得点表データの抽出に使用するidを抽出するsql文
+	var scoreCardIdSql = 'select scoreCard.sc_id, scoreCard.p_id, scoreCard.m_id from `scoreCard` where scoreCard.sc_id = ' + connection.escape(sc_id);
+
+	// idを抽出
+	connection.query(scoreCardIdSql, function (err, scoreCardIdData) {
+
+		console.log('scoreCardIdData');
+		console.log(scoreCardIdData);
+
+		// データが正常に取得できていたら
+		if(scoreCardIdData != '') {
+
+			// reject
+			if(scoreCardIdData[0].p_id === p_id) {
+
+				var scoreCardSql = '';
+
+				if(o_id != undefined) {
+					// 得点表データの抽出を行うSQL文
+					scoreCardSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, organization.organizationName, `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, `match`.length, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scoreCard`, `account`, `organization`, `match`, `scoreTotal` where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and account.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' and organization.o_id = ' + connection.escape(o_id) + ' and `match`.m_id = ' + connection.escape(scoreCardIdData[0].m_id) + ' and scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scoreTotal.p_id = ' + connection.escape(scoreCardIdData[0].p_id)+ ';';
+				}
+				else {
+					scoreCardSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, `match`.length, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scoreCard`, `account`, `match`, `scoreTotal` where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and account.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' and `match`.m_id = ' + connection.escape(scoreCardIdData[0].m_id) + ' and scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scoreTotal.p_id = ' + connection.escape(scoreCardIdData[0].p_id)+ ';';
+				}
+
+				console.log('scoreCardSql');
+				console.log(scoreCardSql);
+
+				// 得点表の現在のセット数をカウントするためのSQL文
+				var countPerEndSql = 'select count(spe_id) as countPerEnd from scorePerEnd where scorePerEnd.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ';';
+
+				// 得点データの抽出を行うSQL文
+				var scorePerEndSql = 'select scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.updatedScore_1, scorePerEnd.updatedScore_2, scorePerEnd.updatedScore_3, scorePerEnd.updatedScore_4, scorePerEnd.updatedScore_5, scorePerEnd.updatedScore_6, scorePerEnd.subTotal, scorePerEnd.perEnd from `scorePerEnd` where scorePerEnd.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' order by scorePerEnd.perEnd asc;';
+
+				// 得点表データの抽出
+				connection.query(scoreCardSql, function (err, scoreCardData) {
+					// セット数の抽出
+					connection.query(countPerEndSql, function(err, countPerEndData){
+						// 得点データの抽出
+						connection.query(scorePerEndSql, function (err, scorePerEndData) {
+
+							console.log('scoreCardData');
+							console.log(scoreCardData);
+
+							console.log('countPerEndData');
+							console.log(countPerEndData);
+
+							console.log('scorePerEndData');
+							console.log(scorePerEndData);
+
+							// ２つのSQL文の結果を結合
+							scoreCardData[0]['score'] = scorePerEndData;
+
+							scoreCardData[0]['countPerEnd'] = countPerEndData[0].countPerEnd;
+
+							// Emit log
+							console.log('emit : extractScoreCard');
+							console.log(scoreCardData[0]);
+
+							// 得点表データのEmit
+							res.send(scoreCardData[0]);
+						});
+					});
+				});
+			}
+			else {
+				// res.redirect('/personal/record');
+				console.log('不正なアクセスです');
+			}
+		}
+		else {
+			console.log('不正なsc_idです');
+		}
+	});
 });
 
 

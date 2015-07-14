@@ -112,17 +112,31 @@ router.get('/members', loginCheck, function(req, res) {
 
 	// ユーザーが団体に所属している
 	if (o_id !== undefined) {
-		var extractMembersSql = 'select account.p_id, concat(account.lastName, account.firstName) as playerName, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, account.email from account where account.o_id = ' + connection.escape(o_id);
 
-		console.log('extractMembersSql');
-		console.log(extractMembersSql);
+		var extractOrganizationSql = 'select organization.organizationName, (select count(*) from account where account.o_id = ' + connection.escape(o_id) + ') as members from organization where organization.o_id = ' + connection.escape(o_id);
 
-		connection.query(extractMembersSql, function(err, extractMembersResults) {
+		console.log('extractOrganizationSql');
+		console.log(extractOrganizationSql);
 
-			console.log('extractMembersResults');
-			console.log(extractMembersResults);
+		connection.query(extractOrganizationSql, function(err, extractOrganizationData) {
 
- 			res.send(extractMembersResults);
+			console.log('extractOrganizationData');
+			console.log(extractOrganizationData);
+
+			var extractMembersSql = 'select account.p_id, concat(account.lastName, account.firstName) as playerName, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, account.email from account where account.o_id = ' + connection.escape(o_id);
+
+			console.log('extractMembersSql');
+			console.log(extractMembersSql);
+
+			connection.query(extractMembersSql, function(err, extractMembersResults) {
+
+				console.log('extractMembersResults');
+				console.log(extractMembersResults);
+
+				extractOrganizationData[0]['memberList'] = extractMembersResults;
+
+	 			res.send(extractOrganizationData[0]);
+			});
 		});
 	}
 	// ユーザーが団体に所属していない
@@ -134,6 +148,8 @@ router.get('/members', loginCheck, function(req, res) {
 
 router.post('/members', loginCheck, function(req, res) {
 	// メンバー追加API
+
+	
 });
 
 router.delete('/members/:id', loginCheck, function(req, res) {
