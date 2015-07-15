@@ -33,12 +33,25 @@ router.get('/', loginCheck, function(req, res) {
 
 			connection.query(organizationDataSql, function(err, organizationDataResults) {
 
-				organizationDataResults[0]['status'] = 1;
+				var extractMembersSql = 'select account.p_id, concat(account.lastName, account.firstName) as playerName, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, account.email from account where account.o_id = ' + connection.escape(o_id);
 
-				console.log('organizationDataResults[0]');
-				console.log(organizationDataResults[0]);
+				console.log('extractMembersSql');
+				console.log(extractMembersSql);
 
-				res.send(organizationDataResults[0]);
+				connection.query(extractMembersSql, function(err, extractMembersResults) {
+
+					console.log('extractMembersResults');
+					console.log(extractMembersResults);
+
+					organizationDataResults[0]['status'] = 1;
+
+					organizationDataResults[0]['memberList'] = extractMembersResults;
+
+					console.log('organizationDataResults[0]');
+					console.log(organizationDataResults[0]);
+
+					res.send(organizationDataResults[0]);
+				});
 			});
 		});
 	}

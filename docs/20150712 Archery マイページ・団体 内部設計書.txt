@@ -82,6 +82,16 @@ Response Data Format:
 	"admin": string,			// 責任者氏名(団体設立者の名前、おそらく先生の名前)
 	"place": string,			// 活動場所 
 	"email": string,			// 連絡用のemail(任意)
+	"memberList": [				// メンバーデータの一覧. array of object.
+		{
+			"p_id":	int,		// 選手ID(非表示、削除時に使用)
+			"playerName": string,// 選手名
+			"birth": string,	// 生年月日
+			"email": string		// E-mail
+		},
+		{ ... }, 
+		{ ... }
+	]
 }
 
 // ユーザーが団体に所属していない場合
