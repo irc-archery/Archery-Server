@@ -102,6 +102,67 @@ router.delete('/:id', loginCheck, function(req, res) {
 
 	console.log(':id');
 	console.log(req.params.id);
+
+	var o_id = req.params.id;
+
+	// sessionを参照し、このp_idのユーザーがこの団体を削除する権限があるかどうか調べる
+	// 現段階ではorganizationの設立者のみが削除できるようにSQL文を書く
+	var permissionCheckSql = 'select p_id from organization where o_id = ' + connection.escape(o_id);
+
+	var resData = {'results': false, 'err': null};
+
+	// 削除したい団体の設立者を抽出
+	connection.query(permissionCheckSql, function(err, permissionCheckResults) {
+
+		if(!err) {
+			// 団体の設立者のみが削除可能
+			if(permissionCheckResults[0].p_id === req.session.p_id) {
+
+				// 団体削除SQL
+				var deleteOrganizationSql = 'delete from organization where o_id = ' + connection.escape(o_id);
+
+				// 団体に所属しているユーザーのo_idを更新
+				var updateOrganizationSql = 'update account set account.o_id = NULL where account.o_id = ' + connection.escape(o_id);
+
+				// 団体削除
+				connection.query(deleteOrganizationSql, function(err, deleteOrganizationResults) {
+					if(!err) {
+						//団体削除完了. So 団体に所属していたユーザーのo_idを更新	
+						connection.query(updateOrganizationSql, function(err, updateOrganizationResults) {
+
+							if(!err) {
+								req.session.o_id = undefined;
+
+								console.log('団体の削除が完了しました');
+								resData['results'] = true;
+								res.send(resData);
+							}	
+							else {
+								console.log('ユーザーの団体情報更新に失敗しました');
+								resData['err'] = 'ユーザーの団体情報更新に失敗しました';
+								res.send(resData);
+							}
+						});
+					}
+					else {
+						console.log('団体の削除に失敗しました');
+						resData['err'] = '団体の削除に失敗しました';
+						res.send(resData);
+					}
+				});
+			}
+			else {
+				console.log('団体削除の権限がありません');
+				resData['err'] = '団体削除の権限がありません';
+				res.send(resData);
+			}
+		}
+		else {
+			console.log('不正な団体IDです');
+			resData['err'] = '不正な団体IDです';
+			res.send(resData);
+		}
+	});
 });
 
 // get /organization/members
@@ -143,17 +204,92 @@ router.get('/members', loginCheck, function(req, res) {
 	else {
 		res.send(null);
 	}
-
 });
 
 router.post('/members', loginCheck, function(req, res) {
 	// メンバー追加API
 
-	
+	console.log('req.body');
+	console.log(req.body);
+
+	// 1. ログイン処理 
+	var loginSql = 'select * from account where email = ' + connection.escape(req.body.email) + ' and password = ' + connection.escape(req.body.password) + ';';
+
+	connection.query(loginSql, function(err, results) {
+		console.log('results of loginSql');
+		console.log(results);
+
+		// ログイン成功
+		if(Object.keys(results).length !== 0) {
+			console.log('success to login');	
+
+			// 団体に参加したいユーザーのp_id
+			var addP_id = results[0].p_id;
+
+			// 団体メンバーのp_id
+			var memberP_id = req.session.p_id;
+
+			// extract o_id
+			var extractO_idSql = 'select o_id from account where p_id = ' + memberP_id;
+
+			connection.query(extractO_idSql, function(err, extractO_idResults) {
+
+				var o_id = extractO_idResults[0].o_id;
+
+				var updateO_idSql = 'update account set o_id = ' + connection.escape(o_id) + ' where p_id = ' + connection.escape(addP_id);
+
+				connection.query(updateO_idSql, function(err, updateO_idResults) {
+
+					var resData = {};
+
+					if(!err) {
+						resData['results'] = true;
+						resData['err'] = null;
+					}
+					else {
+						resData['results'] = false;
+						resData['err'] = 'メンバーの追加に失敗しました。';
+					}
+
+					console.log('send response about add member');
+					console.log(resData);
+
+					res.send(resData);
+				});
+			});
+		}
+		// ログイン失敗
+		else {
+			console.log('faild to login');
+
+			console.log('send response about add member');
+			console.log(resData);
+
+			res.send({'results': false, 'err': 'ログインに失敗しました'});
+		}
+	});
 });
 
 router.delete('/members/:id', loginCheck, function(req, res) {
 	// :idのメンバーを団体から脱退させる
+
+	var p_id = req.params.id;
+	var o_id = req.session.o_id;
+
+	// sessionで参照できるo_idの団体に所属しているp_idのユーザーを、団体から脱退させ
+
+	// TODO: 権限があるユーザーのみの削除を受け付ける
+
+	var updateAccountSql = 'update account set o_id = NULL where p_id = ' + connection.escape(p_id) + ' and o_id = ' + connection.escape(o_id); 
+
+	connection.query(updateAccountSql, function(err, updateAccountResults) {
+		if(!err) {
+			res.send({'results': true, 'err': null});
+		}
+		else{
+			res.send({'results': false, 'err': '要求された動作の実行に失敗しました'});
+		}
+	});
 });
 
 module.exports = router;

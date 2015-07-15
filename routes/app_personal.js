@@ -34,7 +34,7 @@ router.get('/', loginCheck, function(req, res) {
 	console.log(o_id);
 
 	// ユーザー情報を抽出するためのSQL文
-	var userDataSql = 'select concat(account.lastName, account.firstName) as playerName, concat(account.rubyLastName, account.rubyFirstName) as rubyPlayerName, email, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, sex, (select organization.organizationName from organization where organization.o_id = ' + connection.escape(o_id) + ') as organizationName from account where account.p_id = ' + connection.escape(p_id);
+	var userDataSql = 'select p_id, concat(account.lastName, account.firstName) as playerName, concat(account.rubyLastName, account.rubyFirstName) as rubyPlayerName, email, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, sex, (select organization.organizationName from organization where organization.o_id = ' + connection.escape(o_id) + ') as organizationName from account where account.p_id = ' + connection.escape(p_id);
 	var userRecordSql = 'select sc_id, scoreTotal.total as sum from scoreTotal where p_id = ' + connection.escape(p_id) + ' limit 5';
 
 	// ユーザーの基本情報を追加
@@ -87,7 +87,48 @@ router.get('/', loginCheck, function(req, res) {
 router.delete('/', loginCheck, function(req, res) {
 	// sessionで参照できるアカウントを削除
 
-	res.send('delete /personal/');
+	var p_id = req.session.p_id;
+
+	// 初めに削除したいユーザーが団体のリーダーではないか確かめる
+	// 団体のリーダーの場合は先に団体を削除してもらう
+
+	// ユーザー削除SQL
+	var deleteAccountSql = 'delete from account where p_id = ' + p_id;
+
+	// ユーザーの過去の得点表を削除
+	var deleteScoreCardSql = 'delete from scoreCard where p_id = ' + p_id;
+
+	// ユーザーの過去の得点合計を削除
+	var deleteScoreTotalSql = 'delete from scoreTotal where p_id = ' + p_id;
+
+	// ユーザーの過去の得点を削除
+	var	deleteScorePerEndSql = 'delete from scorePerEnd where p_id = ' + p_id;
+
+	// ユーザーデータの削除
+	connection.query(deleteAccountSql , function(errAc, results) {
+		connection.query(deleteScoreCardSql, function(err, results) {
+			connection.query(deleteScoreTotalSql, function(err, results) {
+				connection.query(deleteScorePerEndSql, function(err, results) {
+					var resData = {};	
+
+					if(!errAc) {
+						console.log('success to delete account');
+
+						resData['results'] = true;
+						resData['err'] = null;
+					}
+					else {
+						console.log('faild to delete account');
+
+						resData['results'] = false;
+						resData['err'] = 'アカウントの削除に失敗しました';
+					}
+
+					res.send(resData);
+				});
+			});
+		});
+	});
 });
 
 // get /personal/record/
@@ -217,10 +258,40 @@ router.get('/record/:id', loginCheck, function(req, res) {
 	});
 });
 
-
 router.delete('/record/:id', loginCheck, function(req, res) {
 	// :idの得点表削除API
-	res.send('delete /record/' + req.params.id);
+
+	var sc_id = req.params.id;
+
+	var p_id = req.session.p_id;
+
+	// 初めに得点表の持ち主とsessionで参照できるユーザが一致するかcheck
+	var checkPermissionSql = 'select p_id from scoreCard where sc_id = ' + connection.escape(sc_id);
+
+	connection.query(checkPermissionSql, function(err, checkPermissionResults) {
+		if(!err) {
+
+			// permission is ok
+			if(checkPermissionResults[0].p_id === p_id) {
+
+				// 得点表削除SQL
+				var deleteScoreCardSql = 'delete from scoreCard where sc_id = ' + connection.escape(sc_id);
+
+				var deleteScoreTotalSql = 'delete from scoreTotal where sc_id = ' + connection.escape(sc_id);
+
+				var deleteScorePerEndSql = 'delete from scorePerEnd where sc_id = ' + connection.escape(sc_id);
+
+				connection.query(deleteScoreCardSql, function(err, deleteScoreCardResults) {
+					connection.query(deleteScoreTotalSql, function(err, deleteScoreTotalResults) {
+						connection.query(deleteScorePerEndSql, function(err, deleteScorePerEndResults) {
+
+							res.send({'results': true, 'err': null});
+						});
+					});
+				});
+			}
+		}
+	});
 });
 
 module.exports = router;

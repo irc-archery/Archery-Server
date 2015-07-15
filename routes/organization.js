@@ -136,7 +136,9 @@ router.get('/members', loginCheck, function(req, res) {
 
 				extractOrganizationData[0]['memberList'] = extractMembersResults;
 
-	 			res.send(extractOrganizationData[0]);
+				var membersHtml = '<br><form action="/app/organization/members" method="post"> <label>email :<input type="email" name="email"></label><label>password: <input type="password" name="password"></label><input type="submit" ></form>';
+
+	 			res.send(membersHtml + JSON.stringify( extractOrganizationData[0] ));
 			});
 		});
 	}

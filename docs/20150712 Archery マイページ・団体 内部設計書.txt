@@ -1,5 +1,5 @@
 Archery マイページ・団体 内部設計書
-2015 07 12 
+2015 07 15 
 
 
 マイページ画面
@@ -184,8 +184,13 @@ HttpMethod : DELETE
 RequestURI(for browser) : http://hostname/organization/members/x 	// xは削除したいユーザーのp_id
 RequestURI(for app) : http://hostname/app/organization/members/x
 ※ヘッダ情報にセッションIDを送付する。
-// sessionで参照できるo_idの団体に所属しているp_idのユーザーを、団体から脱退させるる
+// sessionで参照できるo_idの団体に所属しているp_idのユーザーを、団体から脱退させる
 
+Response Data Format: 
+{
+	"results": bool,	// true or false
+	"err": string		// error message when faild to delete or other errors
+}
 
 
 過去の得点表閲覧画面

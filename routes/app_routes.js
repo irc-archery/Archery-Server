@@ -18,12 +18,12 @@ router.post('/createAccount', function(req, res) {
 		if(err === null) {
 			console.log('success to create new account');
 			req.session.p_id = results.insertId;
-			data['result'] = true;
+			data['results'] = true;
 			data['err'] = null;
 		}
 		else {
 			console.log('faild to create new account');
-			data['result'] = false;
+			data['results'] = false;
 			data['err'] = err;
 		}
 
@@ -51,13 +51,13 @@ router.post('/login', function(req, res) {
 			console.log('success to login');
 			req.session.p_id = results[0].p_id;
 			req.session.o_id = results[0].o_id;
-			data['result'] = true;
+			data['results'] = true;
 			data['err'] = null;
 		}
 		// ログイン失敗
 		else {
 			console.log('faild to login');
-			data['result'] = false;
+			data['results'] = false;
 			data['err'] = err;
 		}
 
