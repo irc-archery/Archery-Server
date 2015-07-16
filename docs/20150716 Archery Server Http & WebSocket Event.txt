@@ -60,14 +60,14 @@ length
 試合::一覧取得
 
 Emit  Event Name  : extractMatchIndex
-Emit Data Format : 
+Emit Data Format :
 {
 	'sessionID' : string
-} 
+}
 
 On Event Name : extractMatchIndex
-On Data Format :  
-{ 
+On Data Format :
+{
   'm_id' : int,			// 試合ID
   'matchName' : string,	// 試合名
   'sponsor': string,	// 主催
@@ -81,7 +81,7 @@ On Data Format :
 試合::作成による更新
 
 On Event Name : broadcastInsertMatch
-On Data Format : 
+On Data Format :
 {
 	'm_id' : int,			// 試合ID
 	'matchName': string,// 試合名
@@ -104,13 +104,13 @@ falseだった場合はその人は団体に所属していないので、permis
 試合::団体所属確認
 
 Emit Event Name : checkOrganization
-Emit Data Format : 
+Emit Data Format :
 {
 	'sessionID': string
 }
 
 On Event Name : checkOrganization
-On Data Format : 
+On Data Format :
 {
 	'belongs' : bool
 }
@@ -118,7 +118,7 @@ On Data Format :
 試合::作成
 
 Emit Event Name : insertMatch
-Emit Data Format :  
+Emit Data Format :
 {
 	'sessionID': string,
 	'matchName': string,// 試合名
@@ -130,7 +130,7 @@ Emit Data Format :
 }
 
 On Event Name : insertMatch
-On Data Format : 
+On Data Format :
 {
 	'm_id': int
 }
@@ -143,12 +143,12 @@ On Data Format :
 参加が完了すると、イベント extractScoreCardIndex がクライアント側でonするのでそのイベントで得点表一覧データを取得し表示する。
 接続中に新たな試合が作成されたら、broadcastInsertScoreCardイベントがクライアント側でonし、データとしてその追加された試合の情報を受け取る。
 得点表を閲覧・編集したい場合は、次のページ(アクティビティ)の/scoreCardでextractScoreCardイベントを得点表のID(sc_id)とsessionIDとともにemitする。
-For Android Client : 得点表一覧画面で、各得点表のアクセス権(編集モード or 閲覧モード)を調べるためには、イベント 
+For Android Client : 得点表一覧画面で、各得点表のアクセス権(編集モード or 閲覧モード)を調べるためには、イベント
 
 試合::参加
 
 Emit Event Name : joinMatch
-Emit Data Format : 
+Emit Data Format :
 {
 	'm_id' : int,
 	'sessionID' : string
@@ -157,9 +157,9 @@ Emit Data Format :
 得点表::一覧取得
 
 On Event Name : extractScoreCardIndex
-On Data Format : 
+On Data Format :
 [
-	{ 
+	{
 		'sc_id', int,		// 得点表ID
 		'playerName': string,	// 選手名
 		'scoreTotal': int 	// 得点合計
@@ -171,7 +171,7 @@ On Data Format :
 得点表::作成による更新
 
 On Event Name : broadcastInsertScoreCard
-On Data Format : 
+On Data Format :
 {
 	'sc_id', int,		// 得点表ID
 	'playerName': string,	// 選手名
@@ -182,14 +182,14 @@ On Data Format :
 得点表::編集モード、閲覧モードのチェック
 
 Emit Event Name : checkPermission
-Emit Data Format : 
+Emit Data Format :
 {
 	'sc_id' : int,
 	'sessionID' : string
 }
 
 On Event Name : checkPermission
-On Data Format : 
+On Data Format :
 {
 	'permission': bool		// true: 編集可, false: 閲覧のみ
 }
@@ -205,14 +205,14 @@ On Data Format :
 現在ログインしているユーザーの得点表作成
 
 Emit Event Name : insertOwnScoreCard
-Emit Data Format : 
-{ 
+Emit Data Format :
+{
 	'sessionID': string,
 	'm_id': int,		// どの試合で得点表を作成したのか, その試合のID
 }
 
 On Event Name : insertOwnScoreCard
-On Data Format : 
+On Data Format :
 {
 	'sc_id': int
 }
@@ -220,8 +220,8 @@ On Data Format :
 得点表作成
 
 Emit Event Name : insertScoreCard
-Emit Data Format : 
-{ 
+Emit Data Format :
+{
 	'sessionID': string,
 	'm_id': int,		// どの試合で得点表を作成したのか, その試合のID
 	'email': string,	// ユーザーログイン用のemail
@@ -229,7 +229,7 @@ Emit Data Format :
 }
 
 On Event Name : insertScoreCard
-On Data Format : 
+On Data Format :
 {
 	'sc_id': int
 }
@@ -247,8 +247,8 @@ extractScoreCardイベントで閲覧・編集したい得点表のid(sc_id)をs
 id:xの得点表の取得
 
 Emit Event Name : extractScoreCard
-Emit Data Format : 
-{ 
+Emit Data Format :
+{
 	'sc_id': int ,
 	'sessionID': string
 }
@@ -261,13 +261,15 @@ On Data Format :
 	'organizationName': string, // 団体名
 	'matchName': string,	// 大会名
 	'created':	string,		// 試合作成日
+	'number': string,		// ゼッケン番号
+	'prefectures': string,		// 都道府県
 	'length': int,			// 距離
 	'countPerEnd': int, 	// 現在のセット (テーブルに格納されているカラムの数)
 	'ten': int,				// 10数
 	'x': int, 				// X数
 	'sum': int,				// 合計
 	'score': [
-		{ 
+		{
 			'score_1': string,			// 1射目の得点
 			...,
 			'score_6': string,			// 6射目の得点
@@ -286,7 +288,7 @@ On Data Format :
 得点::挿入
 
 Emit Event Name : insertScore
-Emit Data Format : 
+Emit Data Format :
 {
 	'sc_id': int,		// 得点表のID
 	'sessionID': string,
@@ -306,7 +308,7 @@ Emit Data Format :
 得点::修正
 
 Emit Event Name : updateScore
-Emit Data Format : 
+Emit Data Format :
 {
 	'sc_id': int,				// 得点表のID
 	'sessionID': string,
@@ -321,7 +323,7 @@ Emit Data Format :
 得点::得点挿入による更新
 
 On Event Name : broadcastInsertScore
-On Data Format : 
+On Data Format :
 {
 	'sc_id': int,				// 得点表のID
 	'perEnd': int,				// 何セット目の得点か
@@ -340,7 +342,7 @@ On Data Format :
 得点::得点修正による更新
 
 On Event Name : broadcastUpdateScore
-On Data Format : 
+On Data Format :
 {
 	'sc_id': int,				// 得点表のID
 	'perEnd': int,				// 何セット目の得点か
@@ -349,6 +351,45 @@ On Data Format :
 	'ten': int,			// 全セットの10数
 	'x': int,			// 全セットのx数
 	'total': int 		// 全セットの合計
+}
+
+ゼッケン番号登録
+
+Emit Event Name : insertNumber
+Emit Data Format :
+{
+	'sc_id': int,	得点表ID
+	'sessionID': string,
+	'number': string		// ゼッケン番号
+}
+
+都道府県登録
+
+Emit Event Name : insertPrefectures
+Emit Data Format :
+{
+	'sc_id': int,		// 得点表ID
+	'sessionID': string,
+	'prefectures': string		// 都道府県
+}
+
+ゼッケン番号登録による更新
+
+Emit Event Name : broadcastInsertNumber
+Emit Data Format :
+{
+	'sc_id': int,		// 得点表ID
+	'number': string		// ゼッケン番号
+}
+
+
+都道府県登録による更新
+
+Emit Event Name : broadcastInsertPrefectures
+Emit Data Format :
+{
+	'sc_id': int,		// 得点表ID
+	'prefectures': string		// 都道府県
 }
 
 

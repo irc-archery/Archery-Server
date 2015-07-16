@@ -41,6 +41,7 @@ create table `match` (
 	`perEnd` int,
 	`length` int,
 	`permission` int,
+	`status` int,
 	index(`m_id`),
 	foreign key(`p_id`) references `account`(`p_id`),
 	foreign key(`o_id`) references `organization`(`o_id`)
@@ -51,7 +52,9 @@ create table `scoreCard` (
 	`p_id` int,
 	`m_id` int,
 	`created` datetime,
-	`place` varchar(255),
+	`prefectures` varchar(255),
+	`number` varchar(255),
+	`status` int,
 	index(`sc_id`),
 	foreign key (`p_id`) references `account`(`p_id`),
 	foreign key (`m_id`) references `match`	(`m_id`)

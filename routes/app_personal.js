@@ -72,9 +72,12 @@ router.get('/', loginCheck, function(req, res) {
 				});
 			}
 			else {
+				console.log('userDataResults');
+				console.log(userDataResults);
+
 				userDataResults[0]['record'] = [];
 
-				console.log('response of GET /personal/')
+				console.log('response of GET /personal/');
 				console.log(userDataResults[0]);
 
 				res.send(userDataResults[0]);
@@ -104,36 +107,52 @@ router.delete('/', loginCheck, function(req, res) {
 	// ユーザーの過去の得点を削除
 	var	deleteScorePerEndSql = 'delete from scorePerEnd where p_id = ' + p_id;
 
-	// ユーザーデータの削除
-	connection.query(deleteAccountSql , function(errAc, results) {
-		if(!errAc) {
-			connection.query(deleteScoreCardSql, function(err, results) {
-				connection.query(deleteScoreTotalSql, function(err, results) {
-					connection.query(deleteScorePerEndSql, function(err, results) {
-						var resData = {};	
+	console.log('deleteAccountSql');
+	console.log(deleteAccountSql);
 
-						console.log('success to delete account');
+	// このユーザーが団体のリーダーではないか確認する
+	var checkOrganizationLeaderSql = 'select * from organization where p_id = ' + p_id;
 
-						resData['results'] = true;
-						resData['err'] = null;
+	connection.query(checkOrganizationLeaderSql, function(errCOL, checkOrganizationLeaderResults) {
+		if(!errCOL) {
+			if(checkOrganizationLeaderResults != '') {
+				// ユーザーデータの削除
+				connection.query(deleteAccountSql , function(errAc, results) {
+					if(!errAc) {
+						connection.query(deleteScoreCardSql, function(err, results) {
+							connection.query(deleteScoreTotalSql, function(err, results) {
+								connection.query(deleteScorePerEndSql, function(err, results) {
+									var resData = {};	
 
-						req.session.p_id = undefined;
-						req.session.o_id = undefined;
+									console.log('success to delete account');
 
-						console.log('send bellow data as response of delete /app/personal');
-						console.log(resData);
+									resData['results'] = true;
+									resData['err'] = null;
 
-						res.send(resData);
-					});
-				});
-			});
-		}
-		else {
-			// アカウント削除に失敗	
-			console.log('faild to delete account');	
-			console.log(err);
+									req.session.p_id = undefined;
+									req.session.o_id = undefined;
 
-			res.send({'results': false, 'err': true});
+									console.log('send bellow data as response of delete /app/personal');
+									console.log(resData);
+
+									res.send(resData);
+								});
+							});
+						});
+					}
+					else {
+						// アカウント削除に失敗	
+						console.log('faild to delete account');	
+						console.log(errAc);
+
+						res.send({'results': false, 'err': 'ユーザーデータの削除に失敗しました'});
+					}
+				});	
+			}
+			else {
+				// このユーザーは団体の責任者. foreign key制約のため初めに団体を削除しなければ、このアカウントを削除できない
+				res.send({'results': false, 'err': '初めに団体を削除をしてください。'});
+			}
 		}
 	});
 });
