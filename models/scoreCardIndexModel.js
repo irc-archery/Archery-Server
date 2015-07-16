@@ -92,25 +92,65 @@ function scoreCardIndexModel(io, connection, sessions) {
 
 					connection.query(insertScoreCardSql, function (err, insertScoreCardData) {
 
+						console.log('insertScoreCardData');
+						console.log(insertScoreCardData);
+
 						// 得点表データに対応するscoreTotalのrecordをinsertする
 						var insertScoreTotalSql = 'insert into scoreTotal(sc_id, p_id, o_id) values(' + insertScoreCardData.insertId + ', ' + connection.escape(results[0].p_id) + ', ' + connection.escape(results[0].o_id) + ');';
 
 						connection.query(insertScoreTotalSql, function(err, insertScoreTotalData) {
-							// 得点表のIDをemitする
-							console.log('emit insertScoreCard');
-							socket.emit('insertScoreCard', {'sc_id': insertScoreCardData.insertId});
 
-							// broadcast scoreCard information: added now
+							// 現在ログイン中のプレイヤーに得点表の権限を与える
+							sessions.get(addPrefix(data.sessionID), function(err, sessionInfo) {
+								if(!err) {
+									console.log('sessionInfo');
+									console.log(sessionInfo);
 
-							// 得点表データを抽出するためのSQL文 
-							var scoreCardDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total, (select count(scorePerEnd.perEnd) from scorePerEnd where scorePerEnd.sc_id = ' + insertScoreCardData.insertId + ') as perEnd from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
+									var subUser = {'sc_id': insertScoreCardData.insertId};
 
-							// 得点表データを抽出
-							connection.query(scoreCardDataSql, function(err, scoreCardData) {
-								console.log('emit broadcastInsertScoreCard');
-								console.log(scoreCardData);
+									console.log(sessionInfo['sess']['subUser']);
 
-								socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastInsertScoreCard', scoreCardData[0]);
+									if(sessionInfo['sess']['subUser'] != undefined) {
+										sessionInfo['sess']['subUser'][sessionInfo['sess']['subUser'].length] = subUser;
+									}
+									else {
+										sessionInfo['sess']['subUser'] = [];
+										sessionInfo['sess']['subUser'][0] = subUser;
+									}
+
+									// session情報の更新
+									sessions.insert(sessionInfo, function(err, sessionInfoResults) {
+
+										if(!err) {
+
+											// 得点表のIDをemitする
+											console.log('emit insertScoreCard');
+											socket.emit('insertScoreCard', {'sc_id': insertScoreCardData.insertId});
+
+											// broadcast scoreCard information: added now
+
+											// 得点表データを抽出するためのSQL文 
+											var scoreCardDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total, (select count(scorePerEnd.perEnd) from scorePerEnd where scorePerEnd.sc_id = ' + insertScoreCardData.insertId + ') as perEnd from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
+
+											// 得点表データを抽出
+											connection.query(scoreCardDataSql, function(err, scoreCardData) {
+												console.log('emit broadcastInsertScoreCard');
+												console.log(scoreCardData);
+
+												socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastInsertScoreCard', scoreCardData[0]);
+											});
+										}
+										else {
+											// session情報の更新に失敗
+											console.log('faild to update sessoin Info');
+											console.log(err);
+										}
+									});
+								}
+								else {
+									console.log('faild to get session Info');
+									console.log(err);
+								}
 							});
 						});
 					});

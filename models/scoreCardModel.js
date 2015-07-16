@@ -78,8 +78,21 @@ function scoreCardModel(io, connection, sessions) {
 											// ２つのSQL文の結果を結合
 											scoreCardData[0]['score'] = scorePerEndData;
 
+											var p_idPermission = ( p_id === scoreCardIdData[0].p_id ? true : false );
+
+											var sc_idPermission = false;
+
+											if(body.sess.subUser != undefined) {
+
+												for(var i = 0; i < body.sess.subUser; i++) {
+													if(body.sess.subUser[i].sc_id === scoreCardIdData[0].sc_id) {
+														sc_idPermission = true;
+													}
+												}
+											}
+
 											// パーミッションを追加
-											scoreCardData[0]['permission'] = scoreCardIdData[0].p_id === p_id ? true : false;
+											scoreCardData[0]['permission'] = p_idPermission || sc_idPermission;
 
 											scoreCardData[0]['countPerEnd'] = countPerEndData[0].countPerEnd;
 

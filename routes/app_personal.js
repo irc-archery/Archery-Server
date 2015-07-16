@@ -106,28 +106,35 @@ router.delete('/', loginCheck, function(req, res) {
 
 	// ユーザーデータの削除
 	connection.query(deleteAccountSql , function(errAc, results) {
-		connection.query(deleteScoreCardSql, function(err, results) {
-			connection.query(deleteScoreTotalSql, function(err, results) {
-				connection.query(deleteScorePerEndSql, function(err, results) {
-					var resData = {};	
+		if(!errAc) {
+			connection.query(deleteScoreCardSql, function(err, results) {
+				connection.query(deleteScoreTotalSql, function(err, results) {
+					connection.query(deleteScorePerEndSql, function(err, results) {
+						var resData = {};	
 
-					if(!errAc) {
 						console.log('success to delete account');
 
 						resData['results'] = true;
 						resData['err'] = null;
-					}
-					else {
-						console.log('faild to delete account');
 
-						resData['results'] = false;
-						resData['err'] = 'アカウントの削除に失敗しました';
-					}
+						req.session.p_id = undefined;
+						req.session.o_id = undefined;
 
-					res.send(resData);
+						console.log('send bellow data as response of delete /app/personal');
+						console.log(resData);
+
+						res.send(resData);
+					});
 				});
 			});
-		});
+		}
+		else {
+			// アカウント削除に失敗	
+			console.log('faild to delete account');	
+			console.log(err);
+
+			res.send({'results': false, 'err': true});
+		}
 	});
 });
 

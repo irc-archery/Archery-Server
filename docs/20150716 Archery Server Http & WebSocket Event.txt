@@ -1,5 +1,5 @@
 Archery Server HTTP & WebSocket Event
-2015 06 26
+2015 07 16
 
 ログイン画面
 
@@ -222,6 +222,7 @@ On Data Format :
 Emit Event Name : insertScoreCard
 Emit Data Format : 
 { 
+	'sessionID': string,
 	'm_id': int,		// どの試合で得点表を作成したのか, その試合のID
 	'email': string,	// ユーザーログイン用のemail
 	'password': string	// ユーザーログイン用のpassword
