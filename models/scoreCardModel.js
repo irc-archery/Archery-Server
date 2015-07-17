@@ -305,15 +305,33 @@ function scoreCardModel(io, connection, sessions) {
 					var p_id = body.sess.p_id;
 					var o_id = body.sess.o_id;
 
+					var sc_id = data.sc_id;
+					var number = data.number;
+
 					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
 					if(p_id !== undefined) {					
 
-						var insertNumber = '';
+						var insertNumberSql = 'update scoreCard set number = ' + connection.escape( number ) + ' where sc_id = ' + connection.escape( sc_id );
+
+						connection.query(insertNumberSql, function(err, insertNumberResults) {
+
+							if(!err) {
+								// ゼッケン番号の挿入が完了... So, broadcaast it.
 
 
+								// broadcast
 
+								var broadcastInsertNumberSql = 'select sc_id, number from scoreCard where sc_id = ' + connection.escape( sc_id );
 
+								connection.query(broadcastInsertNumberSql, function(err, broadcastInsertNumberResults) {
 
+									console.log('Emit: broadcastInsertNumber');
+									console.log(broadcastInsertNumberSql[0]);
+
+									socket.broadcast.to('scoreCardRoom' + sc_id).emit('broadcastInsertNumber', broadcastInsertNumberResults[0]);
+								});
+							}
+						});
 					}
 					else {
 						socket.emit('authorizationError');
@@ -321,6 +339,57 @@ function scoreCardModel(io, connection, sessions) {
 				}
 			});
 		});
+
+		// ゼッケン番号登録
+		socket.on('insertPrefectures', function (data) {
+
+			// On log
+			console.log('on insertPrefectures');
+			console.log(data);
+
+			/* Get p_id related SessionID */
+			sessions.get(addPrefix(data.sessionID), function(err, body) {
+				if(!err) {
+					console.log('nano');
+					console.log(body);	
+
+					var p_id = body.sess.p_id;
+					var o_id = body.sess.o_id;
+
+					var sc_id = data.sc_id;
+					var prefectures = data.prefectures;
+
+					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
+					if(p_id !== undefined) {					
+
+						var insertPrefecturesSql = 'update scoreCard set prefectures = ' + connection.escape( prefectures ) + ' where sc_id = ' + connection.escape( sc_id );
+
+						connection.query(insertPrefecturesSql, function(err, insertPrefecturesResults) {
+
+							if(!err) {
+								// 都道府県の挿入が完了... So, broadcaast it.
+
+								// broadcast
+
+								var broadcastInsertPrefecturesSql = 'select sc_id, Prefectures from scoreCard where sc_id = ' + connection.escape( sc_id );
+
+								connection.query(broadcastInsertPrefecturesSql, function(err, broadcastInsertPrefecturesResults) {
+
+									console.log('Emit: broadcastInsertPrefectures');
+									console.log(broadcastInsertPrefecturesSql[0]);
+
+									socket.broadcast.to('scoreCardRoom' + sc_id).emit('broadcastInsertPrefectures', broadcastInsertPrefecturesResults[0]);
+								});
+							}
+						});
+					}
+					else {
+						socket.emit('authorizationError');
+					}
+				}
+			});
+		});
+
 	});
 };
 

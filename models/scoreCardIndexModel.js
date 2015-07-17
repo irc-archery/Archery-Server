@@ -88,7 +88,7 @@ function scoreCardIndexModel(io, connection, sessions) {
 					console.log('success to login');	
 
 					// 得点表作成
-					var insertScoreCardSql = 'insert into scoreCard(p_id, m_id, created, place) values(' + connection.escape(results[0].p_id) + ', ' + connection.escape(data.m_id) + ', now(), "ふにっと競技場")';
+					var insertScoreCardSql = 'insert into scoreCard(p_id, m_id, created) values(' + connection.escape(results[0].p_id) + ', ' + connection.escape(data.m_id) + ', now())';
 
 					connection.query(insertScoreCardSql, function (err, insertScoreCardData) {
 
@@ -182,7 +182,7 @@ function scoreCardIndexModel(io, connection, sessions) {
 						var accountSql = 'select * from account where p_id = ' + p_id;
 
 						connection.query(accountSql, function(err, results) {
-							console.log('results of loginSql');
+							console.log('results of accountSql');
 							console.log(results);
 
 							// データが正常に抽出完了
@@ -190,7 +190,7 @@ function scoreCardIndexModel(io, connection, sessions) {
 								console.log('success to login');	
 
 								// 得点表作成
-								var insertScoreCardSql = 'insert into scoreCard(p_id, m_id, created, place) values(' + connection.escape(results[0].p_id) + ', ' + connection.escape(data.m_id) + ', now(), "ふにっと競技場")';
+								var insertScoreCardSql = 'insert into scoreCard(p_id, m_id, created) values(' + connection.escape(results[0].p_id) + ', ' + connection.escape(data.m_id) + ', now())';
 								console.log(insertScoreCardSql);
 
 								connection.query(insertScoreCardSql, function (err, insertScoreCardData) {
