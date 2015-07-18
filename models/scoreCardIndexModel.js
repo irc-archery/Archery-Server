@@ -118,12 +118,17 @@ function scoreCardIndexModel(io, connection, sessions) {
 										sessionInfo['sess']['subUser'][0] = subUser;
 									}
 
+									console.log(sessionInfo);
+
 									// session情報の更新
 									sessions.insert(sessionInfo, function(err, sessionInfoResults) {
 
 										if(!err) {
 
 											// 得点表のIDをemitする
+											console.log('sessionInfoResults');
+											console.log(sessionInfoResults);
+
 											console.log('emit insertScoreCard');
 											socket.emit('insertScoreCard', {'sc_id': insertScoreCardData.insertId});
 
@@ -315,6 +320,9 @@ function scoreCardIndexModel(io, connection, sessions) {
 
 					var checkPermissionSql = 'select p_id from `match` where m_id = ' + m_id;
 
+					console.log('checkPermissionSql');
+					console.log(checkPermissionSql);
+
 					// 1.権限を調べる
 					connection.query(checkPermissionSql, function(err, checkPermissionResults) {
 
@@ -322,20 +330,39 @@ function scoreCardIndexModel(io, connection, sessions) {
 
 							if(checkPermissionResults[0].p_id == p_id) {
 								// 権限はok
+								console.log('you can close this match;');
 
 								// 2. 試合のstatusを1にする
 
-								var closeMatchSql = 'update `match` set status = 1 where =  ' + m_id;
+								var closeMatchSql = 'update `match` set status = 1 where m_id = ' + m_id;
 
-								connection.query(closeMatchSql, function(err, closeMatchSql) {
+								console.log('closeMatchSql');
+								console.log(closeMatchSql);
+
+								connection.query(closeMatchSql, function(err, closeMatchResults) {
+
+									console.log('closeMatchResults');
+									console.log(closeMatchResults);
 
 									// 3. この試合に属している得点表のstatusを1にする
-									var closeScoreCardSql = 'update `scoreCard` set status = 1 where = ' + m_id;
+									var closeScoreCardSql = 'update `scoreCard` set status = 1 where m_id = ' + m_id;
 
 									connection.query(closeScoreCardSql, function(err, closeScoreCardResults) {
 
 										// broadcast
-										socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastCloseMatch', {'m_id': m_id});
+										console.log('emit broadcastCloseMatch');
+										socket.broadcast.to('scoreCardIndexRoom' + m_id).emit('broadcastCloseMatch', {'m_id': m_id});
+
+										// 得点表画面にいる人たちにも試合終了通知をbroadcast
+										var devicesSql = 'select sc_id from scoreCard where m_id = ' + m_id;
+
+										connection.query(devicesSql, function(err, devicesResults) {
+
+											for(var i = 0; i < devicesResults.length; i++) {
+												console.log('emit broadcastCloseMatch to scoreCardRoom' + devicesResults[i].sc_id);
+												socket.broadcast.to('scoreCardRoom' + devicesResults[i].sc_id).emit('broadcastCloseMatch', {'m_id': m_id});
+											}
+										});
 									});
 								});
 							}

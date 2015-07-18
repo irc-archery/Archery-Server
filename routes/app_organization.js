@@ -18,15 +18,22 @@ var loginCheck = function(req, res, next) {
 // get /organization/
 router.get('/', loginCheck, function(req, res) {
 	// 団体画面の出力
+
+	var p_id = req.session.p_id;
+
 	// o_id抽出
 	var extractOrganizationIdSql = 'select o_id from account where p_id = ' + p_id;
 
 	connection.query(extractOrganizationIdSql, function(err, extractOrganizationIdResults) {
+
 		var o_id;
 
 		if(extractOrganizationIdResults != undefined) {
 			o_id = extractOrganizationIdResults[0].o_id;
 		}
+
+		console.log('o_id');
+		console.log(o_id);
 
 		if(o_id != undefined) {
 			// 責任者idを抽出するためのSQL文
@@ -66,7 +73,7 @@ router.get('/', loginCheck, function(req, res) {
 			// アプリ側のo_idに所属していない時の処理
 			res.send({"status": 0});
 		}
-	}
+	});
 });
 
 // post /organization/
@@ -191,6 +198,8 @@ router.get('/members', loginCheck, function(req, res) {
 
 	// メンバー管理画面
 
+	var p_id = req.session.p_id;
+
 	// o_id抽出
 	var extractOrganizationIdSql = 'select o_id from account where p_id = ' + p_id;
 
@@ -234,7 +243,7 @@ router.get('/members', loginCheck, function(req, res) {
 		else {
 			res.send(null);
 		}
-	}
+	});
 });
 
 router.post('/members', loginCheck, function(req, res) {

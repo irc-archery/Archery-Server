@@ -15,21 +15,120 @@
 	<div id="topBar">
         <p class="container col-sm-offset-2 col-sm-8" style="text-align: center;"><a href="/createAccount">アカウント作成</a>&nbsp;&nbsp;&nbsp;<a href="/login">ログイン</a>&nbsp;&nbsp;&nbsp;<a href="/logout">ログアウト</a></p>
     </div>
-		
 
 	<div class="container col-sm-offset-2 col-sm-8">
 		<h1><a href="/">Archery-Web-Client</a></h1>
 
+		<h2>account Table</h2>
+		<table class="table table-bordered" id="extractAccountTable" style="overflow: scroll;"></table>
+
+		<h2>organization Table</h2>
+		<table class="table table-bordered" id="extractOrganizationTable" style="overflow: scroll;"></table>
+
+		<h2>match Table</h2>
+		<table class="table table-bordered" id="extractMatchTable" style="overflow: scroll;"></table>
+
+		<h2>scorePerEnd Table</h2>
+		<table class="table table-bordered" id="extractAllScoreArea" style="overflow: scroll;"></table>
+
+		<h2>scoreCard Table</h2>
+		<table class="table table-bordered" id="extractScoreCardTable" style="overflow: scroll;"></table>
+
+		<h2>scoreTotal Table</h2>
+		<table class="table table-bordered" id="extractAllScoreTotalArea" style="overflow: scroll;"></table>
+
+		<h2>extractMatchIndex</h2>
+		<table id="matchIndexArea" class="table table-bordered"></table>
+		
+		<h2>extractScoreCardIndex</h2>
+		<div>
+			<p>Input Match ID</p>
+			<div class="form-inline">
+				<input class="form-control" type="number" id="matchNumber">
+				<input class="btn btn-primary" type="button" onclick="extractScoreCardIndex()" value="Emit">
+			</div>
+		</div>
+		<table id="scoreCardIndexArea" class="table table-bordered"></table>
+
 		<h2>extractScoreCard</h2>
+		<div>
+			<p>Input Score Card ID (sc_id)</p>
+			<div class="form-inline">
+				<input class="form-control" type="number" id="scoreCardNumber">
+				<input class="btn btn-primary" type="button" onclick="extractScoreCard()" value="Emit">
+			</div>
+		</div>
 		<table id="scoreCardArea" class="table table-bordered"></table>
 
-		<h2>broadcastInsertScore</h2>
-		<table id="broadcastInsertScoreArea" class="table table-bordered"></table>
+		<h2>insertMatch</h2>
+		<div class="form-inline">
+			<label for="insertMatchP_id">作成者ID(p_id) : </label>
+			<input class="form-control" type="number" id="insertMatchP_id">
+		</div>
 
-		<h2>broadcastUpdateScore</h2>
-		<table id="broadcastUpdateScoreArea" class="table table-bordered"></table>
+		<div class="form-inline">
+			<label for="matchName">試合名(matchName) : </label>
+			<input class="form-control" type="text" id="matchName">
+		</div>
+
+		<div class="form-inline">
+			<label for="sponsor">主催(sponsor) : </label>
+			<input class="form-control" type="text" id="sponsor">
+		</div>
+
+		<div class="form-inline">
+			<label for="arrows">射数(arrows) : </label>
+			<input class="form-control" type="number" id="arrows">
+		</div>
+
+		<div class="form-inline">
+			<label for="insertMatchPerEnd">セット数(perEnd) : </label>
+			<input class="form-control" type="number" id="insertMatchPerEnd">
+		</div>
+
+		<div class="form-inline">
+			<label for="length">距離(length) : </label>
+			<input class="form-control" type="number" id="length">
+		</div>
+
+		<div class="form-inline">
+			<input class="btn btn-primary" type="button" onclick="insertMatch()" value="Emit">
+		</div>
+
+		<h2>insertScoreCard</h2>
+		<!--div class="form-inline">
+			<label for="insertScoreCardM_id">試合ID(m_id) : </label>
+			<input class="form-control" type="number" id="insertScoreCardM_id">
+		</div>	
+		<div class="form-inline">
+			<label for="email">Email : </label>
+			<input class="form-control" type="email" id="email">
+		</div>	
+		<div class="form-inline">
+			<label for="password">Password : </label>
+			<input class="form-control" type="password" id="password">
+		</div-->	
+		<div class="form-inline">
+			<label for="insertScoreCardP_id">p_id : </label>
+			<input class="form-control" type="number" id="insertScoreCardP_id">
+		</div>	
+		<div class="form-inline">
+			<label for="insertScoreCardM_id">m_id : </label>
+			<input class="form-control" type="number" id="insertScoreCardM_id">
+		</div>
+		<div class="form-inline">
+			<input type="submit" class="btn btn-primary" value="Emit" onclick="insertScoreCard()">
+		</div>
 
 		<h2>insertScore</h2>
+		<div class="form-inline">
+			<label for="insertScoreSc_id">得点表ID(sc_id)</label>
+			<input type="number" class="form-control" id="insertScoreSc_id">	
+		</div>
+		<div class="form-inline">
+			<label for="insertScoreP_id">作成者ID(p_id)</label>
+			<input type="number" class="form-control" id="insertScoreP_id">	
+		</div>
 		<div class="form-inline">
 			<label for="insertScorePerEnd">セット(perEnd)</label>
 			<input type="number" class="form-control" id="insertScorePerEnd">	
@@ -79,6 +178,14 @@
 		</div>
 
 		<h2>updateScore</h2>
+		<div class="form-inline">
+			<label for="updateScoreSc_id">得点表ID(sc_id)</label>
+			<input type="number" class="form-control" id="updateScoreSc_id">	
+		</div>
+		<div class="form-inline">
+			<label for="updateScoreP_id">作成者ID(p_id)</label>
+			<input type="number" class="form-control" id="updateScoreP_id">	
+		</div>
 		<div class="form-inline">
 			<label for="updateScorePerEnd">セット(perEnd)</label>
 			<input type="number" class="form-control" id="updateScorePerEnd">	
@@ -130,8 +237,7 @@
 
     <script src="/javascripts/jquery.min.js"></script>
     <script src="/components/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/javascripts/functions.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/javascripts/scoreCard.js"></script>
+    <script src="/javascripts/socket.js"></script>
 </body>
 </html>

@@ -1,43 +1,63 @@
+/* Socket.IO */
 
-//$("div[data-role*='page']").on("on pageshow" , function() {
+//var socket = io();
+var socket = io('/matchIndex');
 
-    // 試合一覧の取得
-    var socket = io("/matchIndex");
-    socket.emit("extractMatchIndex", {"sessionID": document.cookie});
+// Emit Extract Match Index
+socket.emit('extractMatchIndex', {'sessionID': document.cookie});
 
-    socket.on("extractMatchIndex" , function(data) {
-        
-        console.log(data);
-        
-        if (data != "") {
-            
-            var set = "";
-        
-            for (var i = 0; i < data.length; i++) {
-                
-                // 要素の生成用
-                set = "<li class='indexList'><a class='ui-btn ui-btn-icon-right ui-icon-carat-r' href='/scoreCardIndex?m_id=" + data[i]['m_id'] + "' rel='external'><table><tr>";
+// On Extract Match Index
+socket.on('extractMatchIndex', function (data) {
 
-                set += "<td>" + data[i].matchName + "</td>";
-                set += "<td>" + data[i].sponsor + "</td>";
-                set += "<td>" + data[i].created + "</td>";
-                set += "<td>" + data[i].players + "</td>";
-                
-                /*Object.keys(data[i]).forEach(function (key) {
-                    if (data[i].hasOwnProperty("matchName") == true || data[i].hasOwnProperty("sponsor") == true
-                        || data[i].hasOwnProperty("created") == true || data[i].hasOwnProperty("players") == true) {
-                        set += "<td>" + data[i][key] + "</td>";
-                        alert("true");
-                    }
-                });*/
+  console.log(data);
 
-                set += "</tr></table></a></li>";
-                console.log(set);
-                
-                $("#list").append(set);
-            }
-        }
+  if(data != '') {
+    var code = '';
+
+    // table
+    code += "<tr>"
+
+    Object.keys(data[0]).forEach(function (key) {
+      code += "<th>" + key + "</th>";
     });
 
-//});
+    code += "<th></th>";
 
+    code += "</tr>";
+
+    for (var i = 0; i < data.length; i++) {
+
+      code += "<tr>";
+
+      Object.keys(data[i]).forEach(function (key) {
+        code += "<td>" + data[i][key] + "</td>";
+      });
+
+      code += "<td><a href='/scoreCardIndex?m_id=" + data[i]['m_id'] + "'>Join</a></td>";
+
+      code += "</tr>";
+
+    }
+    console.log(code);
+    $("#matchIndexArea").append(code);
+  }
+});
+
+socket.on('broadcastInsertMatch', function(data) {
+
+ console.log(data);
+
+  if(data != '') {
+    var code = '';
+
+    code += "<tr>";
+
+    Object.keys(data).forEach(function (key) {
+        code += "<td>" + data[key] + "</td>";
+    });
+
+    code += "</tr>";
+
+    $("#matchIndexArea").append(code);
+  }
+})

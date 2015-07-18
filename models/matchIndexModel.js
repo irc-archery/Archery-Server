@@ -31,12 +31,12 @@ function matchIndexModel(io, connection, sessions) {
 						// ユーザが団体に所属している
 						if(o_id !== undefined) {
 							// 試合一覧のデータを抽出するために使用するidを抽出するためのSQL文
-							matchIndexIdSql = 'select m_id from `match` where ( (`match`.permission = 0) or (`match`.permission = 1 and `match`.o_id = '+ o_id + ') )';
+							matchIndexIdSql = 'select m_id from `match` where ( (`match`.permission = 0) or (`match`.permission = 1 and `match`.o_id = '+ o_id + ') ) and (`match`.status != 1)';
 						}
 
 						// 団体に所属していない
 						else {
-							matchIndexIdSql = 'select m_id from `match` where `match`.permission = 0';
+							matchIndexIdSql = 'select m_id from `match` where `match`.permission = 0 and `match`.status != 1';
 						}
 
 						// 試合一覧のIDを抽出

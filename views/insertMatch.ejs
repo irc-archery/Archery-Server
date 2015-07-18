@@ -1,93 +1,68 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Archery | ログイン</title>
-<link rel="shortcut icon" href="favicon.ico">
-<link type="text/css" rel="stylesheet" href="/stylesheets/jquery.mobile-1.4.5.min.css">
-<link type="text/css" rel="stylesheet" href="/stylesheets/insertMatch.css">
-<script src="/socket.io/socket.io.js"></script>
-<script src="/javascripts/jquery-1.11.2.min.js"></script>
-<script src="/javascripts/jquery.mobile-1.4.5.min.js"></script>
-<script src="/javascripts/insertMatch.js"></script>
-<script src="/javascripts/loading.js"></script>
+	<meta charset="utf-8">
+	<title>Archery</title>
+	<meta content="yes" name="apple-mobile-web-app-capable">
+	<meta content=
+	"user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport">
+	<link href="/stylesheets/style.css" rel="stylesheet" type="text/css">
+	<link href="/components/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-<!-- ページ領域 -->
-<div data-role="page" data-title="Archery | 新規試合作成"> 
-  <!-- header -->
-  <div data-role="header" data-theme="b">
-    <h1>Archery</h1>
-  </div>
-  <!-- //header --> 
-  <!-- main -->
-  <div id="main" data-role="main" class="ui-content">
-    <div data-role="fieldcontain">
-      <label for="textinput">試合名 :</label>
-      <input type="text" name="matchName" id="matchName">
+	<div id="topBar">
+        <p class="container col-sm-offset-2 col-sm-8" style="text-align: center;"><a href="/createAccount">アカウント作成</a>&nbsp;&nbsp;&nbsp;<a href="/login">ログイン</a>&nbsp;&nbsp;&nbsp;<a href="/logout">ログアウト</a></p>
     </div>
-    <div data-role="fieldcontain">
-      <label for="textinput2">主催者名 :</label>
-      <input type="text" name="sponsor" id="sponsor">
-    </div>
-    <div data-role="fieldcontain">
-      <label for="selectmenu" class="select">射数 :</label>
-      <select name="selectmenu" id="arrows">
-        <option value="6">6</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
-    </div>
-    <div data-role="fieldcontain">
-      <label for="insertMatchPerEnd" class="select">セット数 :</label>
-      <select name="insertMatchPerEnd" id="insertMatchPerEnd">
-        <option value="6">6</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
-    </div>
-    
-    <div data-role="fieldcontain">
-      <label for="length" class="select">距離 :</label>
-      <select name="length" id="length">
-        <option value="90">90m</option>
-        <option value="70">70m</option>
-        <option value="60">60m</option>
-        <option value="50">50m</option>
-        <option value="40">40m</option>
-        <option value="30">30m</option>
-        <option value="70前">70m前</option>
-        <option value="70後">70m後</option>
-      </select>
-    </div>
-    <div data-role="fieldcontain">
-      <fieldset data-role="controlgroup" data-type="horizontal" id="permission">
-        <legend>試合に参加できる人：</legend>
-        <input type="radio" name="radio" id="radio_0" value="0" />
-        <label for="radio_0">誰でも</label>
-        <input type="radio" name="radio" id="radio_1" value="1" />
-        <label for="radio_1">所属団体のみ</label>
-      </fieldset>
-    </div>
-    
-    <button id="btn" class="ui-btn" onclick="insertMatch()">作成</button>
-  </div>
-  <!-- //main --> 
-  
-  <!-- footer -->
-  <div id="footer" data-role="footer" data-theme="a" style="text-align:center;text-overflow: ellipsis;">
-    <p>Copyright 2015 IRC. All Rights Reserved.</p>
-  </div>
-  <!-- //footer --> 
-</div>
-<!-- //ページ領域 -->
+
+	<div class="container col-sm-offset-2 col-sm-8">
+		<h1><a href="/">Archery-Web-Client</a></h1>
+
+		<h2>insertMatch for emit</h2>
+		<div class="form-inline">
+			<label for="matchName">試合名(matchName) : </label>
+			<input class="form-control" type="text" id="matchName">
+		</div>
+
+		<div class="form-inline">
+			<label for="sponsor">主催(sponsor) : </label>
+			<input class="form-control" type="text" id="sponsor">
+		</div>
+
+		<div class="form-inline">
+			<label for="arrows">射数(arrows) : </label>
+			<input class="form-control" type="number" id="arrows">
+		</div>
+
+		<div class="form-inline">
+			<label for="insertMatchPerEnd">セット数(perEnd) : </label>
+			<input class="form-control" type="number" id="insertMatchPerEnd">
+		</div>
+
+		<div class="form-inline">
+			<label for="length">距離(length) : </label>
+			<input class="form-control" type="number" id="length">
+		</div>
+
+		<div class="form-inline">
+			<label for="length">試合に参加できる人(permission) : </label>
+			<select class="form-control" id="permission">
+				<option value="0">誰でも(public)</option>
+				<option value="1">所属団体のみ(local)</option>
+			</select>
+
+		<div class="form-inline">
+			<input class="btn btn-primary" type="button" onclick="insertMatch()" value="Emit">
+		</div>
+
+		<h2>insertMatch for on</h2>
+		<div id="insertMatchArea"></div>
+	</div>
+
+    <script src="/javascripts/jquery.min.js"></script>
+    <script src="/components/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/javascripts/insertMatch.js"></script>
 </body>
 </html>

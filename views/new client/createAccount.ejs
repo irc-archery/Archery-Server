@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Archery | 新規アカウント作成</title>
+<link rel="shortcut icon" href="/favicon.ico">
+<link type="text/css" rel="stylesheet" href="/stylesheets/jquery.mobile-1.4.5.min.css"/>
+<link type="text/css" rel="stylesheet" href="/stylesheets/createAccount.css" >
+<script src="/javascripts/jquery-1.11.2.min.js"></script>
+<script src="/javascripts/jquery.mobile-1.4.5.min.js"></script>
+<script src="/javascripts/createAccount.js"></script>
+<script src="/javascripts/loading.js"></script>
+</head>
+
+<body>
+<!-- ページ領域 -->
+<div data-role="page" data-title="Archery | 新規アカウント作成"> 
+  <!-- header -->
+  <div data-role="header" data-theme="b">
+    <h1>Archery</h1>
+  </div>
+  <!-- //header --> 
+  <!-- main -->
+  <div id="main" data-role="main" data-role="content" data-position-to="window" class="ui-content">
+  <form id="form" action="/createAccount" method="POST">
+    <h2>新規アカウント作成</h2>
+    <div data-role="fieldcontain" class="name">
+      <label for="textinput">姓 :</label>
+      <input type="text" name="lastName" id="lastName">
+    </div>
+    <div data-role="fieldcontain" class="name">
+      <label for="textinput">名 :</label>
+      <input type="text" name="firstName" id="firstName">
+    </div>
+    <div data-role="fieldcontain" class="name">
+      <label for="textinput">姓（ふりがな） :</label>
+      <input type="text" name="rubyLastName" id="rubyLastName">
+    </div>
+    <div data-role="fieldcontain" class="name">
+      <label for="textinput">名（ふりがな） :</label>
+      <input type="text" name="rubyFirstName" id="rubyFirstName">
+    </div>
+    <div data-role="fieldcontain">
+      <label for="textinput">Email :</label>
+      <input name="email" type="email" id="email" placeholder="Example@gmail.com">
+    </div>
+    <div data-role="fieldcontain">
+      <label for="passwordinput">パスワード :</label>
+      <input type="password" name="password" id="passwordinput" placeholder="Password">
+    </div>
+      <div data-role="fieldcontain">
+      <label for="passwordinput">パスワードの再確認 :</label>
+      <input type="password" name="passwordcheck" id="passwordcheck" placeholder="もう一度入力してください">
+    </div>
+    <div data-role="fieldcontain">
+      <label for="textinput">生年月日 :</label>
+      <input type="text" name="birth" id="birth" placeholder="例）1913-2-7">
+      <p style="text-align:center;color:#F72B2E;">年月日は半角ハイフンで入力してください</p>
+    </div>
+    <div data-role="fieldcontain">
+      <label for="selectmenu" class="select">性別 :</label>
+      <select name="sex" id="sex">
+      <option>性別を選択してください</option>
+        <option value="0">男性</option>
+        <option value="1">女性</option>
+        <option value="8">その他</option>
+      </select>
+    </div>
+<button id="send" data-icon="check" data-iconpos="right">アカウントの作成</button>
+  </form>
+</div>
+</div>
+<!-- //main --> 
+
+<!-- footer -->
+<div id="footer" data-role="footer" data-theme="a" style="text-align:center;text-overflow: ellipsis;">
+  <p>Copyright 2015 IRC. All Rights Reserved.</p>
+</div>
+<!-- //footer -->
+</div>
+<!-- //ページ領域 -->
+</body>
+</html>

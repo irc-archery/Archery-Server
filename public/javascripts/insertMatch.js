@@ -11,7 +11,7 @@ function insertMatch() {
   data['arrows'] = $('#arrows').val();
   data['perEnd'] = $('#insertMatchPerEnd').val();
   data['length'] = $('#length').val();
-  data['permission'] = $('input[name=radio]:checked').val();
+  data['permission'] = $('#permission').val();
 
   console.log('emit insertMatch');
   console.log(data);
@@ -22,6 +22,5 @@ function insertMatch() {
 socket.on('insertMatch', function(data) {
   console.log('on insertMatch')
   console.log(data);
-  
   $('#insertMatchArea').append('<p>{ m_id: ' + data.m_id + ' }</p>');
 });
