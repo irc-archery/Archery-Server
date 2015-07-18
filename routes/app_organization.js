@@ -12,52 +12,60 @@ var loginCheck = function(req, res, next) {
 	}
 	else {
 		console.log('faild loginCheck with sessionID. redirect login form');
-		res.redirect('/login');
 	}
 };
 
 // get /organization/
 router.get('/', loginCheck, function(req, res) {
 	// 団体画面の出力
-	var o_id = req.session.o_id;
+	// o_id抽出
+	var extractOrganizationIdSql = 'select o_id from account where p_id = ' + p_id;
 
-	if(o_id != undefined) {
-		// 責任者idを抽出するためのSQL文
-		var organizationAdminIdSql = 'select p_id from organization where o_id = ' + connection.escape(o_id);
+	connection.query(extractOrganizationIdSql, function(err, extractOrganizationIdResults) {
+		var o_id;
 
-		// 責任者idを抽出
-		connection.query(organizationAdminIdSql, function(err, organizationAdminIdResults) {
+		if(extractOrganizationIdResults != undefined) {
+			o_id = extractOrganizationIdResults[0].o_id;
+		}
 
-			// 団体データを抽出
-			var organizationDataSql = 'select organizationName, DATE_FORMAT(establish, "%Y/%m/%d") as establish, (select count(*) from account where o_id = ' + connection.escape(o_id) + ') as members, (select concat(account.lastName, account.firstName) as admin from account where account.p_id = ' + organizationAdminIdResults[0].p_id + ') as admin, place, email from organization where organization.o_id = ' + connection.escape(o_id);
+		if(o_id != undefined) {
+			// 責任者idを抽出するためのSQL文
+			var organizationAdminIdSql = 'select p_id from organization where o_id = ' + connection.escape(o_id);
 
-			connection.query(organizationDataSql, function(err, organizationDataResults) {
+			// 責任者idを抽出
+			connection.query(organizationAdminIdSql, function(err, organizationAdminIdResults) {
 
-				var extractMembersSql = 'select account.p_id, concat(account.lastName, account.firstName) as playerName, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, account.email from account where account.o_id = ' + connection.escape(o_id);
+				// 団体データを抽出
+				var organizationDataSql = 'select organizationName, DATE_FORMAT(establish, "%Y/%m/%d") as establish, (select count(*) from account where o_id = ' + connection.escape(o_id) + ') as members, (select concat(account.lastName, account.firstName) as admin from account where account.p_id = ' + organizationAdminIdResults[0].p_id + ') as admin, place, email from organization where organization.o_id = ' + connection.escape(o_id);
 
-				console.log('extractMembersSql');
-				console.log(extractMembersSql);
+				connection.query(organizationDataSql, function(err, organizationDataResults) {
 
-				connection.query(extractMembersSql, function(err, extractMembersResults) {
+					var extractMembersSql = 'select account.p_id, concat(account.lastName, account.firstName) as playerName, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, account.email from account where account.o_id = ' + connection.escape(o_id);
 
-					console.log('extractMembersResults');
-					console.log(extractMembersResults);
+					console.log('extractMembersSql');
+					console.log(extractMembersSql);
 
-					organizationDataResults[0]['status'] = 1;
+					connection.query(extractMembersSql, function(err, extractMembersResults) {
 
-					organizationDataResults[0]['memberList'] = extractMembersResults;
+						console.log('extractMembersResults');
+						console.log(extractMembersResults);
 
-					console.log('organizationDataResults[0]');
-					console.log(organizationDataResults[0]);
+						organizationDataResults[0]['status'] = 1;
 
-					res.send(organizationDataResults[0]);
+						organizationDataResults[0]['memberList'] = extractMembersResults;
+
+						console.log('organizationDataResults[0]');
+						console.log(organizationDataResults[0]);
+
+						res.send(organizationDataResults[0]);
+					});
 				});
 			});
-		});
-	}
-	else{
-		// アプリ側のo_idに所属していない時の処理
-		res.send({"status": 0});
+		}
+		else{
+			// アプリ側のo_idに所属していない時の処理
+			res.send({"status": 0});
+		}
 	}
 });
 
@@ -182,40 +190,50 @@ router.delete('/:id', loginCheck, function(req, res) {
 router.get('/members', loginCheck, function(req, res) {
 
 	// メンバー管理画面
-	var o_id = req.session.o_id;
 
-	// ユーザーが団体に所属している
-	if (o_id !== undefined) {
+	// o_id抽出
+	var extractOrganizationIdSql = 'select o_id from account where p_id = ' + p_id;
 
-		var extractOrganizationSql = 'select organization.organizationName, (select count(*) from account where account.o_id = ' + connection.escape(o_id) + ') as members from organization where organization.o_id = ' + connection.escape(o_id);
+	connection.query(extractOrganizationIdSql, function(err, extractOrganizationIdResults) {
+		var o_id;
 
-		console.log('extractOrganizationSql');
-		console.log(extractOrganizationSql);
+		if(extractOrganizationIdResults != undefined) {
+			o_id = extractOrganizationIdResults[0].o_id;
+		}
 
-		connection.query(extractOrganizationSql, function(err, extractOrganizationData) {
+		// ユーザーが団体に所属している
+		if (o_id !== undefined) {
 
-			console.log('extractOrganizationData');
-			console.log(extractOrganizationData);
+			var extractOrganizationSql = 'select organization.organizationName, (select count(*) from account where account.o_id = ' + connection.escape(o_id) + ') as members from organization where organization.o_id = ' + connection.escape(o_id);
 
-			var extractMembersSql = 'select account.p_id, concat(account.lastName, account.firstName) as playerName, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, account.email from account where account.o_id = ' + connection.escape(o_id);
+			console.log('extractOrganizationSql');
+			console.log(extractOrganizationSql);
 
-			console.log('extractMembersSql');
-			console.log(extractMembersSql);
+			connection.query(extractOrganizationSql, function(err, extractOrganizationData) {
 
-			connection.query(extractMembersSql, function(err, extractMembersResults) {
+				console.log('extractOrganizationData');
+				console.log(extractOrganizationData);
 
-				console.log('extractMembersResults');
-				console.log(extractMembersResults);
+				var extractMembersSql = 'select account.p_id, concat(account.lastName, account.firstName) as playerName, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, account.email from account where account.o_id = ' + connection.escape(o_id);
 
-				extractOrganizationData[0]['memberList'] = extractMembersResults;
+				console.log('extractMembersSql');
+				console.log(extractMembersSql);
 
-	 			res.send(extractOrganizationData[0]);
+				connection.query(extractMembersSql, function(err, extractMembersResults) {
+
+					console.log('extractMembersResults');
+					console.log(extractMembersResults);
+
+					extractOrganizationData[0]['memberList'] = extractMembersResults;
+
+		 			res.send(extractOrganizationData[0]);
+				});
 			});
-		});
-	}
-	// ユーザーが団体に所属していない
-	else {
-		res.send(null);
+		}
+		// ユーザーが団体に所属していない
+		else {
+			res.send(null);
+		}
 	}
 });
 

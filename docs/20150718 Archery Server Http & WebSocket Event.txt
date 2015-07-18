@@ -1,5 +1,21 @@
 Archery Server HTTP & WebSocket Event
-2015 07 16
+2015 07 18
+
+更新履歴
+
+07/16
+Http Response を result から results に統一
+
+07/17
+・ゼッケン番号、都道府県の挿入、更新イベントの追加
+Implement insertNumber, broadcastInsertNumber, insertPrefectures, broadcastInsertPrefectures
+・試合終了イベントの追加
+Add Event: closeMatch, broadcastCloseMatch
+
+07/18
+・得点表一覧画面にて、得点表の合計、セット数の更新によるbroadcastイベントの実装について
+broadcastInsertScore, broadcastUpdateScoreを得点表一覧画面にいても送るように変更しました
+・上記に伴って、insertScore, updateScore時にm_idを送信するように変更しました
 
 ログイン画面
 
@@ -194,6 +210,29 @@ On Data Format :
 	'permission': bool		// true: 編集可, false: 閲覧のみ
 }
 
+試合::終了
+// 試合を作成したユーザーは試合終了ボタンより試合を終了させることができる。
+// 試合終了のbroadcast通知を受け取ったクライアントのデバイスは、"試合は終了しました"の通知とともに強制的にその試合の得点表一覧から追い出される。
+// 終了した試合は試合一覧には表示されず、過去の得点表一覧より参照されることになる。
+// 試合が終了するとともに、得点表も完成したとみなされユーザーの過去の成績に反映されるようになる。
+
+
+Emit Event Name : closeMatch
+Emit Data Format :
+{
+	'sessionID': string,
+	'm_id': int
+}
+
+試合終了によるbroadcast通知
+
+On Event Name : broadcastCloseMatch
+On Data Format :
+{
+	'm_id': int
+}
+
+
 
 得点表作成画面
 
@@ -208,7 +247,7 @@ Emit Event Name : insertOwnScoreCard
 Emit Data Format :
 {
 	'sessionID': string,
-	'm_id': int,		// どの試合で得点表を作成したのか, その試合のID
+	'm_id': int		// どの試合で得点表を作成したのか, その試合のID
 }
 
 On Event Name : insertOwnScoreCard
@@ -243,6 +282,7 @@ extractScoreCardイベントで閲覧・編集したい得点表のid(sc_id)をs
 得点表のデータを挿入する場合は insertScore, 更新(修正)する場合はupdateScoreイベントで送信。
 得点表の閲覧中に他のユーザーによって得点が挿入された場合は broadcastInsertScore、更新(修正)された場合はbroadcastUpdateScoreイベントでそのデータが送られてくる。
 得点表の編集モードと閲覧モードの判断は、 extractScoreCardイベントで送られてくるデータの中の permissionを参照する。tureの時は編集可、falseの時は閲覧のみとする。
+また、broadcastInsertScoreやbroadcastUpdateScoreは得点表一覧でも送らてくる
 
 id:xの得点表の取得
 
@@ -291,6 +331,7 @@ Emit Event Name : insertScore
 Emit Data Format :
 {
 	'sc_id': int,		// 得点表のID
+	'm_id': int,		// この得点表が所属している試合のID
 	'sessionID': string,
 	'perEnd': int,		// 何セット目の得点か
 	'score_1': string,	// 1射目の得点
@@ -311,6 +352,7 @@ Emit Event Name : updateScore
 Emit Data Format :
 {
 	'sc_id': int,				// 得点表のID
+	'm_id': int,		// この得点表が所属している試合のID
 	'sessionID': string,
 	'perEnd': int,				// 何セット目の得点か
 	'updatedScore_x': string,	// x射目の得点 (ただし、xは何射目なのかを表す)

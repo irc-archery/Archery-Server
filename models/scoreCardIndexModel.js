@@ -257,12 +257,26 @@ function scoreCardIndexModel(io, connection, sessions) {
 					if(p_id !== undefined) {
 
 						// idを抽出するsql文
-						var scoreCardIdSql = 'select scoreCard.p_id from `scoreCard` where scoreCard.sc_id = ' + connection.escape(data.sc_id);
+						var scoreCardIdSql = 'select scoreCard.p_id, scoreCard.sc_id from `scoreCard` where scoreCard.sc_id = ' + connection.escape(data.sc_id);
 
 						// idを抽出
 						connection.query(scoreCardIdSql, function (err, scoreCardIdData) {
 
-							var emitData = {'permission' : scoreCardIdData[0].p_id === p_id ? true : false};
+							var p_idPermission = ( p_id === scoreCardIdData[0].p_id ? true : false );
+
+							var sc_idPermission = false;
+
+							if(body.sess.subUser != undefined) {
+
+								for(var i = 0; i < body.sess.subUser.length; i++) {
+									if(body.sess.subUser[i].sc_id === scoreCardIdData[0].sc_id) {
+										sc_idPermission = true;
+									}
+								}
+							}
+
+							// パーミッションを追加
+							var emitData = {'permission' : ( p_idPermission || sc_idPermission ) ? true : false};
 
 							console.log('checkPermission');
 							console.log(emitData);
@@ -274,6 +288,59 @@ function scoreCardIndexModel(io, connection, sessions) {
 					else {
 						socket.emit('authorizationError');
 					}
+				}
+			});
+		});
+
+		// 試合の終了
+		socket.on('closeMatch', function(data) {
+
+			console.log('on closeMatch');
+			console.log(data);
+
+			/* Get p_id related SessionID */
+			sessions.get(addPrefix(data.sessionID), function(err, body) {
+				if(!err) {
+					console.log('nano');
+					console.log(body);	
+
+					var p_id = body.sess.p_id;
+					var o_id = body.sess.o_id;
+					
+					var m_id = data.m_id;
+
+					// 1. このユーザーがこの試合の管理者かどうかcheck
+					// 2. 試合のstatusを1にする
+					// 3. この試合に属している得点表のstatusを1にする
+
+					var checkPermissionSql = 'select p_id from `match` where m_id = ' + m_id;
+
+					// 1.権限を調べる
+					connection.query(checkPermissionSql, function(err, checkPermissionResults) {
+
+						if(checkPermissionResults != '') {
+
+							if(checkPermissionResults[0].p_id == p_id) {
+								// 権限はok
+
+								// 2. 試合のstatusを1にする
+
+								var closeMatchSql = 'update `match` set status = 1 where =  ' + m_id;
+
+								connection.query(closeMatchSql, function(err, closeMatchSql) {
+
+									// 3. この試合に属している得点表のstatusを1にする
+									var closeScoreCardSql = 'update `scoreCard` set status = 1 where = ' + m_id;
+
+									connection.query(closeScoreCardSql, function(err, closeScoreCardResults) {
+
+										// broadcast
+										socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastCloseMatch', {'m_id': m_id});
+									});
+								});
+							}
+						}
+					});
 				}
 			});
 		});

@@ -79,17 +79,31 @@ function scoreCardModel(io, connection, sessions) {
 											scoreCardData[0]['score'] = scorePerEndData;
 
 											var p_idPermission = ( p_id === scoreCardIdData[0].p_id ? true : false );
+											console.log('p_idPermission = ( p_id === scoreCardIdData[0].p_id ? true : false ');
+
+											console.log('p_id : ' + p_id);
+											console.log('scoreCardIdData : ' + scoreCardIdData[0].p_id);
 
 											var sc_idPermission = false;
 
 											if(body.sess.subUser != undefined) {
 
-												for(var i = 0; i < body.sess.subUser; i++) {
+												for(var i = 0; i < body.sess.subUser.length; i++) {
 													if(body.sess.subUser[i].sc_id === scoreCardIdData[0].sc_id) {
 														sc_idPermission = true;
 													}
 												}
 											}
+
+											console.log('body.sess.subUser : ');
+											console.log(body.sess.subUser);
+
+											console.log('body.sess.subUser != undefined');
+											console.log(body.sess.subUser != undefined);
+
+											console.log('scoreCardIdData[0].sc_id');
+											console.log(scoreCardIdData[0].sc_id);
+
 
 											// パーミッションを追加
 											scoreCardData[0]['permission'] = p_idPermission || sc_idPermission;
@@ -176,6 +190,9 @@ function scoreCardModel(io, connection, sessions) {
 										// 挿入された値を抽出し、ブロードキャストでエミットするためのSQL文
 										var broadcastInsertScoreSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, scorePerEnd.perEnd, scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.subTotal, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scorePerEnd`, `scoreTotal` where scorePerEnd.sc_id = ' + connection.escape(data.sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(p_id) + ' and scorePerEnd.perEnd = ' + connection.escape(data.perEnd) + ' and scoreTotal.sc_id = ' + connection.escape(data.sc_id) + ' and scoreTotal.p_id = ' + connection.escape(p_id) + ';';
 
+										console.log('broadcastInsertScoreSql');
+										console.log(broadcastInsertScoreSql);
+
 										// broadcast Emit		
 										connection.query(broadcastInsertScoreSql, function (err, broadcastInsertScoreData) {
 
@@ -183,6 +200,7 @@ function scoreCardModel(io, connection, sessions) {
 											console.log(broadcastInsertScoreData[0]);
 
 											socket.broadcast.to('scoreCardRoom' + data.sc_id).emit('broadcastInsertScore', broadcastInsertScoreData[0]);
+											socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastInsertScore', broadcastInsertScoreData[0]);	
 										});
 									});
 								}); 
@@ -277,6 +295,7 @@ function scoreCardModel(io, connection, sessions) {
 									console.log(broadcastUpdateScoreData[0]);
 
 									socket.broadcast.to('scoreCardRoom' + data.sc_id).emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);
+									socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);	
 								});
 							});
 						}); 
@@ -317,7 +336,6 @@ function scoreCardModel(io, connection, sessions) {
 
 							if(!err) {
 								// ゼッケン番号の挿入が完了... So, broadcaast it.
-
 
 								// broadcast
 
@@ -389,7 +407,6 @@ function scoreCardModel(io, connection, sessions) {
 				}
 			});
 		});
-
 	});
 };
 
