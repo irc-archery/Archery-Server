@@ -1,7 +1,7 @@
 var http = require('http');
 var addPrefix = require('./addPrefix');
 
-function scoreCardIndexModel(io, connection, sessions) {
+function scoreCardIndexModel(io, connection, sessions, ios) {
 
 	io.on('connection', function(socket) {
 
@@ -360,7 +360,7 @@ function scoreCardIndexModel(io, connection, sessions) {
 
 											for(var i = 0; i < devicesResults.length; i++) {
 												console.log('emit broadcastCloseMatch to scoreCardRoom' + devicesResults[i].sc_id);
-												socket.broadcast.to('scoreCardRoom' + devicesResults[i].sc_id).emit('broadcastCloseMatch', {'m_id': m_id});
+												io.of('/scoreCard').broadcast.to('scoreCardRoom' + devicesResults[i].sc_id).emit('broadcastCloseMatch', {'m_id': m_id});
 											}
 										});
 									});

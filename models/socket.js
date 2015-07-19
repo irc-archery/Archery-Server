@@ -9,9 +9,9 @@ function socketio(server) {
   io = require('socket.io')(server);
 
   // namespace毎に処理を切り分け
-  var matchIndex = require('./matchIndexModel.js')(io.of('/matchIndex'), connection, sessions);
-  var scoreCardIndex = require('./scoreCardIndexModel.js')(io.of('/scoreCardIndex'), connection, sessions);
-  var scoreCard = require('./scoreCardModel.js')(io.of('/scoreCard'), connection, sessions);
+  var matchIndex = require('./matchIndexModel.js')(io.of('/matchIndex'), connection, sessions, io);
+  var scoreCardIndex = require('./scoreCardIndexModel.js')(io.of('/scoreCardIndex'), connection, sessions, io);
+  var scoreCard = require('./scoreCardModel.js')(io.of('/scoreCard'), connection, sessions, io);
   var debug = require('./debug.js')(io.of('/debug'), connection, sessions);
 
   // クライアントとの接続が確立

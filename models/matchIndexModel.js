@@ -1,7 +1,7 @@
 var http = require('http');
 var addPrefix = require('./addPrefix');
 
-function matchIndexModel(io, connection, sessions) {
+function matchIndexModel(io, connection, sessions, ios) {
 
 	io.on('connection', function(socket) {
 
