@@ -46,3 +46,8 @@ socket.on('broadcastInsertScoreCard', function(data) {
   $('#scoreCardIndexArea').append(code);
 
 });
+
+socket.on('broadcastCloseMatch', function(data) {
+  console.log('broadcastCloseMatch');
+  console.log(data); 
+});

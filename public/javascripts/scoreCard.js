@@ -81,6 +81,9 @@ function updateScore() {
   socket.emit('updateScore', data);
 };
 
-
+socket.on('broadcastCloseMatch', function(data) {
+  console.log('broadcastCloseMatch');
+  console.log(data); 
+});
 
 
