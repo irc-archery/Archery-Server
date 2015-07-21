@@ -16,7 +16,7 @@ var loginCheck = function(req, res, next) {
 	}
 	else {
 		console.log('faild loginCheck with sessionID. redirect login form');
-
+		res.send({'results': false, 'err': 'ログインに失敗しました.'});
 	}
 };
 
@@ -105,16 +105,22 @@ router.delete('/', loginCheck, function(req, res) {
 
 	// このユーザーが団体のリーダーではないか確認する
 	var checkOrganizationLeaderSql = 'select * from organization where p_id = ' + p_id;
+
 	console.log(checkOrganizationLeaderSql);
 
 	connection.query(checkOrganizationLeaderSql, function(errCOL, checkOrganizationLeaderResults) {
 		if(!errCOL) {
+			console.log('checkOrganizationLeaderResults')
+			console.log(checkOrganizationLeaderResults)
+			console.log('checkOrganizationLeaderResults != \'\'')
+			console.log(checkOrganizationLeaderResults != '')
+
 			if(checkOrganizationLeaderResults != '') {
 
 				// 1. ユーザーが作成した試合を抽出
 				// 2. 試合とその試合に属している得点表を削除
 				// 2.5 試合を削除する
-				// 3. そのユーザーが作成した得点表を削除	
+				// 3. そのユーザーが作成した得点表を削除
 				// 4. ユーザー削除する
 
 				// ユーザーが作成した試合とその試合に属している得点表を削除する
@@ -127,6 +133,9 @@ router.delete('/', loginCheck, function(req, res) {
 				console.log(extractMatchIdSql);
 
 				connection.query(extractMatchIdSql, function(err, extractMatchIdResults) {
+
+					console.log('extractMatchIdResults');
+					console.log(extractMatchIdResults);
 
 					if(extractMatchIdResults != undefined) {
 						// ユーザーが作成した試合が存在する
@@ -149,7 +158,7 @@ router.delete('/', loginCheck, function(req, res) {
 							console.log('extractScoreCardIdResults');
 							console.log(extractScoreCardIdResults);
 
-							if(extractScoreCardIdResults != '') {
+							if(extractScoreCardIdResults != undefined) {
 								// ユーザーが作成した試合に関連付けられた得点表が存在する
 
 								// 得点、得点合計、得点表を削除するためのSQL文
@@ -216,7 +225,7 @@ router.delete('/', loginCheck, function(req, res) {
 															connection.query(deleteAccountSql , function(errAc, results) {
 																if(!errAc) {
 
-																	var resData = {};	
+																	var resData = {};
 
 																	console.log('success to delete account');
 
@@ -232,13 +241,13 @@ router.delete('/', loginCheck, function(req, res) {
 																	res.send(resData);
 																}
 																else {
-																	// アカウント削除に失敗	
-																	console.log('faild to delete account');	
+																	// アカウント削除に失敗
+																	console.log('faild to delete account');
 																	console.log(errAc);
 
 																	res.send({'results': false, 'err': 'ユーザーデータの削除に失敗しました'});
 																}
-															});	
+															});
 														});
 													});
 												});
@@ -285,7 +294,7 @@ router.delete('/', loginCheck, function(req, res) {
 												connection.query(deleteAccountSql , function(errAc, results) {
 													if(!errAc) {
 
-														var resData = {};	
+														var resData = {};
 
 														console.log('success to delete account');
 
@@ -301,13 +310,13 @@ router.delete('/', loginCheck, function(req, res) {
 														res.send(resData);
 													}
 													else {
-														// アカウント削除に失敗	
-														console.log('faild to delete account');	
+														// アカウント削除に失敗
+														console.log('faild to delete account');
 														console.log(errAc);
 
-														res.send({'results': false, 'err': 'ユーザーデータの削除に失敗しました'});
+														res.send({'results': false, 'err': 'Faild to delete your account.'});
 													}
-												});	
+												});
 											});
 										});
 									});
@@ -342,7 +351,7 @@ router.delete('/', loginCheck, function(req, res) {
 									connection.query(deleteAccountSql , function(errAc, results) {
 										if(!errAc) {
 
-											var resData = {};	
+											var resData = {};
 
 											console.log('success to delete account');
 
@@ -358,13 +367,13 @@ router.delete('/', loginCheck, function(req, res) {
 											res.send(resData);
 										}
 										else {
-											// アカウント削除に失敗	
-											console.log('faild to delete account');	
+											// アカウント削除に失敗
+											console.log('faild to delete account');
 											console.log(errAc);
 
 											res.send({'results': false, 'err': 'ユーザーデータの削除に失敗しました'});
 										}
-									});	
+									});
 								});
 							});
 						});

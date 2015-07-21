@@ -12,6 +12,7 @@ var loginCheck = function(req, res, next) {
 	}
 	else {
 		console.log('faild loginCheck with sessionID. redirect login form');
+		res.send({'results': false, 'err': 'ログインに失敗しました.'});
 	}
 };
 
@@ -155,7 +156,7 @@ router.delete('/:id', loginCheck, function(req, res) {
 				// 団体削除
 				connection.query(deleteOrganizationSql, function(err, deleteOrganizationResults) {
 					if(!err) {
-						//団体削除完了. So 団体に所属していたユーザーのo_idを更新	
+						//団体削除完了. So 団体に所属していたユーザーのo_idを更新
 						connection.query(updateOrganizationSql, function(err, updateOrganizationResults) {
 
 							if(!err) {
@@ -164,7 +165,7 @@ router.delete('/:id', loginCheck, function(req, res) {
 								console.log('団体の削除が完了しました');
 								resData['results'] = true;
 								res.send(resData);
-							}	
+							}
 							else {
 								console.log('ユーザーの団体情報更新に失敗しました');
 								resData['err'] = 'ユーザーの団体情報更新に失敗しました';
@@ -252,7 +253,7 @@ router.post('/members', loginCheck, function(req, res) {
 	console.log('req.body');
 	console.log(req.body);
 
-	// 1. ログイン処理 
+	// 1. ログイン処理
 	var loginSql = 'select * from account where email = ' + connection.escape(req.body.email) + ' and password = ' + connection.escape(req.body.password) + ';';
 
 	connection.query(loginSql, function(err, results) {
@@ -261,7 +262,7 @@ router.post('/members', loginCheck, function(req, res) {
 
 		// ログイン成功
 		if(Object.keys(results).length !== 0) {
-			console.log('success to login');	
+			console.log('success to login');
 
 			// 団体に参加したいユーザーのp_id
 			var addP_id = results[0].p_id;
@@ -320,7 +321,7 @@ router.delete('/members/:id', loginCheck, function(req, res) {
 
 	// TODO: 権限があるユーザーのみの削除を受け付ける
 
-	var updateAccountSql = 'update account set o_id = NULL where p_id = ' + connection.escape(p_id) + ' and o_id = ' + connection.escape(o_id); 
+	var updateAccountSql = 'update account set o_id = NULL where p_id = ' + connection.escape(p_id) + ' and o_id = ' + connection.escape(o_id);
 
 	connection.query(updateAccountSql, function(err, updateAccountResults) {
 		if(!err) {

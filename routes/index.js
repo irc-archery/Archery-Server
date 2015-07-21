@@ -6,6 +6,10 @@ var loginCheck = function(req, res, next) {
 
 	console.log('bellow is req.session.p_id');
 	console.log(req.session.p_id);
+
+	console.log('req.headers');
+	console.log(req.headers);
+
 	if(req.session.p_id) {
 		console.log('success loginCheck with sessionID');
 		next();
@@ -65,7 +69,7 @@ var mIdCheck = function(req, res, next) {
 	}
 };
 
-//ホーム (マイページ) 
+//ホーム (マイページ)
 router.get('/', loginCheck, function(req, res) {
 	res.redirect('/personal');
 });
@@ -81,7 +85,7 @@ router.get('/login', function(req, res, next) {
 	}
 	else {
 	    res.render('login');
-	}	
+	}
 });
 
 // ユーザー作成画面
@@ -137,7 +141,7 @@ router.post('/login', function(req, res) {
 
 		// ログイン成功
 		if(Object.keys(results).length !== 0) {
-			console.log('success to login');	
+			console.log('success to login');
 			req.session.p_id = results[0].p_id;
 			req.session.o_id = results[0].o_id;
 			res.redirect('/matchIndex');
@@ -161,7 +165,7 @@ router.post('/createAccount', function(req, res) {
 		console.log('results');
 		console.log(results);
 		console.log('err');
-		console.log(err); 
+		console.log(err);
 
 		// 作成成功
 		if(err === null) {

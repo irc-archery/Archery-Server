@@ -58,7 +58,7 @@ router.post('/login', function(req, res) {
 		else {
 			console.log('faild to login');
 			data['results'] = false;
-			data['err'] = err;
+			data['err'] = 'ログインに失敗しました。';
 		}
 
 		res.send(data);
