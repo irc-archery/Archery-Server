@@ -36,6 +36,7 @@ function insertScore() {
 
   data['sessionID'] = document.cookie;
   data['sc_id'] = getQueryString().sc_id;
+  data['m_id'] = getQueryString().m_id;
 
   data['perEnd'] = $('#insertScorePerEnd').val();
 
@@ -61,6 +62,7 @@ function updateScore() {
 
   data['sessionID'] = document.cookie;
   data['sc_id'] = getQueryString().sc_id;
+  data['m_id'] = getQueryString().m_id;
 
   data['perEnd'] = $('#updateScorePerEnd').val();
 

@@ -51,3 +51,14 @@ socket.on('broadcastCloseMatch', function(data) {
   console.log('broadcastCloseMatch');
   console.log(data); 
 });
+
+socket.on('broadcastInsertScore', function(data) {
+
+  console.log('on broadcastinsertScore');
+  console.log(data);
+});
+
+socket.on('broadcastUpdateScore', function(data) {
+  console.log('on broadcastUpdateScore');
+  console.log(data);
+});

@@ -200,7 +200,9 @@ function scoreCardModel(io, connection, sessions, ios) {
 											console.log(broadcastInsertScoreData[0]);
 
 											socket.broadcast.to('scoreCardRoom' + data.sc_id).emit('broadcastInsertScore', broadcastInsertScoreData[0]);
-											socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastInsertScore', broadcastInsertScoreData[0]);	
+											//socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastInsertScore', broadcastInsertScoreData[0]);	
+
+											ios.of('/scoreCardIndex').to('scoreCardIndexRoom' + data.m_id).emit('broadcastInsertScore', broadcastInsertScoreData[0]);
 										});
 									});
 								}); 
@@ -295,7 +297,9 @@ function scoreCardModel(io, connection, sessions, ios) {
 									console.log(broadcastUpdateScoreData[0]);
 
 									socket.broadcast.to('scoreCardRoom' + data.sc_id).emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);
-									socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);	
+									//socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);	
+
+									ios.of('/scoreCardIndex').to('scoreCardIndexRoom' + data.m_id).emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);
 								});
 							});
 						}); 
