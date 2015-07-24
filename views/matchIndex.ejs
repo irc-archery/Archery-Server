@@ -1,34 +1,86 @@
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
 	<meta charset="utf-8">
 	<title>Archery</title>
-	<meta content="yes" name="apple-mobile-web-app-capable">
-	<meta content=
-	"user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport">
-	<link href="/stylesheets/style.css" rel="stylesheet" type="text/css">
-	<link href="/components/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+	<link rel="stylesheet" type="text/css" href="/components/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/components/fontawesome/css/font-awesome.min.css"> 
 </head>
 
-<body>
-	<div id="topBar">
-        <p class="container col-sm-offset-2 col-sm-8" style="text-align: center;"><a href="/createAccount">アカウント作成</a>&nbsp;&nbsp;&nbsp;<a href="/login">ログイン</a>&nbsp;&nbsp;&nbsp;<a href="/logout">ログアウト</a></p>
-    </div>
+<div class="modal fade" id="matchModal" role="dialog" aria-labelledby="modal-title">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modal-title">この試合に参加しますか?</h4>
+            </div>
 
-	<div class="container col-sm-offset-2 col-sm-8">
-		<h1><a href="/">Archery-Web-Client</a></h1>
+            <div class="modal-body">
+                <dl class="dl-horizontal">
+                    <dt>試合名</dt>
+                    <dd class="modal-matchName">全国高校生プログラミングコンテスト</dd>
+                    <dt>主催</dt>
+                    <dd class="modal-sponsor">全国情報研究</dd>
+                    <dt>試合開始日</dt>
+                    <dd class="modal-created">2015/05/07 15:47:52</dd>
+                    <dt>距離</dt>
+                    <dd class="modal-length">70m</dd>
+                    <dt>セット数</dt>
+                    <dd class="modal-perEnd">6</dd>
+                    <dt>射数</dt>
+                    <dd class="modal-arrows">6</dd>
+                    <dt>参加人数</dt>
+                    <dd class="modal-players">2</dd>
+                </dl>
+            </div>
 
-		<h2>extractMatchIndex</h2>
-		<table id="matchIndexArea" class="table table-bordered"></table>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                <a href="#"><button type="button" class="btn blue">試合に参加</button></a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
-		<a href="/insertMatch"><div class="btn btn-primary">Insert Match</div></a>
-		
-	</div>
-		
+<body id="body">
+
+    <header id="topBar" class="navbar navbar-fixed-top">
+        <div class="container">
+            <a href="/personal"><div class="backButton"><i class="fa fa-arrow-left"></i></div></a>
+            <h1>試合一覧</h1>
+            <div class="dropdown navButtonArea">
+                <div id="navButton" class="navButton pull-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></div>
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navButton dropdownMenu3">
+                    <li><a href="/personal">マイページ</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="/insertMatch">試合作成</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="/logout">ログアウト</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <main class="container common" role='main'>
+        <section class="panel">
+            <h2 class="panel-heading"><i class="fa fa-list"></i> 試合一覧</h2>
+            <div class="panel-body">
+
+            <table id="matchIndexArea" class="table table-bordered" aria-labelledby="dropdownMenuDivider"></table> 
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p><small>Copyright 2015 IRC. All Rights Reserved.</small></p>
+    </footer>
     <script src="/javascripts/jquery.min.js"></script>
     <script src="/components/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/javascripts/common.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/javascripts/matchIndex.js"></script>
+    <script src="/javascripts/matchIndex.js"></script> 
 </body>
 </html>

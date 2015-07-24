@@ -1,46 +1,106 @@
 @chatset "UTF-8";
 
+/* load web font roboto*/
+@import url(http://fonts.googleapis.com/css?family=Roboto:300);
+
+/*
+@font-face {
+  font-family: 'sourceHanSans',
+  src: url(/fonts/SourceHanSans-Light.woff) format('woff');
+}
+*/
+
+/* common */
+
 * {
- margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
-body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+#body {
+  font-family: 'Roboto', Roboto, sans-serif;
+  color: #444;
+  padding-top: 50px;
+  background: #ecf0f1;
+  font-size: 18px;
 }
 
 a {
   color: #00B7FF;
 }
 
-.center{
-    font-size: 3rem;
-    color: #383838;
-}
-
-div#topBar{
+header#topBar{
     width:  100%;
-    height: 20px;
-    background: #2980b9;
-    
+    height: 55px;
+    color: white;
+    background: #3F51B5;
+    box-shadow: 0px 1px 10px #666;
 }
 
-div#topBar a,div#topBar span{
-   color: white;
+header#topBar .backButton {
+  float: left;
+  line-height: 55px;
+  font-size: 24px;
+  margin: 0;
+  margin-right: 10px;
+  color: white;
+  border-radius: 20px;
 }
 
-h1{
- width: 100%;
- margin-top: 50px;
- margin-bottom: 60px;
- font-weight: 100;
- color: #777;
- text-align: center;
+header#topBar h1{
+  width: 170px;
+  height: 100%; 
+  font-size: 26px;
+  line-height: 55px;
+  margin: 0;
+  margin-left:10px;
+  float: left;
 }
 
-h2{
-	width: 100%;
-	border-bottom: 2px solid #2980b9;
+header#topBar .navButtonArea{
+  width: 30px;
+  height: 100%;
+  text-align: center;
+  float: right;
+}
+
+header#topBar div.navButton {
+  height: 100%;
+  width: 100%;
+  border-radius: 50px;
+  font-size: 30px;
+  line-height: 55px;
+  text-align: center;
+}
+
+header#topBar div.navButton:hover , header#topBar .backButton:hover{
+  background-color: #5C6BC0;
+  cursor: pointer;
+}
+
+header#topBar div.navButtonArea ul li{
+  color: #444;
+  padding : 5px;
+  font-size: 1.1em;
+}
+
+header#topBar div.navButtonArea ul li.divider {
+  padding: 0;
+}
+
+.modal-dialog{
+  padding-top: 10%;
+}
+
+/* button 3d78cc */
+
+main {
+  margin-top: 30px;
+  margin-bottom: 90px;
+}
+
+footer {
+  text-align: center;
 }
 
 table {
@@ -48,13 +108,98 @@ table {
 }
 
 table {
-  margin-top: 20px;
-}
-
-.debugArea{
-}
+  margin-top: 20px; }
 
 tr:hover{
   background: #eee;
   cursor: pointer;
+}
+
+/* forms */
+
+#body main button{
+  width: 100%;
+  margin-top: 30px;
+}
+
+.blue {
+  background-color: #2196F3;
+  color: white;
+}
+
+.deepOrange{
+  background: #FF5722;
+  color: white;
+}
+
+/* personal page */
+
+main.common section{
+  box-shadow: 0px 1px 5px #ddd;
+}
+
+main.common h2{
+  font-size: 22px;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  color: white;
+  background: #009688;
+}
+
+main.common h3{
+  font-size: 20px;
+  padding-bottom: 10px;
+}
+
+main.common h2 i{
+  margin-right: 5px;
+}
+
+main.common dl dt{
+  padding-bottom: 5px;
+}
+
+main.common dl dd {
+  padding-left: 5px;
+  padding-bottom: 10px;
+}
+
+main.common .thumbnail p{
+  font-size: 15px;
+}
+
+main.common .thumbnail img{
+  width: 70%;
+  max-width: 200px;
+}
+
+main.common .thumbnail h3, main.common .thumbnail p {
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+main.common canvas {
+  display: block;
+  width: 95%;
+  margin: 0 auto;
+}
+
+main.common .resultsArea h3{
+  margin: 20px;
+}
+
+.resultsArea table{
+  width: 95%;
+  margin: 0 auto;
+}
+
+.chartArea {
+  margin-bottom: 30px;
+}
+
+.resultsArea .btn-record{
+  display: block;
+  width: 90%;
+  margin: 0 auto 30px;
 }

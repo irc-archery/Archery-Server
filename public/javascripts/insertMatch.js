@@ -8,8 +8,8 @@ function insertMatch() {
   data['sessionID'] = document.cookie;
   data['matchName'] = $('#matchName').val();
   data['sponsor'] = $('#sponsor').val();
-  data['arrows'] = $('#arrows').val();
-  data['perEnd'] = $('#insertMatchPerEnd').val();
+  data['arrows'] = 6;
+  data['perEnd'] = 6;
   data['length'] = $('#length').val();
   data['permission'] = $('#permission').val();
 

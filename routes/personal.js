@@ -19,7 +19,7 @@ var loginCheck = function(req, res, next) {
 // get /personal/ 
 router.get('/', loginCheck, function(req, res) {
 	// マイページ画面の出力
-	res.send('<h1>Welcome to My Page</h1><p><a href="/matchIndex">matchIndex</a></p><p><a href="/organization">organization</a></p>');
+	res.render('personal');
 });
 
 // delete /personal/

@@ -81,7 +81,7 @@ router.get('/login', function(req, res, next) {
 	// すでにログイン済み
 	if(req.session.p_id) {
 		console.log('already logged in ')
-		res.redirect('/matchIndex');
+		res.redirect('/personal');
 	}
 	else {
 	    res.render('login');
@@ -144,7 +144,7 @@ router.post('/login', function(req, res) {
 			console.log('success to login');
 			req.session.p_id = results[0].p_id;
 			req.session.o_id = results[0].o_id;
-			res.redirect('/matchIndex');
+			res.redirect('/personal');
 		}
 		// ログイン失敗
 		else {
@@ -171,7 +171,7 @@ router.post('/createAccount', function(req, res) {
 		if(err === null) {
 			console.log('success to create new account');
 			req.session.p_id = results.insertId;
-			res.redirect('/matchIndex');
+			res.redirect('/personal');
 		}
 		else {
 			console.log('faild to create new account');

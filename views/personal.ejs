@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<title>Archery</title>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+	<link rel="stylesheet" type="text/css" href="/components/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/components/fontawesome/css/font-awesome.min.css"> 
+</head>
+<body id="body">
+    <header id="topBar" class="navbar navbar-fixed-top">
+        <div class="container">
+                <h1>マイページ</h1>
+                <div class="dropdown navButtonArea">
+                    <div id="navButton" class="navButton pull-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></div>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navButton">
+                        <li><a href="/logout">ログアウト</a></li>
+                    </ul>
+            </div>
+        </div>
+    </header>
+    <main class="container common personal" role='main'>
+
+    <section class="panel">
+        <h2 class="panel-heading"><i class="fa fa-user"></i> ユーザー情報</h2>
+        <div class="panel-body">
+            <dl class="dl-horizontal">
+                <dt>氏名</dt><dd class="playerName">渡辺大貴</dd>
+                <dt>Eメール</dt><dd class="email">example@gmail.com</dd>
+                <dt>生年月日</dt><dd class="birth">1997/08/06</dd>
+                <dt>性別</dt><dd class="sex">男</dd>
+                <dt>所属団体</dt><dd><a href="/organization" class="organizationName">情報研究部</a></dd>
+            </dl>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2 class="panel-heading"><i class="fa fa-dot-circle-o"></i> 試合を始める</h2>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="thumbnail">
+                        <a href="/matchIndex">
+                        <img src="/images/list.png" alt="試合一覧">
+                        </a>
+                        <div class="caption">
+                            <h3>試合一覧</h3>
+                            <p>参加する試合を選びます。</p>
+                            <a href="/matchIndex">
+                                <button class="btn blue">試合一覧</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-6">
+                    <div class="thumbnail">
+                        <a href="/insertMatch">
+                        <img src="/images/gears.png" alt="試合作成">
+                        </a>
+                        <div class="caption">
+                            <h3>試合作成</h3>
+                            <p>新しく試合を作成します。</p>
+                            <a href="/insertMatch">
+                                <button class="btn blue">試合作成</button>
+                            </a>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <section class="panel resultsArea">
+    <h2 class="panel-heading"><i class="fa fa-line-chart"></i> 過去の成績</h2>
+
+        <div>
+        <h3>過去の成績(最新5件)</h3>
+
+        <table class="table table-condensed table-bordered">
+
+            <tbody>
+
+                <tr>
+                    <th>日時</th>
+                    <th>試合</th>
+                    <th>合計</th>
+                    <th>平均</th>
+                </tr>
+
+                <tr>
+                    <td>2015/07/24</td>
+                    <td>平成30年度国体</td>
+                    <td>120</td>
+                    <td> 6</td>
+                </tr>
+
+                <tr>
+                    <td>2015/07/24</td>
+                    <td>本日の試合</td>
+                    <td>120</td>
+                    <td> 6</td>
+                </tr>
+
+                <tr>
+                    <td>2015/07/04</td>
+                    <td>宮城県高校連盟主催 第23回 アーチェリー競技大会</td>
+                    <td>120</td>
+                    <td> 6</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+        </div>
+
+        <div class="chartArea">
+        <h3>グラフ</h3>
+        <canvas id="lineChart"></canvas>
+        </div>
+
+        <a href="/personal/record" class="btn-record">
+            <button class="btn blue">過去の得点表一覧へ</button>
+        </a>
+
+    </section>
+
+    </main>
+
+    <footer>
+        <p><small>Copyright 2015 IRC. All Rights Reserved.</small></p>
+    </footer>
+    <script src="/javascripts/jquery.min.js"></script>
+    <script src="/components/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/javascripts/common.js"></script>
+    <script src="/components/Chart.js"></script>
+    <script src="/javascripts/personalChart.js"></script>
+</body>
+</html>
