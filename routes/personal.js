@@ -25,14 +25,12 @@ router.get('/', loginCheck, function(req, res) {
 // delete /personal/
 router.delete('/', loginCheck, function(req, res) {
 	// sessionで参照できるアカウントを削除
-
 	res.send('delete /personal/');
 });
 
 // get /personal/record/
 router.get('/record', loginCheck, function(req, res) {
 	// 過去の得点表一覧画面
-
 	res.send('get /personal/record/');
 });
 

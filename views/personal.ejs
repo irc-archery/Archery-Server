@@ -27,11 +27,11 @@
         <h2 class="panel-heading"><i class="fa fa-user"></i> ユーザー情報</h2>
         <div class="panel-body">
             <dl class="dl-horizontal">
-                <dt>氏名</dt><dd class="playerName">渡辺大貴</dd>
-                <dt>Eメール</dt><dd class="email">example@gmail.com</dd>
-                <dt>生年月日</dt><dd class="birth">1997/08/06</dd>
-                <dt>性別</dt><dd class="sex">男</dd>
-                <dt>所属団体</dt><dd><a href="/organization" class="organizationName">情報研究部</a></dd>
+                <dt>氏名</dt><dd class="playerName"></dd>
+                <dt>Eメール</dt><dd class="email"></dd>
+                <dt>生年月日</dt><dd class="birth"></dd>
+                <dt>性別</dt><dd class="sex"></dd>
+                <dt>所属団体</dt><dd><a href="/organization" class="organizationName"></a></dd>
             </dl>
         </div>
     </section>
@@ -81,40 +81,7 @@
         <div>
         <h3>過去の成績(最新5件)</h3>
 
-        <table class="table table-condensed table-bordered">
-
-            <tbody>
-
-                <tr>
-                    <th>日時</th>
-                    <th>試合</th>
-                    <th>合計</th>
-                    <th>平均</th>
-                </tr>
-
-                <tr>
-                    <td>2015/07/24</td>
-                    <td>平成30年度国体</td>
-                    <td>120</td>
-                    <td> 6</td>
-                </tr>
-
-                <tr>
-                    <td>2015/07/24</td>
-                    <td>本日の試合</td>
-                    <td>120</td>
-                    <td> 6</td>
-                </tr>
-
-                <tr>
-                    <td>2015/07/04</td>
-                    <td>宮城県高校連盟主催 第23回 アーチェリー競技大会</td>
-                    <td>120</td>
-                    <td> 6</td>
-                </tr>
-
-            </tbody>
-
+        <table class="table table-condensed table-bordered" id="recordArea">
         </table>
 
         </div>
@@ -140,5 +107,6 @@
     <script src="/javascripts/common.js"></script>
     <script src="/components/Chart.js"></script>
     <script src="/javascripts/personalChart.js"></script>
+    <script src="/javascripts/personal.js"></script>
 </body>
 </html>
