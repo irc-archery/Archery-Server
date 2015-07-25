@@ -73,7 +73,7 @@ socket.on('broadcastInsertMatch', function(data) {
   if(data != '') {
     var code = '';
 
-    code += '<tr class="openModal" data-match="' + data['m_id'] + '" data-toggle="modal" data-target="#matchModal"><td>' + data['matchName'] + '</td><td>' + data['sponsor'] + '</td></tr>';
+    code += '<tr class="openModal" data-match="' + data['m_id'] + '" data-toggle="modal" data-target="#matchModal"><td>' + data['matchName'] + ' <span class="label label-info">New</span></td><td>' + data['sponsor'] + '</td></tr>';
 
     // save the data
     globalData[data['m_id']] = data;

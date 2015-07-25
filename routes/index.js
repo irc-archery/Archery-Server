@@ -136,20 +136,26 @@ router.post('/login', function(req, res) {
 	console.log(loginSql);
 
 	connection.query(loginSql, function(err, results) {
-		console.log('results of loginSql');
-		console.log(results);
+		if(!err) {
 
-		// ログイン成功
-		if(Object.keys(results).length !== 0) {
-			console.log('success to login');
-			req.session.p_id = results[0].p_id;
-			req.session.o_id = results[0].o_id;
-			res.redirect('/personal');
+			console.log('results of loginSql');
+			console.log(results);
+
+			// ログイン成功
+			if(Object.keys(results).length !== 0) {
+				console.log('success to login');
+				req.session.p_id = results[0].p_id;
+				req.session.o_id = results[0].o_id;
+				res.redirect('/personal');
+			}
+			// ログイン失敗
+			else {
+				console.log('faild to login');
+				res.redirect('/login');
+			}
 		}
-		// ログイン失敗
 		else {
-			console.log('faild to login');
-			res.redirect('/login');
+			console.log(err);
 		}
 	});
 });

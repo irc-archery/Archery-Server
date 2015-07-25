@@ -132,6 +132,11 @@ tr:hover{
   color: white;
 }
 
+.cyan {
+  background: #00BCD4;
+  color: white;
+}
+
 /* personal page */
 
 main.common section{

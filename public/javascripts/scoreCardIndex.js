@@ -55,7 +55,7 @@ socket.on('broadcastInsertScoreCard', function(data) {
   var code = '';
 
   code += '<tr class="openScoreCard" data-scorecard="' + data['sc_id'] + '">';
-  code += '<td>' + data['playerName'] + '</td>';
+  code += '<td>' + data['playerName'] + ' <span class="label label-info">New</span></td>';
   code += '<td>' + data['perEnd'] + '</td>';
   code += '<td>' + data['total'] + '</td>';
   code += '</tr>';
