@@ -41,6 +41,7 @@ function matchIndexModel(io, connection, sessions, ios) {
 
 						// 試合一覧のIDを抽出
 						connection.query(matchIndexIdSql, function(err, matchIndexId) {
+
 							if(matchIndexId != '') {
 
 								var matchIndexDataSql = 'select `match`.m_id, `match`.matchName, `match`.sponsor, DATE_FORMAT(`match`.created, "%Y/%m/%d %H:%i:%S") as created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[0].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[0].m_id);

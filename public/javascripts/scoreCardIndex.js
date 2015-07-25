@@ -42,7 +42,7 @@ socket.on('extractScoreCardIndex', function(data){
   }
   else {
 
-    var infoCode = '<div class="alert alert-info" role="alert">現在この試合に得点表は存在しません。新たに得点表を作成したい場合は、上のアイコンから移動できる<a href="/insertScoreCard?m_id="' + getQueryString().m_id + ' class="alert-link">得点表作成画面</a>から新たに得点表を作成してください。</div>';
+    var infoCode = '<div class="alert alert-info" role="alert">現在この試合に得点表は存在しません。新たに得点表を作成したい場合は、上のアイコンから移動できる<a href="/insertScoreCard?m_id=' + getQueryString().m_id + '" class="alert-link">得点表作成画面</a>から新たに得点表を作成してください。</div>';
 
     $('.infoArea').append(infoCode);
   }

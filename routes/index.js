@@ -158,6 +158,8 @@ router.post('/login', function(req, res) {
 router.post('/createAccount', function(req, res) {
 	console.log('post /createAccount');
 
+	console.log(req.body);
+
 	var createAccountSql = 'insert into account(firstName, lastName, rubyFirstName, rubyLastName, email, password, birth, type, sex) values(' + connection.escape(req.body.firstName) + ', ' + connection.escape(req.body.lastName) + ', ' + connection.escape(req.body.rubyFirstName) + ', ' + connection.escape(req.body.rubyLastName) + ', ' + connection.escape(req.body.email) + ', ' + connection.escape(req.body.password) + ', ' + connection.escape(req.body.birth) + ', ' + 2 + ', ' + connection.escape(req.body.sex) + ');';
 	console.log(createAccountSql);
 
