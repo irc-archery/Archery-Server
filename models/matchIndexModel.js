@@ -67,6 +67,10 @@ function matchIndexModel(io, connection, sessions, ios) {
 									}
 								});
 							}
+							else {
+								// 参加できる試合は存在しない
+								socket.emit('extractMatchIndex', '');
+							}
 						});
 					}
 					// ログインしていないユーザーからのアクセス

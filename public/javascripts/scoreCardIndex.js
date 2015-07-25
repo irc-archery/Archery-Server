@@ -2,6 +2,22 @@ var socket = io('/scoreCardIndex');
 
 socket.emit('joinMatch', {'m_id': getQueryString().m_id, 'sessionID': document.cookie})
 
+$(function() {
+  // 得点表作成へのリンクの生成
+  $('.insertScoreCardLink').attr('href', '/insertScoreCard?m_id=' + getQueryString().m_id);
+});
+
+$('#scoreCardIndexArea').on('click', 'tr.openScoreCard', function() {
+  console.log('tr on click!');
+  var matchId = getQueryString().m_id;
+  var scoreCardId = $(this).data('scorecard');
+
+  console.log(matchId);
+  console.log(scoreCardId);
+
+  location.href = '/scoreCard?m_id=' + matchId + '&sc_id=' + scoreCardId;
+});
+
 // On Extract ScoreCard Index
 socket.on('extractScoreCardIndex', function(data){
 
@@ -9,23 +25,27 @@ socket.on('extractScoreCardIndex', function(data){
 
   var code = '';
 
-  code += '<tr><td colspan="5" style="text-align: center;">m_id : ' + getQueryString().m_id + '</td></tr>';
+  console.log('on extractScoreCardIndex');
+  console.log(data);
 
-  code += '<tr><th>sc_id</th><th>playerName</th><th>perEnd</th><th>scoreTotal</th><th>&nbsp;</th></tr>';
+  if(data != '') {
 
-  for (var i = 0; i < data.length; i++) {
-    
-    code += '<tr>';
-    code += '<td>' + data[i]['sc_id'] + '</td>';
-    code += '<td>' + data[i]['playerName'] + '</td>';
-    code += '<td>' + data[i]['perEnd'] + '</td>';
-    code += '<td>' + data[i]['total'] + '</td>';
-    code += '<td><a href="/scoreCard?m_id=' + getQueryString().m_id + '&sc_id=' + data[i]['sc_id'] + '">Join</a></td>';
+    for (var i = 0; i < data.length; i++) {
+      code += '<tr class="openScoreCard" data-scorecard="' + data[i]['sc_id'] + '">';
+      code += '<td>' + data[i]['playerName'] + '</td>';
+      code += '<td>' + data[i]['perEnd'] + '</td>';
+      code += '<td>' + data[i]['total'] + '</td>';
+      code += '</tr>';
+    }
 
-    code += '</tr>';
+    $("#scoreCardIndexArea").append(code);
   }
+  else {
 
-  $("#scoreCardIndexArea").append(code);
+    var infoCode = '<div class="alert alert-info" role="alert">現在この試合に得点表は存在しません。新たに得点表を作成したい場合は、上のアイコンから移動できる<a href="/insertScoreCard?m_id="' + getQueryString().m_id + ' class="alert-link">得点表作成画面</a>から新たに得点表を作成してください。</div>';
+
+    $('.infoArea').append(infoCode);
+  }
 });
 
 socket.on('broadcastInsertScoreCard', function(data) {
@@ -34,13 +54,10 @@ socket.on('broadcastInsertScoreCard', function(data) {
 
   var code = '';
 
-  code += '<tr>';
-  code += '<td>' + data['sc_id'] + '</td>';
+  code += '<tr class="openScoreCard" data-scorecard="' + data['sc_id'] + '">';
   code += '<td>' + data['playerName'] + '</td>';
   code += '<td>' + data['perEnd'] + '</td>';
   code += '<td>' + data['total'] + '</td>';
-  code += '<td><a href="/scoreCard?m_id=' + getQueryString().m_id + '&sc_id=' + data['sc_id'] + '">Join</a></td>';
-
   code += '</tr>';
 
   $('#scoreCardIndexArea').append(code);

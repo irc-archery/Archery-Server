@@ -60,6 +60,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 
 							// 得点表は存在しない
 							else {
+								socket.emit('extractScoreCardIndex','');
 
 							}
 						});

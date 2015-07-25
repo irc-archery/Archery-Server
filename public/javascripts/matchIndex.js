@@ -48,8 +48,6 @@ socket.on('extractMatchIndex', function (data) {
     var code = '';
 
     // table
-    code += '<tr><th>試合名</th><th>主催</th></tr>';
-
     for (var i = 0; i < data.length; i++) {
       code += '<tr class="openModal" data-match="' + data[i]['m_id'] + '" data-toggle="modal" data-target="#matchModal"><td>' + data[i]['matchName'] + '</td><td>' + data[i]['sponsor'] + '</td></tr>';
 
@@ -57,11 +55,14 @@ socket.on('extractMatchIndex', function (data) {
       globalData[data[i]['m_id']] = data[i];
     }
 
-    $("#matchIndexArea").empty();
     $("#matchIndexArea").append(code);
   }
   else {
     // 現在は参加できる試合が存在しないことを通知
+
+    var infoCode = '<div class="alert alert-info" role="alert">現在開催されている試合はありません。右上のアイコンから移動できる<a href="/insertMatch" class="alert-link">試合作成画面</a>から新たに試合を作成するか、他の人が試合を作成するのをお待ちください。</div>';
+
+    $('.infoArea').append(infoCode);
   }
 });
 
@@ -72,14 +73,12 @@ socket.on('broadcastInsertMatch', function(data) {
   if(data != '') {
     var code = '';
 
-    code += "<tr>";
+    code += '<tr class="openModal" data-match="' + data['m_id'] + '" data-toggle="modal" data-target="#matchModal"><td>' + data['matchName'] + '</td><td>' + data['sponsor'] + '</td></tr>';
 
-    Object.keys(data).forEach(function (key) {
-        code += "<td>" + data[key] + "</td>";
-    });
-
-    code += "</tr>";
+    // save the data
+    globalData[data['m_id']] = data;
 
     $("#matchIndexArea").append(code);
+    $('.infoArea').empty();
   }
 })

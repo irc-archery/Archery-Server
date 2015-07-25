@@ -10,41 +10,6 @@
     <link rel="stylesheet" href="/components/fontawesome/css/font-awesome.min.css"> 
 </head>
 
-<div class="modal fade" id="matchModal" role="dialog" aria-labelledby="modal-title">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="modal-title">この試合に参加しますか?</h4>
-            </div>
-
-            <div class="modal-body">
-                <dl class="dl-horizontal">
-                    <dt>試合名</dt>
-                    <dd class="modal-matchName">全国高校生プログラミングコンテスト</dd>
-                    <dt>主催</dt>
-                    <dd class="modal-sponsor">全国情報研究</dd>
-                    <dt>試合開始日</dt>
-                    <dd class="modal-created">2015/05/07 15:47:52</dd>
-                    <dt>距離</dt>
-                    <dd class="modal-length">70m</dd>
-                    <dt>セット数</dt>
-                    <dd class="modal-perEnd">6</dd>
-                    <dt>射数</dt>
-                    <dd class="modal-arrows">6</dd>
-                    <dt>参加人数</dt>
-                    <dd class="modal-players">2</dd>
-                </dl>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
-                <a href="#"><button type="button" class="btn blue">試合に参加</button></a>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
 <body id="body">
 
     <header id="topBar" class="navbar navbar-fixed-top">
@@ -57,7 +22,8 @@
                     <li><a href="/personal">マイページ</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="/matchIndex">試合一覧</a></li>
-                    <li><a href="/insertMatch">試合作成</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#" class="insertScoreCardLink">得点表作成</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="/logout">ログアウト</a></li>
                 </ul>
@@ -69,8 +35,13 @@
             <h2 class="panel-heading"><i class="fa fa-list"></i> 得点表一覧</h2>
             <div class="panel-body">
 
-            <table id="scoreCardIndexArea" class="table table-bordered"></table>
+            <table id="scoreCardIndexArea" class="table table-bordered">
+                <tr><th>選手名</th><th>セット</th><th>得点</th></tr>
+            </table>
 
+            <div class="infoArea">
+            </div>
+            
             </div>
         </section>
     </main>

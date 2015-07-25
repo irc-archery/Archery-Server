@@ -35,10 +35,17 @@ socket.on('insertScoreCard', function(data) {
 
   console.log('on insertScoreCard')
   console.log(data);
-  $('#insertScoreCardArea').append('<p>{ sc_id: ' + data.sc_id + ' }</p>');
+
+  location.href = '/scoreCard?m_id=' + getQueryString().m_id + '&sc_id=' + data.sc_id;
 });
 
 $(function() {
+
+  // 前の画面に戻れるようにhrefを更新
+
+  $('.scoreCardIndexLink').attr('href', '/scoreCardIndex?m_id=' + getQueryString().m_id)
+
+
   if($('input[name="radio"]:checked').val() === "me"){
     $('.others-form').hide(); 
   }

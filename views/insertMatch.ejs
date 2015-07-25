@@ -28,45 +28,41 @@
     </header>
 
     <main class="container col-xs-offset-2 col-xs-8" role='main'>
+        <div class="form-group">
+            <label for="matchName">試合名</label>
+            <input class="form-control" type="text" id="matchName">
+        </div>
 
-        <form class="form-horizontal" id="sendForm" action="/createAccount" method="POST">
+        <div class="form-group">
+            <label for="sponsor">主催</label>
+            <input class="form-control" type="text" id="sponsor">
+        </div>
 
-            <div class="form-group">
-                <label for="matchName">試合名</label>
-                <input class="form-control" type="text" id="matchName">
-            </div>
+        <div class="form-group">
+            <label for="length">距離</label>
+            <select class="form-control" id="length">
+                <option value="0">90m</option>
+                <option value="1">70m</option>
+                <option value="2">60m</option>
+                <option value="3">50m</option>
+                <option value="4">40m</option>
+                <option value="5">30m</option>
+                <option value="6">70m前</option>
+                <option value="7">70m後</option>
+            </select>
+        </div>
 
-            <div class="form-group">
-                <label for="sponsor">主催</label>
-                <input class="form-control" type="text" id="sponsor">
-            </div>
+        <div class="form-group">
+            <label for="permission">試合に参加できる人</label>
+            <select class="form-control" id="permission">
+                <option value="0">誰でも</option>
+                <option value="1">所属団体のみ</option>
+            </select>
+        </div>
 
-            <div class="form-group">
-                <label for="length">距離</label>
-                <select class="form-control" id="length">
-                    <option value="0">90m</option>
-                    <option value="1">70m</option>
-                    <option value="2">60m</option>
-                    <option value="3">50m</option>
-                    <option value="4">40m</option>
-                    <option value="5">30m</option>
-                    <option value="6">70m前</option>
-                    <option value="7">70m後</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="permission">試合に参加できる人</label>
-                <select class="form-control" id="permission">
-                    <option value="0">誰でも</option>
-                    <option value="1">所属団体のみ</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <button class="btn blue" onclick="insertMatch()">試合作成</button>
-            </div>
-        </form>
+        <div class="form-group">
+            <button class="btn blue" onclick="insertMatch()">試合作成</button>
+        </div>
     </main>
 
     <script src="/javascripts/jquery.min.js"></script>
