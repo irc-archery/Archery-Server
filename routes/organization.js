@@ -22,42 +22,12 @@ router.get('/', loginCheck, function(req, res) {
 	var o_id = req.session.o_id;
 
 	if(o_id != undefined) {
-		// 責任者idを抽出するためのSQL文
-		var organizationAdminIdSql = 'select p_id from organization where o_id = ' + connection.escape(o_id);
-
-		// 責任者idを抽出
-		connection.query(organizationAdminIdSql, function(err, organizationAdminIdResults) {
-
-			// 団体データを抽出
-			var organizationDataSql = 'select organizationName, DATE_FORMAT(establish, "%Y/%m/%d") as establish, (select count(*) from account where o_id = ' + connection.escape(o_id) + ') as members, (select concat(account.lastName, account.firstName) as admin from account where account.p_id = ' + organizationAdminIdResults[0].p_id + ') as admin, place, email from organization where organization.o_id = ' + connection.escape(o_id);
-
-			connection.query(organizationDataSql, function(err, organizationDataResults) {
-				
-				var extractMembersSql = 'select account.p_id, concat(account.lastName, account.firstName) as playerName, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, account.email from account where account.o_id = ' + connection.escape(o_id);
-
-				console.log('extractMembersSql');
-				console.log(extractMembersSql);
-
-				connection.query(extractMembersSql, function(err, extractMembersResults) {
-
-					console.log('extractMembersResults');
-					console.log(extractMembersResults);
-
-					organizationDataResults[0]['status'] = 1;
-
-					organizationDataResults[0]['memberList'] = extractMembersResults;
-
-					console.log('organizationDataResults[0]');
-					console.log(organizationDataResults[0]);
-
-					res.send(organizationDataResults[0]);
-				});
-			});
-		});
+		res.render('organization');
 	}
 	else{
-		res.send('you are not belong to organization. place join or <a href="/organization/create">create</a>.');
-	};
+		res.render('notBelong');
+
+	}
 });
 
 // get /organization/create
