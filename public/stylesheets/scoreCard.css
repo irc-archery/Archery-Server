@@ -1,0 +1,14 @@
+#subTotalHeader{
+	font-size: 14px;
+}
+
+.border div{
+	border: 1px solid #aaa;
+}
+
+#subTotalBody {
+}
+
+.bottom {
+	margin-bottom: 20px;
+}
