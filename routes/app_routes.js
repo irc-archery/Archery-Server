@@ -24,7 +24,7 @@ router.post('/createAccount', function(req, res) {
 		else {
 			console.log('faild to create new account');
 			data['results'] = false;
-			data['err'] = err;
+			data['err'] = '入力されたメールアドレスがすでに登録されているなどの原因で、新規作成できませんでした。';
 		}
 
 		res.send(data);

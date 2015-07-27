@@ -5,10 +5,10 @@
 	<title>Archery</title>
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
-	<link rel="stylesheet" type="text/css" href="/components/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/components/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/components/fontawesome/css/font-awesome.min.css"> 
-    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
-<link type="text/css" rel="stylesheet" href="/stylesheets/scoreCard.css"/>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/scoreCard.css"/>
 </head>
 
 <body id="body">
@@ -31,72 +31,101 @@
             </div>
         </div>
     </header>
-    <main class="container common" role='main'>
+    <main class="common" role='main'>
 
-        <div class="scoreCardInfo">
-            <div class="row bottom">
-                <div class="col-xs-6"><input type="text" class="form-control" value="練習試合" disabled></div>
-                <div class="col-xs-6"><input type="text" class="form-control" value="2015/05/05" disabled></div>
+        <div class="scoreCardInfo container">
+            <div class="rows bottom">
+                <div class="col-fn-6"><input type="text" class="form-control left" value="練習試合" disabled></div>
+                <div class="col-fn-6"><input type="text" class="form-control right" value="2015/05/05" disabled></div>
             </div>
 
-            <div class="row bottom">
-                <div class="col-xs-6"><input type="text" class="form-control" placeholder="ゼッケン番号"></div>
-                <div class="col-xs-6"><input type="text" class="form-control" value="渡辺大貴" disabled></div>
+            <div class="rows bottom">
+                <div class="col-fn-6"><input type="text" class="form-control left" placeholder="ゼッケン番号"></div>
+                <div class="col-fn-6"><input type="text" class="form-control right" value="渡辺大貴" disabled></div>
             </div>
 
-            <div class="row bottom">
-                <div class="col-xs-6"><input type="text" class="form-control" value="情報研究部" disabled></div>
-                <div class="col-xs-6"><input type="text" class="form-control" placeholder="都道府県"></div>
+            <div class="rows bottom">
+                <div class="col-fn-6"><input type="text" class="form-control left" value="情報研究部" disabled></div>
+                <div class="col-fn-6"><input type="text" class="form-control right" placeholder="都道府県"></div>
             </div>
         </div>
 
-        <div class="scoreCardTotals container bottom">
-
-            <div class="subTotalHeader row border">
-                <div class="col-xs-2">1回目</div>
-                <div class="col-xs-2">2回目</div>
-                <div class="col-xs-2">3回目</div>
-                <div class="col-xs-2">4回目</div>
-                <div class="col-xs-2">5回目</div>
-                <div class="col-xs-2">6回目</div>
+        <div class="scoreCardTotals container bottom_once">
+            <div class="inContainer">
+            <div class="subTotalHeader rows border-top">
+                <div class="col-fn-10 border left-border">
+                    <div class="col-fn-2">1<span class="harf">回目</span></div>
+                    <div class="col-fn-2">2<span class="harf">回目</span></div>
+                    <div class="col-fn-2">3<span class="harf">回目</span></div>
+                    <div class="col-fn-2">4<span class="harf">回目</span></div>
+                    <div class="col-fn-2">5<span class="harf">回目</span></div>
+                    <div class="col-fn-2">6<span class="harf">回目</span></div>
+                </div>
+                <div class="col-fn-2 border_once">合計</div>
             </div>
 
-            <div class="row border">
-                <div class="col-xs-2">2</div>
-                <div class="col-xs-2">3</div>
-                <div class="col-xs-2">4</div>
-                <div class="col-xs-2">5</div>
-                <div class="col-xs-2">6</div>
-                <div class="col-xs-2">x</div>
+            <div class="subTotalBody rows">
+                <div class="col-fn-10 rows border">
+                    <div class="col-fn-2">2</div>
+                    <div class="col-fn-2"></div>
+                    <div class="col-fn-2"></div>
+                    <div class="col-fn-2"></div>
+                    <div class="col-fn-2"></div>
+                    <div class="col-fn-2">x</div>
+                </div>
+                <div class="col-fn-2 border_once">160</div>
             </div>
 
-            <div class="row border">
-                <div class="col-xs-2">2</div>
-                <div class="col-xs-2">3</div>
-                <div class="col-xs-2">3</div>
-                <div class="col-xs-6">ふぁふぁふぁ</div>
+            <div class="rows border totalHeader">
+                <div class="col-fn-2">10数</div>
+                <div class="col-fn-2">x数</div>
+                <div class="col-fn-4 x-75">選手サイン</div>
+                <div class="col-fn-4 x-75">記録者サイン</div>
             </div>
+
+            <div class="totalBody rows border">
+                <div class="col-fn-2">2</div>
+                <div class="col-fn-2"></div>
+                <div class="col-fn-4"></div>
+                <div class="col-fn-4"></div>
+            </div>
+        </div>
         </div>
 
         <div class="scoreCardBody container">
-            <div class="row border">
-                <div class="col-xs-10">90m</div>
-                <div class="col-xs-2">小計</div>
+            <div class="scoreAreaHeader rows">
+                <div class="col-fn-10 scoreRowsInfo"><span class="perEnd">1</span>回目 : <span class="length">90m</span></div>
+                <div class="col-fn-2 border_once">小計</div>
             </div>
 
-            <div class="row border">
-                <div class="col-xs-2">ゼッケン</div>
-                <div class="col-xs-8">
-                    <div class="row">
-                        <div class="col-xs-2">2</div>
-                        <div class="col-xs-2">2</div>
-                        <div class="col-xs-2">3</div>
-                        <div class="col-xs-2">x</div>
-                        <div class="col-xs-2">x</div>
-                        <div class="col-xs-2">x</div>
+            <div class="rows scoreArea">
+                <div class="col-fn-2 border_once number">A-10</div>
+                <div class="col-fn-8">
+                    <div class="rows border score">
+                        <div class="col-fn-2">2</div>
+                        <div class="col-fn-2">2</div>
+                        <div class="col-fn-2">3</div>
+                        <div class="col-fn-2">x</div>
+                        <div class="col-fn-2">x</div>
+                        <div class="col-fn-2">x</div>
                     </div>
                 </div>
-                <div class="col-xs-2">10</div>
+                <div class="col-fn-2 border_once scoreTotal">10</div>
+            </div>
+
+            <div class="rows updatedScoreArea">
+                <div class="col-fn-2 border_once number">&nbsp;</div>
+                <div class="col-fn-8">
+                    <div class="rows border updatedScore">
+                        <div class="col-fn-2">1</div>
+                        <div class="col-fn-2">1</div>
+                        <div class="col-fn-2">1</div>
+                        <div class="col-fn-2">1</div>
+                        <div class="col-fn-2">1</div>
+                        <div class="col-fn-2">1</div>
+                    </div>
+                </div>
+                <div class="col-fn-2 border_once scoreTotal">6</div>
             </div>
         </div>
 

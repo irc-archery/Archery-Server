@@ -1,14 +1,113 @@
-#subTotalHeader{
-	font-size: 14px;
-}
-
-.border div{
+.border div, .border_once{
 	border: 1px solid #aaa;
 }
 
-#subTotalBody {
+.bottom div, .bottom_once{
+	margin-bottom: 20px;
 }
 
-.bottom {
-	margin-bottom: 20px;
+.border-top{
+	border-top: 1px solid #aaa;	
+}
+
+.border-left{
+	border-left: 1px solid #aaa;	
+}
+
+.border-right{
+	border-right: 1px solid #aaa;	
+}
+
+.border-bottom{
+	border-bottom: 1px solid #aaa;	
+}
+
+.left-border div:first-child{
+	border-left: 1px solid #aaa;
+}
+
+.harf{
+	font-size: 0.5em;
+}
+
+.x-75{
+	font-size: 0.75em;
+}
+
+.left{
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+/* class like bootstrap */
+
+.rows {
+	width: 100%;
+}
+
+.col-fn-4{
+	width: 33.3333%;
+	float: left;
+}
+
+.col-fn-5{
+	width: 41.6667%;
+	float: left;
+}
+
+.col-fn-6 {
+	width: 50%;
+	float:left;
+}
+
+.col-fn-8 {
+	width: 66.6667%;;
+	float: left;
+}
+
+.col-fn-10 {
+	width: 83.3333%;
+	float:left;
+}
+
+.col-fn-2{
+	width: 16.6667%;
+	float:left;
+}
+
+.scoreCardInfo input {
+	width: 95%;
+}
+
+/* style */
+
+
+.scoreCardTotals, .scoreCardBody {
+	text-align: center;
+}
+
+.subTotalBody div, .totalBody div{
+	height: 40px;
+	line-height: 40px;
+}
+
+.totalHeader div{
+	height: 30px;
+	line-height: 30px;
+}
+
+.scoreRowsInfo {
+	text-align: left;
+}
+
+.score div, .updatedScore div, .scoreTotal, .number{
+	height: 50px;
+	line-height: 50px;
+}
+
+.subTotalHeader {
+
 }
