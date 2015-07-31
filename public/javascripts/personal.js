@@ -63,6 +63,8 @@ $(function() {
 		    	}
 
 		    	$('#recordArea').append(record);
+
+		    	displayLineChart(data.record)
 		    }
 		},
 		error: function(err) {

@@ -155,6 +155,10 @@ function scoreCardModel(io, connection, sessions, ios) {
 					// p_idが取得できていれば、処理を続行, そうでなければエラーEventをemit
 					if(p_id !== undefined) {
 
+						// 得点表の選手のp_idを取得
+						// その人のp_idがこの人のsubUserのp_idと一致すれば処理を続行
+						// その際, 挿入する値に使用するp_idをしっかりとsubUserのp_idに切り替える
+
 						// データがすでに存在しないかどうか確認する
 						var checkExistSql = 'select sc_id from `scorePerEnd` where sc_id = ' + connection.escape(data.sc_id) + ' and p_id = ' + connection.escape(p_id) + ' and perEnd = ' + connection.escape(data.perEnd);
 
