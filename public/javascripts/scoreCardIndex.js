@@ -72,7 +72,7 @@ socket.on('broadcastCloseMatch', function(data) {
 
 socket.on('broadcastInsertScore', function(data) {
 
-  console.log('on broadcastinsertScore');
+  console.log('on broadcastInsertScore');
   console.log(data);
 });
 

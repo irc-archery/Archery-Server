@@ -154,7 +154,8 @@ function SumPoint() {
 				totalPoint += sum;
 				point_sum[j] += sum;
 			}
-			
+		,,,,,,,, 	
+		,,,,,,,, 
 			var check_or_score = $(sumSel).eq(-i).text();
 			var check_or_revisescore = $(revise_sumSel).eq(-i).text();
 						

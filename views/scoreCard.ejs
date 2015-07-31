@@ -15,7 +15,7 @@
 
     <header id="topBar" class="navbar navbar-fixed-top">
         <div class="container">
-            <a href="/matchIndex"><div class="backButton"><i class="fa fa-arrow-left"></i></div></a>
+            <a href="#" class="scoreCardIndexLink"><div class="backButton"><i class="fa fa-arrow-left"></i></div></a>
             <h1>得点表</h1>
             <div class="dropdown navButtonArea">
                 <div id="navButton" class="navButton pull-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></div>
@@ -35,25 +35,24 @@
 
         <div class="scoreCardInfo container">
             <div class="rows bottom">
-                <div class="col-fn-6"><input type="text" class="form-control left" value="練習試合" disabled></div>
-                <div class="col-fn-6"><input type="text" class="form-control right" value="2015/05/05" disabled></div>
+                <div class="col-fn-6"><input type="text" class="form-control left matchNameTextBox" value="練習試合" disabled></div>
+                <div class="col-fn-6"><input type="text" class="form-control right createdTextBox" value="2015/05/05" disabled></div>
             </div>
 
             <div class="rows bottom">
-                <div class="col-fn-6"><input type="text" class="form-control left" placeholder="ゼッケン番号"></div>
-                <div class="col-fn-6"><input type="text" class="form-control right" value="渡辺大貴" disabled></div>
+                <div class="col-fn-6"><input type="text" class="form-control left numberTextBox" placeholder="ゼッケン番号"></div>
+                <div class="col-fn-6"><input type="text" class="form-control right playerNameTextBox" value="渡辺大貴" disabled></div>
             </div>
 
             <div class="rows bottom">
-                <div class="col-fn-6"><input type="text" class="form-control left" value="情報研究部" disabled></div>
-                <div class="col-fn-6"><input type="text" class="form-control right" placeholder="都道府県"></div>
+                <div class="col-fn-6"><input type="text" class="form-control left organizationNameTextBox" value="情報研究部" disabled></div>
+                <div class="col-fn-6"><input type="text" class="form-control right prefecturesTextBox" placeholder="都道府県"></div>
             </div>
         </div>
 
         <div class="scoreCardTotals container bottom_once">
-            <div class="inContainer">
-            <div class="subTotalHeader rows border-top">
-                <div class="col-fn-10 border left-border">
+            <div class="subTotalHeader rows">
+                <div class="col-fn-10 border">
                     <div class="col-fn-2">1<span class="harf">回目</span></div>
                     <div class="col-fn-2">2<span class="harf">回目</span></div>
                     <div class="col-fn-2">3<span class="harf">回目</span></div>
@@ -66,14 +65,14 @@
 
             <div class="subTotalBody rows">
                 <div class="col-fn-10 rows border">
-                    <div class="col-fn-2">2</div>
-                    <div class="col-fn-2"></div>
-                    <div class="col-fn-2"></div>
-                    <div class="col-fn-2"></div>
-                    <div class="col-fn-2"></div>
-                    <div class="col-fn-2">x</div>
+                    <div class="col-fn-2 subTotalHeader0"></div>
+                    <div class="col-fn-2 subTotalHeader1"></div>
+                    <div class="col-fn-2 subTotalHeader2"></div>
+                    <div class="col-fn-2 subTotalHeader3"></div>
+                    <div class="col-fn-2 subTotalHeader4"></div>
+                    <div class="col-fn-2 subTotalHeader5"></div>
                 </div>
-                <div class="col-fn-2 border_once">160</div>
+                <div class="col-fn-2 border_once subTotalHeaderTotal">160</div>
             </div>
 
             <div class="rows border totalHeader">
@@ -84,49 +83,52 @@
             </div>
 
             <div class="totalBody rows border">
-                <div class="col-fn-2">2</div>
-                <div class="col-fn-2"></div>
+                <div class="col-fn-2 subTotalHeaderTen">2</div>
+                <div class="col-fn-2 subTotalHeaderX"></div>
                 <div class="col-fn-4"></div>
                 <div class="col-fn-4"></div>
             </div>
-        </div>
         </div>
 
         <div class="scoreCardBody container">
-            <div class="scoreAreaHeader rows">
-                <div class="col-fn-10 scoreRowsInfo"><span class="perEnd">1</span>回目 : <span class="length">90m</span></div>
-                <div class="col-fn-2 border_once">小計</div>
+
+            <div class="perEnd1">
+                <div class="scoreAreaHeader rows">
+                    <div class="col-fn-10 scoreRowsInfo"><span class="perEnd">1</span>回目 : <span class="length">90m</span></div>
+                    <div class="col-fn-2 border_once">小計</div>
+                </div>
+
+                <div class="rows scoreArea">
+                    <div class="col-fn-2 border_once number">A-10</div>
+                    <div class="col-fn-8">
+                        <div class="rows border score">
+                            <div class="col-fn-2 score1">2</div>
+                            <div class="col-fn-2 score2">2</div>
+                            <div class="col-fn-2 score3">3</div>
+                            <div class="col-fn-2 score4">x</div>
+                            <div class="col-fn-2 score5">x</div>
+                            <div class="col-fn-2 score6">x</div>
+                        </div>
+                    </div>
+                    <div class="col-fn-2 border_once scoreTotal">10</div>
+                </div>
+
+                <div class="rows updatedScoreArea">
+                    <div class="col-fn-2 border_once number">&nbsp;</div>
+                    <div class="col-fn-8">
+                        <div class="rows border updatedScore">
+                            <div class="col-fn-2 updatedScore1">1</div>
+                            <div class="col-fn-2 updatedScore2"></div>
+                            <div class="col-fn-2 updatedScore3"></div>
+                            <div class="col-fn-2 updatedScore4"></div>
+                            <div class="col-fn-2 updatedScore5"></div>
+                            <div class="col-fn-2 updatedScore6"></div>
+                        </div>
+                    </div>
+                    <div class="col-fn-2 border_once updatedScoreTotal"></div>
+                </div>
             </div>
 
-            <div class="rows scoreArea">
-                <div class="col-fn-2 border_once number">A-10</div>
-                <div class="col-fn-8">
-                    <div class="rows border score">
-                        <div class="col-fn-2">2</div>
-                        <div class="col-fn-2">2</div>
-                        <div class="col-fn-2">3</div>
-                        <div class="col-fn-2">x</div>
-                        <div class="col-fn-2">x</div>
-                        <div class="col-fn-2">x</div>
-                    </div>
-                </div>
-                <div class="col-fn-2 border_once scoreTotal">10</div>
-            </div>
-
-            <div class="rows updatedScoreArea">
-                <div class="col-fn-2 border_once number">&nbsp;</div>
-                <div class="col-fn-8">
-                    <div class="rows border updatedScore">
-                        <div class="col-fn-2">1</div>
-                        <div class="col-fn-2">1</div>
-                        <div class="col-fn-2">1</div>
-                        <div class="col-fn-2">1</div>
-                        <div class="col-fn-2">1</div>
-                        <div class="col-fn-2">1</div>
-                    </div>
-                </div>
-                <div class="col-fn-2 border_once scoreTotal">6</div>
-            </div>
         </div>
 
     </main>
@@ -139,7 +141,7 @@
     <script src="/javascripts/common.js"></script>
     <script src="/javascripts/functions.js"></script> 
     <script src="/socket.io/socket.io.js"></script>
-    <!--script type="text/javascript" src="/javascripts/scoreCard.js"></script-->
+    <script type="text/javascript" src="/javascripts/scoreCard.js"></script>
     <!--script type="text/javascript" src="/components/jquery.mobile-1.4.5.min.js"></script-->
 </body>
 </html>

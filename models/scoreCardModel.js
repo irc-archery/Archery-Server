@@ -59,6 +59,9 @@ function scoreCardModel(io, connection, sessions, ios) {
 								// 得点データの抽出を行うSQL文
 								var scorePerEndSql = 'select scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.updatedScore_1, scorePerEnd.updatedScore_2, scorePerEnd.updatedScore_3, scorePerEnd.updatedScore_4, scorePerEnd.updatedScore_5, scorePerEnd.updatedScore_6, scorePerEnd.subTotal, scorePerEnd.perEnd from `scorePerEnd` where scorePerEnd.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' order by scorePerEnd.perEnd asc;';
 
+								console.log('scorePerEndSql');
+								console.log(scorePerEndSql);
+
 								// 得点表データの抽出
 								connection.query(scoreCardSql, function (err, scoreCardData) {
 									// セット数の抽出
