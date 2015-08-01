@@ -9,6 +9,9 @@ $(function() {
   $('.scoreCardIndexLink').attr('href', '/scoreCardIndex?m_id=' + getQueryString().m_id);
 });
 
+var length = '';
+var number = '';
+
 // 得点表データの出力
 socket.on('extractScoreCard', function(data) {
 
@@ -35,7 +38,7 @@ socket.on('extractScoreCard', function(data) {
   $('.subTotalHeaderTen').text(data.ten);  
   $('.subTotalHeaderX').text(data.x);  
 
-  var number = data.number;
+  number = data.number;
 
   if(number == null) {
   	number = '';
@@ -43,24 +46,24 @@ socket.on('extractScoreCard', function(data) {
 
   var lengthOption = ["90m", "70m", "60m", "50m", "40m", "30m", "70m前", "70m後"];
 
-  var length = lengthOption[data.length];
+  length = lengthOption[data.length];
 
   for(var i = 0; i < data.countPerEnd; i++) {
-  	viewScore(data.score[i], length, number);
+  	viewScore(data.score[i]);
   }
 });
 
 // output scores
-function viewScore(score, length, number) {
+function viewScore(score) {
 
 	console.log(score);
 
 	var code = '';
 
-	code += '<div class="perEnd' + score.perEnd + '">'
-    code += '<div class="scoreAreaHeader rows">';
+	code += '<div class="perEnd' + score.perEnd + '">';
+  code += '<div class="scoreAreaHeader rows">';
 	code += '<div class="col-fn-10 scoreRowsInfo"><span class="perEnd">' + score.perEnd + '</span>回目 : <span class="length">' + length + '</span></div>';
-	code += '<div class="col-fn-2 border_once">小計</div>';
+	code += '<div class="col-fn-2 border_once scoreTotalHeader">小計</div>';
 	code += '</div>';
 
 	code += '<div class="rows scoreArea">';
@@ -77,7 +80,7 @@ function viewScore(score, length, number) {
 	code += '<div class="col-fn-2 border_once scoreTotal">' + score.subTotal + '</div>';
 	code += '</div>';
 
-	code += '<div class="rows updatedScoreArea">';
+	code += '<div class="rows updatedScoreArea bottom">';
 	code += '<div class="col-fn-2 border_once number">&nbsp;</div>';
 	code += '<div class="col-fn-8">';
 	code += '<div class="rows border updatedScore">';
@@ -108,12 +111,16 @@ socket.on('broadcastInsertScore', function (data) {
 
   console.log('on boradcastInsertScore');
   console.log(data);
+
+  viewScore(data);
 });
 
 // 得点の修正による更新
 socket.on('broadcastUpdateScore', function (data) {
   console.log('on broadcasetUpdateScore');
   console.log(data);
+
+  viewScore(data);
 });
 
 // Emit Insert Score

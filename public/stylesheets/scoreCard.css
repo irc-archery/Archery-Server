@@ -98,10 +98,9 @@
 .totalHeader div{
 	height: 30px;
 	line-height: 30px;
-	background: white;
 }
 
-.subTotalHeader div{
+.subTotalHeader div, .totalHeader div, .subTotalBody div, .totalBody div, .score div, .updatedScore div, .scoreTotalHeader, .scoreTotal, .updatedScoreTotal, .number {
 	background: white;
 }
 
@@ -112,7 +111,9 @@
 .score div, .updatedScore div, .scoreTotal, .updatedScoreTotal, .number{
 	height: 50px;
 	line-height: 50px;
-	background: white;
 }
 
+.scoreCardBody .perEnd{
+	margin-bottom: 20px;
+}
 
