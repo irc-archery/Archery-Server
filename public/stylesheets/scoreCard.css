@@ -48,6 +48,11 @@
 	width: 100%;
 }
 
+.col-fn-3 {
+	width: 25%;
+	float: left;
+}
+
 .col-fn-4{
 	width: 33.3333%;
 	float: left;
@@ -115,5 +120,29 @@
 
 .scoreCardBody .perEnd{
 	margin-bottom: 20px;
+}
+
+.ime {
+	display: none;
+	width: 100%;
+	height: 130px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background: white;
+	text-align: center;
+	position: fixed;
+	bottom: 0;
+}
+
+.ime .rows{
+	height: 40px;
+}
+
+#body main .ime .rows div.col-fn-3 div.btn{
+	height: 35px;
+	line-height: 35px;
+	width: 90%;
+	margin: 0;
+	padding: 0;
 }
 

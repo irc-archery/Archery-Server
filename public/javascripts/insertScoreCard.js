@@ -39,6 +39,14 @@ socket.on('insertScoreCard', function(data) {
   location.href = '/scoreCard?m_id=' + getQueryString().m_id + '&sc_id=' + data.sc_id;
 });
 
+socket.on('insertScoreCard', function(data) {
+
+  console.log('on insertScoreCard')
+  console.log(data);
+
+  location.href = '/scoreCard?m_id=' + getQueryString().m_id + '&sc_id=' + data.sc_id;
+});
+
 $(function() {
 
   // 前の画面に戻れるようにhrefを更新

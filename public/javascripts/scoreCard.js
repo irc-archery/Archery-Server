@@ -9,14 +9,15 @@ $(function() {
   $('.scoreCardIndexLink').attr('href', '/scoreCardIndex?m_id=' + getQueryString().m_id);
 });
 
-var length = '';
-var number = '';
+var match = {};
 
 // 得点表データの出力
 socket.on('extractScoreCard', function(data) {
 
   console.log('on extractScoreCard');
   console.log(data);
+
+  match = data;
 
   // 得点表の個人情報を出力
   $('.matchNameTextBox').val(data.matchName);
@@ -38,36 +39,38 @@ socket.on('extractScoreCard', function(data) {
   $('.subTotalHeaderTen').text(data.ten);  
   $('.subTotalHeaderX').text(data.x);  
 
-  number = data.number;
-
-  if(number == null) {
-  	number = '';
+  if(match.number == null) {
+  	match.number = '';
   }
 
   var lengthOption = ["90m", "70m", "60m", "50m", "40m", "30m", "70m前", "70m後"];
 
-  length = lengthOption[data.length];
+  match.length = lengthOption[data.length];
 
   for(var i = 0; i < data.countPerEnd; i++) {
   	viewScore(data.score[i]);
   }
+
+  // 得点表編集モード
+  if(data.permission == true) {
+    editMode(data);
+  }
+
 });
 
 // output scores
 function viewScore(score) {
 
-	console.log(score);
-
 	var code = '';
 
 	code += '<div class="perEnd' + score.perEnd + '">';
   code += '<div class="scoreAreaHeader rows">';
-	code += '<div class="col-fn-10 scoreRowsInfo"><span class="perEnd">' + score.perEnd + '</span>回目 : <span class="length">' + length + '</span></div>';
+	code += '<div class="col-fn-10 scoreRowsInfo"><span class="perEnd">' + score.perEnd + '</span>回目 : <span class="length">' + match.length + '</span></div>';
 	code += '<div class="col-fn-2 border_once scoreTotalHeader">小計</div>';
 	code += '</div>';
 
 	code += '<div class="rows scoreArea">';
-	code += '<div class="col-fn-2 border_once number">' + number + '</div>';
+	code += '<div class="col-fn-2 border_once number">' + match.number + '</div>';
 	code += '<div class="col-fn-8">';
 	code += '<div class="rows border score">';
 
@@ -104,6 +107,30 @@ function viewScore(score) {
 	console.log(code);
 
 	$('.scoreCardBody').prepend(code);
+}
+
+function editMode(data) {
+
+  // セット数が残っていたらEdit modeに入る
+  if(data.countPerEnd < data.maxPerEnd) {
+    $('.ime').fadeIn(600);
+
+    match.countPerEnd++;
+
+    var tempScore = {'perEnd': match.countPerEnd, 'subTotal': ''};
+
+    for(var i = 1; i <= 6; i++) {
+      tempScore['score_' + i] = '';
+      tempScore['updatedScore_' + i] = '';
+    }
+
+    viewScore(tempScore);
+
+    console.log('tempScore');
+    console.log(tempScore);
+
+
+  }
 }
 
 // 得点の追加による更新
