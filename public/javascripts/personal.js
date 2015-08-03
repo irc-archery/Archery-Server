@@ -64,6 +64,8 @@ $(function() {
 
 		    	$('#recordArea').append(record);
 
+
+
 		    	displayLineChart(data.record)
 		    }
 		},

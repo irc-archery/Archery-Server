@@ -53,7 +53,11 @@ socket.on('extractScoreCard', function(data) {
   match.length = lengthOption[data.length];
 
   for(var i = 0; i < data.countPerEnd; i++) {
+    // 得点の表示
   	viewScore(data.score[i]);
+
+    // update対応
+    $('.perEnd' + data.score[i].perEnd + ' .score div').addClass('comp');
   }
 
   // 得点表編集モード
@@ -160,7 +164,22 @@ function editMode(data) {
 
     // 空のスコアRowを追加する
     viewScore(tempScore);
+
+    light(active_perEnd, active_arrows);
+   }
+}
+
+// セルのハイライト
+function light(perEnd, arrows) {
+
+  for(var i = 1; i <= 6; i++) {
+    $('.perEnd' + perEnd + ' .score' + i).css({'border': '1px solid #aaa'});
   }
+
+  if(arrows != 0) {
+    $('.perEnd' + perEnd + ' .score' + arrows).css({'border': '1px solid #3dd0e1'});
+  }
+
 }
 
 // 得点の計算
@@ -227,6 +246,8 @@ $('.ime .rows div div').on('click', function() {
   if(active_arrows > 6) {
     if(window.confirm('この得点で決定しますか?') == true) {
 
+      light(active_perEnd, 0);
+
       // 得点計算
       processing(active_perEnd);
 
@@ -235,7 +256,7 @@ $('.ime .rows div div').on('click', function() {
 
       // foucsを移動
       active_perEnd++;
-      active_arrows = 0;
+      active_arrows = 1;
 
       // まだセットが残っている
       if(active_perEnd <= match.maxPerEnd) {
@@ -249,12 +270,28 @@ $('.ime .rows div div').on('click', function() {
         } 
 
         viewScore(tempScore);
+
+        light(active_perEnd, active_arrows);
       }
       // 試合終了
       else { 
         $('.ime').fadeOut(600);
       }
     } 
+    // 得点の初期化
+    else {
+      for(var i = 1; i <= 6; i++) {
+        $('.perEnd' + active_perEnd + ' .score' + i).text('');
+      }
+
+      active_arrows = 1;
+
+      light(active_perEnd, active_arrows);
+    }
+  }
+  // まだ入力すべきスコアは残っている
+  else {
+    light(active_perEnd, active_arrows);
   }
 });
 
