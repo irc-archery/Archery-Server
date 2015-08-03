@@ -64,6 +64,10 @@ socket.on('extractScoreCard', function(data) {
   if(data.permission == true) {
     editMode(data);
   }
+  else {
+    // disabled input box
+    $('input').attr('disabled', 'disabled');
+  }
 
 });
 
@@ -393,12 +397,15 @@ $('.ime .rows div div').on('click', function() {
 // 得点更新のハンドラ
 $('.scoreCardBody').on('click', '.comp', function() {
 
-  $('#updateModal').modal();
+  if(match.permission == true) {
 
-  $('.modalPerEnd').text($(this).data('perend'));
-  $('.modalArrows').text($(this).data('score'));
+    $('#updateModal').modal();
 
-  $('.modalScore').val($(this).text());
+    $('.modalPerEnd').text($(this).data('perend'));
+    $('.modalArrows').text($(this).data('score'));
+
+    $('.modalScore').val($(this).text());
+  }
 
 });
 

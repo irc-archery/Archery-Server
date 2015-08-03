@@ -31,7 +31,7 @@ socket.on('extractScoreCardIndex', function(data){
   if(data != '') {
 
     for (var i = 0; i < data.length; i++) {
-      code += '<tr class="openScoreCard" data-scorecard="' + data[i]['sc_id'] + '">';
+      code += '<tr class="openScoreCard scoreCard' + data[i]['sc_id'] + '" data-scorecard="' + data[i]['sc_id'] + '">';
       code += '<td>' + data[i]['playerName'] + '</td>';
       code += '<td>' + data[i]['perEnd'] + '</td>';
       code += '<td>' + data[i]['total'] + '</td>';
@@ -54,7 +54,7 @@ socket.on('broadcastInsertScoreCard', function(data) {
 
   var code = '';
 
-  code += '<tr class="openScoreCard" data-scorecard="' + data['sc_id'] + '">';
+  code += '<tr class="openScoreCard scoreCard' + data['sc_id'] + '" data-scorecard="' + data['sc_id'] + '">';
   code += '<td>' + data['playerName'] + ' <span class="label label-info">New</span></td>';
   code += '<td>' + data['perEnd'] + '</td>';
   code += '<td>' + data['total'] + '</td>';
@@ -74,6 +74,8 @@ socket.on('broadcastInsertScore', function(data) {
 
   console.log('on broadcastInsertScore');
   console.log(data);
+
+  $('[data="scorecard')
 });
 
 socket.on('broadcastUpdateScore', function(data) {
