@@ -77,10 +77,47 @@ socket.on('broadcastInsertScore', function (data) {
   $('.perEnd' + data.perEnd + ' .scoreTotal').text(data.subTotal);
   $('.subTotalHeader' + data.perEnd).text(data.subTotal);
 
-  // 合計得点を更新
-  updateScoreSubTotal();
+  console.log('fnifnit');
+  // 存在しないのであれば0, or 1
+  if($('.perEnd' + data.perEnd).length != 0) {
+    // すでに存在する  つまり  自分も編集者だが、その得点表が誰かによって編集された場合
+    $('.perEnd' + data.perEnd).remove();
+    active_arrows = 1;
+    active_perEnd = data.perEnd + 1;
 
-  viewScore(data);
+    viewScore(data);
+
+    if(match.permission == true) {
+      // まだセットが残っている
+      if(active_perEnd <= match.maxPerEnd) {
+
+        // 次のセットを表示
+        var tempScore = {'subTotal': '', 'perEnd': active_perEnd};
+
+        for(var i = 1; i <= 6; i++) {
+          tempScore['score_' + i] = '';
+          tempScore['updatedScore_' + i] = '';
+        } 
+
+        // 得点の表示
+        viewScore(tempScore);
+
+        // ハイライト
+        light(active_perEnd, active_arrows);
+      }
+      // 試合終了
+      else { 
+        $('.ime').fadeOut(600);
+      }
+    } 
+  }
+  else {
+    viewScore(data);
+  }
+
+
+  // 合計得点を更新
+  processing();
 });
 
 // 得点の修正による更新
@@ -88,15 +125,19 @@ socket.on('broadcastUpdateScore', function (data) {
   console.log('on broadcasetUpdateScore');
   console.log(data);
 
-   // 計算したsubTotalを表示
+  // init
+  var arrows = 0;
 
-  $('.perEnd' + data.perEnd + ' .scoreTotal').text(data.subTotal);
-  $('.subTotalHeader' + data.perEnd).text(data.subTotal);
-   
-  // 合計得点を更新
-  updateScoreSubTotal();
+  // 更新された値がどこかを調べる
+  for(var i = 1; i <= 6; i++) {
+     if(data.hasOwnProperty('updatedScore_' + i) == true) {
+        arrows = i;
+        break;
+     }
+  }
 
-  viewScore(data);
+   // 計算したsubTotalを表示 it include processing();
+   viewUpdate(data.perEnd, arrows, data['updatedScore_' + arrows]);;
 });
 
 // output scores
@@ -116,7 +157,15 @@ function viewScore(score) {
 	code += '<div class="rows border score">';
 
 	for(var i = 1; i <= 6; i++) {
-		code += '<div class="col-fn-2 score' + i + '">' + score['score_' + i] + '</div>';
+    var scData = score["updatedScore_" + i];
+
+    // 得点が修正済み
+    if(scData != null && scData != '') {
+      code += '<div class="col-fn-2 updated through score' + i + '" data-score="' + i + '" data-perend="' + score.perEnd + '">' + score['score_' + i] + '</div>';
+    } 
+    else {
+      code += '<div class="col-fn-2 score' + i + '" data-score="' + i + '" data-perend="' + score.perEnd + '">' + score['score_' + i] + '</div>';
+    } 
 	}
 
 	code += '</div>';
@@ -132,11 +181,13 @@ function viewScore(score) {
 	for(var i = 1; i <= 6; i++) {
 		var scData = score["updatedScore_" + i];
 
-		if(scData == null) {
+		if(scData == null || scData == '') {
 			scData = '';
+      code += '<div class="col-fn-2 updatedScore' + i + '">' + scData + '</div>';
 		}
-
-		code += '<div class="col-fn-2 updatedScore' + i + '">' + scData + '</div>';
+    else {
+      code += '<div class="col-fn-2 updated updatedScore' + i + '">' + scData + '</div>';
+    }
 	}
 
 	code += '</div>';
@@ -146,7 +197,16 @@ function viewScore(score) {
 	code += '</div>';
 
 	$('.scoreCardBody').prepend(code);
+}
 
+function viewUpdate(perEnd, arrows, score) {
+    $('.perEnd' + perEnd + ' .updatedScore' + arrows).text(score);
+
+    $('.perEnd' + perEnd + ' .score' + arrows).addClass('updated');
+    $('.perEnd' + perEnd + ' .score' + arrows).addClass('updated through');
+    $('.perEnd' + perEnd + ' .updatedScore' + arrows).addClass('updated');
+
+    processing(perEnd);
 }
 
 function editMode(data) {
@@ -188,16 +248,17 @@ function processing(perEnd) {
   var subTotal = 0;
 
   for(var i = 1; i <= 6; i++) {
-    var cel = $('.perEnd' + perEnd + ' .score' + i).text();
 
-    if(cel == 10) {
-      // 10数のカウント
-      $('.subTotalHeaderTen').text(parseInt($('.subTotalHeaderTen').text()) + 1);
+    var cel;
+
+    if($('.perEnd' + perEnd + ' .updatedScore' + i).text() == '') {
+      cel = $('.perEnd' + perEnd + ' .score' + i).text();
+    }
+    else {
+      cel = $('.perEnd' + perEnd + ' .updatedScore' + i).text();
     }
 
     if(cel == 'x' || cel == 'X') {
-      // x数のカウント
-      $('.subTotalHeaderX').text(parseInt($('.subTotalHeaderX').text()) + 1);
       cel = 10;
     } 
 
@@ -230,6 +291,35 @@ function updateScoreSubTotal() {
   }
 
   $('.subTotalHeaderTotal').text(total);
+
+  var countX = 0;
+  var countTen = 0;
+
+  // 10数, X数の更新
+  for(var i = 1; i <= active_perEnd; i++) {
+    for(var j = 1; j <= 6; j++) {
+
+      var cel = 0;
+
+      if($('.perEnd' + i + ' .updatedScore' + j).text() != '') {
+        cel = $('.perEnd' + i + ' .updatedScore' + j).text();
+      } 
+      else if($('.perEnd' + i + ' .score' + j).text() != '') {
+        cel = $('.perEnd' + i + ' .score' + j).text(); 
+      } 
+
+      if(cel == 10) {
+        countTen++; 
+      }
+
+      if(cel == 'X' || cel == 'x') {
+        countX++;
+      }
+    } 
+  }
+
+  $('.subTotalHeaderTen').text(countTen);
+  $('.subTotalHeaderX').text(countX);
 }
 
 // 得点入力時のハンドラ
@@ -254,6 +344,9 @@ $('.ime .rows div div').on('click', function() {
       // 得点の送信
       insertScore(active_perEnd);
 
+      // update対応
+      $('.perEnd' + active_perEnd + ' .score div').addClass('comp');
+
       // foucsを移動
       active_perEnd++;
       active_arrows = 1;
@@ -269,8 +362,10 @@ $('.ime .rows div div').on('click', function() {
           tempScore['updatedScore_' + i] = '';
         } 
 
+        // 得点の表示
         viewScore(tempScore);
 
+        // ハイライト
         light(active_perEnd, active_arrows);
       }
       // 試合終了
@@ -294,6 +389,34 @@ $('.ime .rows div div').on('click', function() {
     light(active_perEnd, active_arrows);
   }
 });
+
+// 得点更新のハンドラ
+$('.scoreCardBody').on('click', '.comp', function() {
+
+  $('#updateModal').modal();
+
+  $('.modalPerEnd').text($(this).data('perend'));
+  $('.modalArrows').text($(this).data('score'));
+
+  $('.modalScore').val($(this).text());
+
+});
+
+// 得点修正ボタン
+$('.updateBtn').on('click', function() {
+  $('.modal').modal('hide');
+
+  var perEnd = $('.modalPerEnd').text();
+  var arrows = $('.modalArrows').text();
+  var score = $('.modalUpdatedScore').val();
+
+  // 得点表示更新
+  viewUpdate(perEnd, arrows, score);
+
+  // 得点更新送信
+  updateScore(perEnd, arrows, score)
+});
+
 
 // Emit Insert Score
 function insertScore(perEnd) {
@@ -322,7 +445,7 @@ function insertScore(perEnd) {
 };
 
 // Emit Update Score
-function updateScore() {
+function updateScore(perEnd, arrows, score) {
 
   var data = new Object();
 
@@ -330,18 +453,14 @@ function updateScore() {
   data['sc_id'] = getQueryString().sc_id;
   data['m_id'] = getQueryString().m_id;
 
-  data['perEnd'] = $('#updateScorePerEnd').val();
+  data['perEnd'] = perEnd;
 
-  for(var i = 1; i <= 6; i++) {
-    if($('#updatedScore_' + i).val() != ''){
-      data['updatedScore_' + i]  = $('#updatedScore_' + i).val();
-    }
-  }
+  data['updatedScore_' + arrows] = score;
 
-  data['subTotal'] = $('#updatedSubTotal').val();
-  data['ten'] = $('#updatedTen').val();
-  data['x'] = $('#updatedX').val();
-  data['total'] = $('#updatedTotal').val();
+  data['subTotal'] = $('.perEnd' + perEnd + ' .scoreTotal').text();
+  data['ten'] = $('.subTotalHeaderTen').text();
+  data['x'] = $('.subTotalHeaderX').text();
+  data['total'] = $('.subTotalHeaderTotal').text();
 
   console.log('emit updateScore');
   console.log(data);
