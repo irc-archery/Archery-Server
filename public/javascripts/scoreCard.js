@@ -33,9 +33,9 @@ socket.on('extractScoreCard', function(data) {
   $('.prefecturesTextBox').val(data.prefectures);
 
   // subtotalの出力
-  for(var i = 1; i <= 6; i++) {
+  for(var i = 0; i < 6; i++) {
   	if(data.score[i] != undefined) {
-	  	$('.subTotalHeader' + i).text(data.score[i].subTotal);
+	  	$('.subTotalHeader' + (i + 1)).text(data.score[i].subTotal);
   	}
   }
 
@@ -144,6 +144,7 @@ function viewScore(score) {
 	console.log(code);
 
 	$('.scoreCardBody').prepend(code);
+
 }
 
 function editMode(data) {
@@ -254,6 +255,10 @@ $('.ime .rows div div').on('click', function() {
         } 
 
         viewScore(tempScore);
+      }
+      // 試合終了
+      else { 
+        $('.ime').fadeOut(600);
       }
     } 
   }
