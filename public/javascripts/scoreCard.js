@@ -141,8 +141,6 @@ function viewScore(score) {
 	code += '</div>';
 	code += '</div>';
 
-	console.log(code);
-
 	$('.scoreCardBody').prepend(code);
 
 }
@@ -162,8 +160,6 @@ function editMode(data) {
 
     // 空のスコアRowを追加する
     viewScore(tempScore);
-    console.log('tempScore');
-    console.log(tempScore);
   }
 }
 
@@ -226,8 +222,6 @@ $('.ime .rows div div').on('click', function() {
   $('.perEnd' + active_perEnd + ' .score' + active_arrows).text($(this).text());
 
   active_arrows++;
-
-  console.log(active_arrows);
 
   // 規定の射数まで得点の記入が完了
   if(active_arrows > 6) {
