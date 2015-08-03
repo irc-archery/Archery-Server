@@ -8,6 +8,9 @@ var active_perEnd = '';
 // 現在の射数
 var active_arrows = '';
 
+var number = '';
+var prefectures = '';
+
 // 得点表データの要求 & Sessionによるユーザー認証
 socket.emit('extractScoreCard', {'sessionID': document.cookie, 'sc_id': getQueryString().sc_id});
 
@@ -23,6 +26,9 @@ socket.on('extractScoreCard', function(data) {
   active_perEnd = data.countPerEnd + 1;
   active_arrows = 1;
 
+  // 現在のゼッケン番号と都道府県
+  number = data.number;
+  prefectures = data.prefectures;
 
   // 得点表の個人情報を出力
   $('.matchNameTextBox').val(data.matchName);
@@ -486,3 +492,68 @@ $(function() {
   // 得点表作成へのリンクの生成
   $('.scoreCardIndexLink').attr('href', '/scoreCardIndex?m_id=' + getQueryString().m_id);
 });
+
+$('.numberTextBox').change(function() {
+  if(window.confirm('ゼッケン番号を送信しますか?') == true) {
+
+    var data = {};
+
+    data['sessionID'] = document.cookie;
+    data['sc_id'] = getQueryString().sc_id;
+
+    data['number'] = $('.numberTextBox').val();
+
+    number = $('.numberTextBox').val();
+
+    console.log('emit insertNumber');
+    console.log(data);
+
+    socket.emit('insertNumber', data);
+  }
+  else {
+    $('.numberTextBox').val(number);
+  }
+});
+
+$('.prefecturesTextBox').change(function() {
+  if(window.confirm('都道府県を送信しますか?') == true) {
+
+    var data = {};
+
+    data['sessionID'] = document.cookie;
+    data['sc_id'] = getQueryString().sc_id;
+
+    data['prefectures'] = $('.prefecturesTextBox').val();
+
+    prefectures = $('.prefecturesTextBox').val();
+
+    console.log('emit insertPrefecutres');
+    console.log(data);
+
+    socket.emit('insertPrefectures', data);
+  }
+  else {
+    $('.prefecturesTextBox').val(prefectures);
+  }
+});
+
+socket.on('broadcastInsertNumber', function(data) {
+
+  console.log('on broadcastInsertNumber')
+  console.log(data);
+
+  number = data.number;
+
+  $('.numberTextBox').val(number);
+});
+
+socket.on('broadcastInsertPrefectures', function(data) {
+
+  console.log('on broadcastInsertPrefectures');
+  console.log(data);
+
+  prefectures = data.Prefectures;
+
+  $('.prefecturesTextBox').val(prefectures);
+});
+

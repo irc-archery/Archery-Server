@@ -19,7 +19,6 @@ function insertScoreCard() {
 
   else if($('input[name="radio"]:checked').val() === "others") {
 
-
     data['sessionID'] = document.cookie;
     data['email'] = $('#email').val();
     data['password'] = $('#password').val();
