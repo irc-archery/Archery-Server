@@ -33,8 +33,8 @@ socket.on('extractScoreCardIndex', function(data){
     for (var i = 0; i < data.length; i++) {
       code += '<tr class="openScoreCard scoreCard' + data[i]['sc_id'] + '" data-scorecard="' + data[i]['sc_id'] + '">';
       code += '<td>' + data[i]['playerName'] + '</td>';
-      code += '<td>' + data[i]['perEnd'] + '</td>';
-      code += '<td>' + data[i]['total'] + '</td>';
+      code += '<td class="perEnd">' + data[i]['perEnd'] + '</td>';
+      code += '<td class="total">' + data[i]['total'] + '</td>';
       code += '</tr>';
     }
 
@@ -75,10 +75,14 @@ socket.on('broadcastInsertScore', function(data) {
   console.log('on broadcastInsertScore');
   console.log(data);
 
-  $('[data="scorecard')
+  $('.scoreCard' + data.sc_id + ' .perEnd').text(data.perEnd);
+  $('.scoreCard' + data.sc_id + ' .total').text(data.total);
 });
 
 socket.on('broadcastUpdateScore', function(data) {
   console.log('on broadcastUpdateScore');
   console.log(data);
+
+  $('.scoreCard' + data.sc_id + ' .perEnd').text(data.perEnd);
+  $('.scoreCard' + data.sc_id + ' .total').text(data.total);
 });
