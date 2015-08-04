@@ -383,6 +383,8 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 									console.log('closeMatchResults');
 									console.log(closeMatchResults);
 
+									socket.emit('broadcastCloseMatch', {'m_id': m_id});
+
 									// 3. この試合に属している得点表のstatusを1にする
 									var closeScoreCardSql = 'update `scoreCard` set status = 1 where m_id = ' + m_id;
 

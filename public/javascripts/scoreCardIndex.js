@@ -4,11 +4,21 @@ socket.emit('joinMatch', {'m_id': getQueryString().m_id, 'sessionID': document.c
 
 socket.emit('checkMatchCreater', {'m_id': getQueryString().m_id, 'sessionID': document.cookie});
 
+// 試合終了の権限に応じて試合終了ボタンの表示・非表示を切り替える
 socket.on('checkMatchCreater', function(data) {
-  
+
   console.log('on checkMatchCreater');
   console.log(data);
 
+  if(data.permission == false) {
+    $('.closeMatch').remove();
+  }
+});
+
+$('.closeMatch').on('click', function() {
+  if(window.confirm('試合を終了しますか?\n※現在得点表を記入中のプレイヤーも強制的に試合から退出させられます。') == true) {
+    socket.emit('closeMatch', {'sessionID': document.cookie, 'm_id': getQueryString().m_id});
+  }
 });
 
 $('#scoreCardIndexArea').on('click', 'tr.openScoreCard', function() {
