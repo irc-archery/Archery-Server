@@ -20,6 +20,20 @@ $(function() {
 		    	$('.place').append(data.place);
 
 		    	$('.members').append(data.members);
+
+		    	var code = '';
+
+				// memberの数分だけループ
+		    	for(var i = 0; i < data.memberList.length; i++) {
+
+		    		code += '<tr>';
+		    		code += '<td>' + data.memberList[i]['playerName'] + '</td>';
+		    		code += '<td>' + data.memberList[i]['birth'] + '</td>';
+		    		code += '<td>' + data.memberList[i]['email'] + '</td>';
+		    		code += '</tr>';
+		    	}
+
+		    	$('#memberListArea').append(code);
 		    }
 		},
 		error: function(err) {
