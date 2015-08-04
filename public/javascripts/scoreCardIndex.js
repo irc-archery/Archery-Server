@@ -2,6 +2,14 @@ var socket = io('/scoreCardIndex');
 
 socket.emit('joinMatch', {'m_id': getQueryString().m_id, 'sessionID': document.cookie})
 
+socket.emit('checkMatchCreater', {'m_id': getQueryString().m_id, 'sessionID': document.cookie});
+
+socket.on('checkMatchCreater', function(data) {
+  
+  console.log('on checkMatchCreater');
+  console.log(data);
+
+});
 
 $('#scoreCardIndexArea').on('click', 'tr.openScoreCard', function() {
   console.log('tr on click!');

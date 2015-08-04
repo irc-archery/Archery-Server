@@ -297,6 +297,45 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 			});
 		});
 
+		// 試合終了の権限確認
+		socket.on('checkMatchCreater', function(data) {
+
+			console.log('on checkMatchCreater');
+			console.log(data);
+
+			// sessionIDで参照できるp_idと試合の作成者のp_idが同一であればtrue, or false
+			/* Get p_id related SessionID */
+			sessions.get(addPrefix(data.sessionID), function(err, body) {
+
+				if(!err) {
+
+					var checkMatchCreaterSql = 'select p_id from `match` where m_id = ' + connection.escape(data.m_id);
+
+					connection.query(checkMatchCreaterSql, function(err, checkMatchCreaterData) {
+						if(!err) {
+							var emitData = {};
+
+							console.log('checkMatchCreaterData');
+							console.log(checkMatchCreaterData);
+
+							console.log('body.sess');
+							console.log(body.sess);
+
+							if(checkMatchCreaterData[0].p_id == body.sess.p_id) {
+								// 試合作成者と同じp_id
+								emitData = {'permission': true};
+							}
+							else {
+								emitData = {'permission': false};
+							}
+
+							socket.emit('checkMatchCreater', emitData);
+						}
+					});
+				}
+			});
+		});
+
 		// 試合の終了
 		socket.on('closeMatch', function(data) {
 

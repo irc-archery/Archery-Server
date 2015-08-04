@@ -243,7 +243,8 @@ On Data Format :
 Emit Evnet Name : checkMatchCreater
 Emit Data Format :
 {
-	'sessionID': string
+	'sessionID': string,
+	'm_id': int 			// 確認したい試合のid
 }
 
 On Evnet Name : checkMatchCreater
