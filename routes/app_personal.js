@@ -148,7 +148,7 @@ router.delete('/', loginCheck, function(req, res) {
 						// 2. 試合に関連付けられたデータを削除
 
 						// 試合に所属している scorePerEnd, scoreTotalを削除するためにsc_idを抽出するSQL文
-						var extractScoreCardIdSql = 'select sc_id from where m_id = ' + extractMatchIdResults[0].m_id;
+						var extractScoreCardIdSql = 'select sc_id from `scoreCard` where m_id = ' + extractMatchIdResults[0].m_id;
 
 						for(var i = 1; i < extractMatchIdResults.length; i++) {
 							extractScoreCardIdSql += ' or m_id = ' + extractMatchIdResults[i].m_id;
@@ -190,7 +190,7 @@ router.delete('/', loginCheck, function(req, res) {
 								console.log(deleteScoreTotalSql);
 
 								// 得点表合計の削除
-								connection.query(deleteScoreTotal, function(err, deleteScoreTotalResults){
+								connection.query(deleteScoreTotalSql, function(err, deleteScoreTotalResults){
 									// 得点表得点の削除
 									connection.query(deleteScorePerEndSql, function(err, deleteScorePerEndResults) {
 										// 得点表の削除
