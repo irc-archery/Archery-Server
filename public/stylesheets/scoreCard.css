@@ -1,3 +1,5 @@
+@chatset "UTF-8";
+
 .border div, .border_once{
 	border: 1px solid #aaa;
 }
