@@ -48,11 +48,6 @@ socket.on('insertScoreCard', function(data) {
 
 $(function() {
 
-  // 前の画面に戻れるようにhrefを更新
-
-  $('.scoreCardIndexLink').attr('href', '/scoreCardIndex?m_id=' + getQueryString().m_id)
-
-
   if($('input[name="radio"]:checked').val() === "me"){
     $('.others-form').hide(); 
   }

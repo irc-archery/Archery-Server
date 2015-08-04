@@ -487,12 +487,6 @@ socket.on('broadcastCloseMatch', function(data) {
   console.log(data); 
 });
 
-// リンクの更新
-$(function() {
-  // 得点表作成へのリンクの生成
-  $('.scoreCardIndexLink').attr('href', '/scoreCardIndex?m_id=' + getQueryString().m_id);
-});
-
 $('.numberTextBox').change(function() {
   if(window.confirm('ゼッケン番号を送信しますか?') == true) {
 

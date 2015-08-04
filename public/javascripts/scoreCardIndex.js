@@ -2,10 +2,6 @@ var socket = io('/scoreCardIndex');
 
 socket.emit('joinMatch', {'m_id': getQueryString().m_id, 'sessionID': document.cookie})
 
-$(function() {
-  // 得点表作成へのリンクの生成
-  $('.insertScoreCardLink').attr('href', '/insertScoreCard?m_id=' + getQueryString().m_id);
-});
 
 $('#scoreCardIndexArea').on('click', 'tr.openScoreCard', function() {
   console.log('tr on click!');
