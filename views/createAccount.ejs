@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="/components/fontawesome/css/font-awesome.min.css"> 
 </head>
 <body id="body">
-    <header id="topBar" class="navbar navbar-fixed-top">
+    <header id="topBar" class="navbar navbar-fixed-top" role="banner">
         <div class="container">
                 <a href="/"><div class="backButton"><i class="fa fa-arrow-left"></i></div></a>
-                <h1>アカウント作成</h1>
+                <h1 class="smallerFont">アカウント作成</h1>
                 <div class="dropdown navButtonArea">
                     <div id="navButton" class="navButton pull-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></div>
                     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navButton">
@@ -27,7 +27,7 @@
 
     <main class="container col-sm-offset-2 col-sm-8" role='main'>
 
-        <form class="form-horizontal" id="sendForm" action="/createAccount" method="POST">
+        <form id="sendForm" action="/createAccount" method="POST">
 
             <div class="form-group">
                 <label class="control-label" for="lastName">姓</label>
