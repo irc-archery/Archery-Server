@@ -61,7 +61,6 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 							// 得点表は存在しない
 							else {
 								socket.emit('extractScoreCardIndex','');
-
 							}
 						});
 					}
@@ -361,7 +360,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 
 											for(var i = 0; i < devicesResults.length; i++) {
 												console.log('emit broadcastCloseMatch to scoreCardRoom' + devicesResults[i].sc_id);
-												// ios.of('/scoreCard').broadcast.to('scoreCardRoom' + devicesResults[i].sc_id).emit('broadcastCloseMatch', {'m_id': m_id});
+												ios.of('/scoreCard').to('scoreCardRoom' + devicesResults[i].sc_id).emit('broadcastCloseMatch', {'m_id': m_id});
 											}
 										});
 									});

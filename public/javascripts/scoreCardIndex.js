@@ -68,6 +68,12 @@ socket.on('broadcastInsertScoreCard', function(data) {
 socket.on('broadcastCloseMatch', function(data) {
   console.log('broadcastCloseMatch');
   console.log(data); 
+
+  if(getQueryString().m_id == data.m_id) {
+    // この試合は終了
+    alert('この試合は終了しました。\nこの試合の得点は過去の得点表一覧より閲覧できます');
+    location.href = '/matchIndex';
+  }
 });
 
 socket.on('broadcastInsertScore', function(data) {
