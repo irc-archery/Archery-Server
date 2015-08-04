@@ -1,5 +1,5 @@
 Archery Server HTTP & WebSocket Event
-2015 07 18
+2015 08 04
 
 更新履歴
 
@@ -19,6 +19,9 @@ broadcastInsertScore, broadcastUpdateScoreを得点表一覧画面にいても�
 
 08/01
 ・insertOwnScoreCardでonしたらinsertScoreCardでemitする仕様に変更
+
+08/04
+・試合終了の権限を確認するcheckMatchCreaterを追加
 
 ログイン画面
 
@@ -233,6 +236,20 @@ On Event Name : broadcastCloseMatch
 On Data Format :
 {
 	'm_id': int
+}
+
+試合終了の権限を確かめる
+
+Emit Evnet Name : checkMatchCreater
+Emit Data Format :
+{
+	'sessionID': string
+}
+
+On Evnet Name : checkMatchCreater
+Emit Data Format :
+{
+	'permission': bool		// true: 終了可, false: 終了付加
 }
 
 
