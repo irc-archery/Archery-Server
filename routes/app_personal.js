@@ -7,14 +7,50 @@ var loginCheck = function(req, res, next) {
 	console.log('bellow is req.session.p_id');
 	console.log(req.session.p_id);
 
-	console.log('req.headers');
+	console.log('req.headers for app cookie');
 	console.log(req.headers);
 
 	if(req.session.p_id) {
 		console.log('success loginCheck with sessionID');
-		next();
+
+		var checkSession = 'select * from account where p_id = ' + connection.escape(req.session.p_id);
+
+		connection.query(checkSession, function(err, results) {
+
+			console.log('results');
+			console.log(Object.keys(results).length);
+
+			console.log('err');
+			console.log(err);
+
+			if(Object.keys(results).length !== 0) {
+				// アカウントは存在する
+
+				if(req.session.o_id) {
+					var checkOrganization = 'select * from organization where o_id = ' + connection.escape(req.session.o_id);
+
+					connection.query(checkOrganization, function(err2, results2) {
+						if(Object.keys(results2).length === 0) {
+							// 団体に所属していない
+							req.session.o_id = undefined;
+						}
+					});
+				}
+
+				next();
+			}
+			else {
+				// アカウントは存在しない
+				faild();
+			}
+		});
+
 	}
 	else {
+		faild();
+	}
+
+	function faild() {
 		console.log('faild loginCheck with sessionID. redirect login form');
 		res.send({'results': false, 'err': 'ログインに失敗しました.'});
 	}
@@ -36,7 +72,16 @@ router.get('/', loginCheck, function(req, res) {
 	connection.query(extractOrganizationIdSql, function(err, extractOrganizationIdResults) {
 		var o_id;
 
-		if(extractOrganizationIdResults != undefined) {
+		console.log(extractOrganizationIdResults);
+		console.log('extractOrganizationIdResults');
+
+		console.log('extractOrganizationIdResults != undefined');
+		console.log(extractOrganizationIdResults != undefined);
+
+		console.log('Object.keys(extractOrganizationIdResults).length');
+		console.log(Object.keys(extractOrganizationIdResults).length);
+
+		if(Object.keys(extractOrganizationIdResults).length !== 0) {
 			o_id = extractOrganizationIdResults[0].o_id;
 		}
 
@@ -50,49 +95,55 @@ router.get('/', loginCheck, function(req, res) {
 		// ユーザーの基本情報を追加
 		connection.query(userDataSql, function(err, userDataResults){
 			// ユーザーの過去の成績を抽出
-			connection.query(userRecordSql, function(err, userRecordResults){
+			if(userDataResults!='') {
 
-				if(userRecordResults != ''){
-					var userRecordMatchSql = 'select `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, `match`.arrows, `match`.perEnd from `match` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + userRecordResults[0].sc_id + ')';
+				connection.query(userRecordSql, function(err, userRecordResults){
 
-					for(var i = 1; i < userRecordResults.length; i++) {
-						userRecordMatchSql += ' union all select `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, `match`.arrows, `match`.perEnd from `match` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + userRecordResults[i].sc_id + ')';
-					}
+					if(userRecordResults != ''){
+						var userRecordMatchSql = 'select `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, `match`.arrows, `match`.perEnd from `match` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + userRecordResults[0].sc_id + ')';
 
-					console.log('userRecordMatchSql');
-					console.log(userRecordMatchSql);
-
-					connection.query(userRecordMatchSql, function(err, userRecordMatchResults) {
-
-						console.log('userRecordMatchResults');
-						console.log(userRecordMatchResults);
-
-						console.log('userRecordResults');
-						console.log(userRecordResults);
-
-						userDataResults[0]['record'] = userRecordMatchResults;
-
-						for(var i = 0; i < userRecordMatchResults.length; i++) {
-							userDataResults[0]['record'][i]['sum'] = userRecordResults[i]['sum'];
+						for(var i = 1; i < userRecordResults.length; i++) {
+							userRecordMatchSql += ' union all select `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, `match`.arrows, `match`.perEnd from `match` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + userRecordResults[i].sc_id + ')';
 						}
-						console.log('response of GET /personal/')
+
+						console.log('userRecordMatchSql');
+						console.log(userRecordMatchSql);
+
+						connection.query(userRecordMatchSql, function(err, userRecordMatchResults) {
+
+							console.log('userRecordMatchResults');
+							console.log(userRecordMatchResults);
+
+							console.log('userRecordResults');
+							console.log(userRecordResults);
+
+							userDataResults[0]['record'] = userRecordMatchResults;
+
+							for(var i = 0; i < userRecordMatchResults.length; i++) {
+								userDataResults[0]['record'][i]['sum'] = userRecordResults[i]['sum'];
+							}
+							console.log('response of GET /personal/')
+							console.log(userDataResults[0]);
+
+							res.send(userDataResults[0]);
+						});
+					}
+					else {
+						console.log('userDataResults');
+						console.log(userDataResults);
+
+						userDataResults[0]['record'] = [];
+
+						console.log('response of GET /personal/');
 						console.log(userDataResults[0]);
 
 						res.send(userDataResults[0]);
-					});
-				}
-				else {
-					console.log('userDataResults');
-					console.log(userDataResults);
-
-					userDataResults[0]['record'] = [];
-
-					console.log('response of GET /personal/');
-					console.log(userDataResults[0]);
-
-					res.send(userDataResults[0]);
-				}
-			});
+					}
+				});
+			}
+			else {
+				res.send({});	
+			}
 		});
 	});
 });
@@ -100,8 +151,36 @@ router.get('/', loginCheck, function(req, res) {
 // delete /personal/
 router.delete('/', loginCheck, function(req, res) {
 	// sessionで参照できるアカウントを削除
-
 	var p_id = req.session.p_id;
+
+	var deleteAccountSql = 'delete from account where p_id = ' + connection.escape(p_id);
+
+	connection.query(deleteAccountSql, function(err, deleteAccountData) {
+
+		console.log('deleteAccountData');
+		console.log(deleteAccountData);
+
+		console.log('err');
+		console.log(err);
+
+		var resData = {};
+
+		if(!err) {
+			resData['results'] = true;
+			resData['err'] = null;
+
+			req.session.p_id = undefined;
+			req.session.o_id = undefined;
+		}
+		else {
+			resData['results'] = false;
+			resData['err'] = 'アカウント削除に失敗しました';
+		}
+
+		res.send(resData);
+	});
+
+	/*
 
 	// 初めに削除したいユーザーが団体のリーダーではないか確かめる
 	// 団体のリーダーの場合は先に団体を削除してもらう
@@ -396,6 +475,7 @@ router.delete('/', loginCheck, function(req, res) {
 			console.log('faild to check leader account');
 		}
 	});
+*/
 });
 
 // get /personal/record/

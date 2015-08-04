@@ -27,6 +27,7 @@ create table `account` (
 	`sex` int,
 	index(`p_id`),
 	foreign key(`o_id`) references `organization`(`o_id`)
+	on update cascade on delete cascade
 ) CHARACTER SET 'utf8' ENGINE = InnoDB;
 
 create table `match` (
@@ -43,8 +44,10 @@ create table `match` (
 	`permission` int,
 	`status` int default 0,
 	index(`m_id`),
-	foreign key(`p_id`) references `account`(`p_id`),
+	foreign key(`p_id`) references `account`(`p_id`)
+	on update cascade on delete cascade,
 	foreign key(`o_id`) references `organization`(`o_id`)
+	on update cascade on delete cascade
 ) CHARACTER SET 'utf8' ENGINE = InnoDB;
 
 create table `scoreCard` (
@@ -56,8 +59,10 @@ create table `scoreCard` (
 	`number` varchar(255),
 	`status` int default 0,
 	index(`sc_id`),
-	foreign key (`p_id`) references `account`(`p_id`),
+	foreign key (`p_id`) references `account`(`p_id`)
+	on update cascade on delete cascade,
 	foreign key (`m_id`) references `match`	(`m_id`)
+	on update cascade on delete cascade
 ) CHARACTER SET 'utf8' ENGINE = InnoDB;
 
 create table `scorePerEnd` (
@@ -80,9 +85,12 @@ create table `scorePerEnd` (
 	`updatedScore_6` varchar(5),
 	`subTotal` int,
 	index(`spe_id`),
-	foreign key(`sc_id`) references `scoreCard`(`sc_id`),
-	foreign key(`p_id`) references `account`(`p_id`),
+	foreign key(`sc_id`) references `scoreCard`(`sc_id`)
+	on update cascade on delete cascade,
+	foreign key(`p_id`) references `account`(`p_id`)
+	on update cascade on delete cascade,
 	foreign key(`o_id`) references `organization`(`o_id`)
+	on update cascade on delete cascade
 ) CHARACTER SET 'utf8' ENGINE = InnoDB;
 
 create table `scoreTotal` (
@@ -94,9 +102,12 @@ create table `scoreTotal` (
 	`x` int default 0,
 	`total` int default 0,
 	index(`st_id`),
-	foreign key (`sc_id`) references `scoreCard`(`sc_id`),
-	foreign key (`p_id`) references `account`(`p_id`),
+	foreign key (`sc_id`) references `scoreCard`(`sc_id`)
+	on update cascade on delete cascade,
+	foreign key (`p_id`) references `account`(`p_id`)
+	on update cascade on delete cascade,
 	foreign key (`o_id`) references `organization`(`o_id`)
+	on update cascade on delete cascade
 ) CHARACTER SET `utf8` ENGINE = InnoDB;
 
 # sample data of organization
