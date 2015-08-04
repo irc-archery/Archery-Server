@@ -44,11 +44,11 @@ function matchIndexModel(io, connection, sessions, ios) {
 
 							if(matchIndexId != '') {
 
-								var matchIndexDataSql = 'select `match`.m_id, `match`.matchName, `match`.sponsor, DATE_FORMAT(`match`.created, "%Y/%m/%d %H:%i:%S") as created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[0].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[0].m_id);
+								var matchIndexDataSql = 'select `match`.m_id, `match`.matchName, `match`.sponsor, DATE_FORMAT(`match`.created, "%Y/%m/%d %H:%m:%s") as created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[0].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[0].m_id);
 
 								// 試合の数に応じてselect文を追加
 								for (var i = 1; i < matchIndexId.length; i++) {
-									matchIndexDataSql += ' union select `match`.m_id, `match`.matchName, `match`.sponsor, DATE_FORMAT(`match`.created, "%Y/%m/%d %H:%i:%S") as created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[i].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[i].m_id);
+									matchIndexDataSql += ' union select `match`.m_id, `match`.matchName, `match`.sponsor, DATE_FORMAT(`match`.created, "%Y/%m/%d %H:%m:%s") as created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + connection.escape(matchIndexId[i].m_id) + ' and `scoreCard`.m_id = ' + connection.escape(matchIndexId[i].m_id);
 								}
 
 								// 試合一覧のデータを抽出
