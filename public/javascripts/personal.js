@@ -1,5 +1,4 @@
 $(function() {
-
 	$.ajax({
 		url: '/app/personal',
 		type: 'GET',
@@ -64,13 +63,27 @@ $(function() {
 
 		    	$('#recordArea').append(record);
 
+		    	Record = data.record;
 
-
-		    	displayLineChart(data.record)
+		    	displayLineChart()
 		    }
 		},
 		error: function(err) {
 		    console.log(err);
 		}
 	});
+});
+
+var timer = false;
+
+// windowリサイズ時にグラフを再描画
+$(window).resize(function() {
+	if(timer !== false) {
+		clearTimeout(timer);
+	}
+	timer = setTimeout(function() {
+		$('.canvasArea').empty();
+		$('.canvasArea').html('<canvas id="lineChart"></canvas>');
+		displayLineChart();	
+	}, 200);
 });
