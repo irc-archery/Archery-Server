@@ -115,10 +115,11 @@ router.delete('/', loginCheck, function(req, res) {
 		if(!errCOL) {
 			console.log('checkOrganizationLeaderResults')
 			console.log(checkOrganizationLeaderResults)
-			console.log('checkOrganizationLeaderResults != \'\'')
-			console.log(checkOrganizationLeaderResults != '')
+			console.log('Object.keys(checkOrganizationLeaderResults).length !== 0')
+			console.log(Object.keys(checkOrganizationLeaderResults).length)
 
-			if(checkOrganizationLeaderResults != '') {
+			if(Object.keys(checkOrganizationLeaderResults).length === 0) {
+				// 団体のリーダーではない
 
 				// 1. ユーザーが作成した試合を抽出
 				// 2. 試合とその試合に属している得点表を削除
@@ -140,7 +141,8 @@ router.delete('/', loginCheck, function(req, res) {
 					console.log('extractMatchIdResults');
 					console.log(extractMatchIdResults);
 
-					if(extractMatchIdResults != undefined) {
+
+					if(Object.keys(extractMatchIdResults).length !== 0) {
 						// ユーザーが作成した試合が存在する
 
 						// 2. 試合に関連付けられたデータを削除
@@ -331,6 +333,7 @@ router.delete('/', loginCheck, function(req, res) {
 					else {
 						// ユーザーが作成した試合が存在しない
 						console.log('case of ユーザーが作成した試合が存在しない');
+
 						// ユーザーの過去の得点表を削除
 						var deleteScoreCardSql = 'delete from scoreCard where p_id = ' + p_id;
 

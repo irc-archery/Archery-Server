@@ -87,3 +87,33 @@ $(window).resize(function() {
 		displayLineChart();	
 	}, 200);
 });
+
+// アカウント削除
+$('.deleteAccount').on('click', function() {
+
+	var prompt = '本当にこのアカウントを削除しますか?\n※アカウントを削除するとこれまでの得点表などが閲覧できなくなります。';
+
+	if(window.confirm(prompt) == true) {
+
+		$.ajax({
+			url: '/app/personal',
+			type: 'DELETE',
+			dataType: 'json',
+			success: function(data, textStatus) {
+			    console.log(data);
+			    if(data.results == true) {
+			    	alert('アカウントの削除に成功しました');
+			    	location.href = '/login';
+			    }
+			    else if(data.results == false) {
+			    	alert(data.err);	
+			    }
+			},
+			error: function(err) {
+				console.log(err);	
+				alert('アカウントの削除に失敗しました。');
+			}
+		});
+	}
+
+});
