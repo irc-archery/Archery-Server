@@ -92,15 +92,20 @@ header#topBar div.navButtonArea ul li.divider {
   padding-top: 10%;
 }
 
-/* button 3d78cc */
-
 main {
   margin-top: 30px;
   margin-bottom: 90px;
 }
 
 footer {
+  width: 100%;
+}
+
+footer p{
+  width: 100%;
+  clear: both;
   text-align: center;
+  margin-bottom: 20px;
 }
 
 table {
@@ -117,7 +122,7 @@ tr:hover{
 
 /* forms */
 
-#body main button{
+#body main button, #send{
   width: 100%;
   margin-top: 30px;
 }
@@ -194,6 +199,20 @@ main.common .resultsArea h3{
   margin: 20px;
 }
 
+/* login.ejs */
+.mainVisual {
+  width: 100%;
+  text-align: center;
+  margin: 0 auto;
+}
+.mainVisual img{ 
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* persoanl.ejs */
 .resultsArea table{
   width: 95%;
   margin: 0 auto;
