@@ -27,12 +27,17 @@
 
     <main class="container col-sm-offset-2 col-sm-8" role='main'>
 
-        <div class="alert alert-info">
-            
-            <p>団体に所属していません。団体の参加は、顧問の先生にお願いをしてメンバー管理画面より参加するか、<a href="/organization/create">団体作成画面</a>より新たに団体を作成してください。</p>
-
+    <% if(results == true) { %>
+        <div class="alert alert-success">
+           <p>団体作成に成功しました。<a href="/organization" class="alert-link">団体ページ</a>の<a href="/organization/members" class="alert-link">メンバー管理画面</a>よりメンバーを追加することができます。</p>
         </div>
-        
+    <% } else if(results == false) { %>
+
+        <div class="alert alert-warning">
+            <p>団体作成に失敗しました。<a href="/personal" class="alert-link">マイページへもどる</a></p>
+        </div>
+    <% } %>
+
     </main>
 
     <script src="/javascripts/jquery.min.js"></script>
