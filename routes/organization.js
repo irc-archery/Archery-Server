@@ -10,7 +10,7 @@ var loginCheck = function(req, res, next) {
 	if(req.session.p_id) {
 		console.log('success loginCheck with sessionID');
 
-		var checkSession = 'select * from account where p_id = ' + connection.escape(req.session.p_id);
+		var checkSession = 'select p_id, o_id from account where p_id = ' + connection.escape(req.session.p_id);
 
 		connection.query(checkSession, function(err, results) {
 
