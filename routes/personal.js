@@ -5,7 +5,6 @@ var router = express.Router();
 var loginCheck = function(req, res, next) {
 
 	console.log('bellow is req.session.p_id');
-
 	console.log(req.session.p_id);
 
 	if(req.session.p_id) {
@@ -28,9 +27,9 @@ var loginCheck = function(req, res, next) {
 					var checkOrganization = 'select * from organization where o_id = ' + connection.escape(req.session.o_id);
 
 					connection.query(checkOrganization, function(err2, results2) {
-						if(Object.keys(results2).length === 0) {
+						if(Object.keys(results2).length === 0 || results2[0].o_id != req.session.o_id) {
 							// 団体に所属していない
-							//req.session.o_id = undefined;
+							req.session.o_id = undefined;
 						}
 					});
 				}

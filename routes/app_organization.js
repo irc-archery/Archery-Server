@@ -27,7 +27,7 @@ var loginCheck = function(req, res, next) {
 					var checkOrganization = 'select * from organization where o_id = ' + connection.escape(req.session.o_id);
 
 					connection.query(checkOrganization, function(err2, results2) {
-						if(Object.keys(results2).length === 0) {
+						if(Object.keys(results2).length === 0 || results2[0].o_id != req.session.o_id) {
 							// 団体に所属していない
 							req.session.o_id = undefined;
 						}
@@ -261,7 +261,7 @@ router.get('/members', loginCheck, function(req, res) {
 		}
 
 		// ユーザーが団体に所属している
-		if (o_id !== undefined) {
+		if (o_id !== undefined && o_id !== null) {
 
 			var extractOrganizationSql = 'select organization.organizationName, (select count(*) from account where account.o_id = ' + connection.escape(o_id) + ') as members from organization where organization.o_id = ' + connection.escape(o_id);
 
@@ -352,9 +352,6 @@ router.post('/members', loginCheck, function(req, res) {
 		else {
 			console.log('faild to login');
 
-			console.log('send response about add member');
-			console.log(resData);
-
 			res.send({'results': false, 'err': 'ログインに失敗しました'});
 		}
 	});
@@ -366,20 +363,48 @@ router.delete('/members/:id', loginCheck, function(req, res) {
 	var p_id = req.params.id;
 	var o_id = req.session.o_id;
 
-	// sessionで参照できるo_idの団体に所属しているp_idのユーザーを、団体から脱退させ
+	// sessionで参照できるo_idの団体に所属しているp_idのユーザーを、団体から脱退させる
 
-	// TODO: 権限があるユーザーのみの削除を受け付ける
+	// 権限があるユーザーのみの削除を受け付ける
 
-	var updateAccountSql = 'update account set o_id = NULL where p_id = ' + connection.escape(p_id) + ' and o_id = ' + connection.escape(o_id);
+	var checkOrganizationCreaterSql = 'select p_id from organization where o_id = ' + connection.escape(o_id);
 
-	connection.query(updateAccountSql, function(err, updateAccountResults) {
-		if(!err) {
-			res.send({'results': true, 'err': null});
-		}
-		else{
-			res.send({'results': false, 'err': '要求された動作の実行に失敗しました'});
-		}
+	connection.query(checkOrganizationCreaterSql, function(err, checkOrganizationCreaterData) {
+		if(!err){ 
+			// データが存在するか確認
+			if(Object.keys(checkOrganizationCreaterData).length !== 0) {
+
+				if(checkOrganizationCreaterData[0].p_id == req.session.p_id){
+					// このユーザーは団体の設立者	so, 要求を受け入れる 
+
+					if(req.session.p_id != req.params.id) {
+						// 団体の責任者は自分自身を団体から除外することはできない
+						// データを更新
+						var updateAccountSql = 'update account set o_id = NULL where p_id = ' + connection.escape(p_id) + ' and o_id = ' + connection.escape(o_id);
+
+						connection.query(updateAccountSql, function(err, updateAccountResults) {
+							if(!err) {
+								res.send({'results': true, 'err': null});
+							}
+							else{
+								res.send({'results': false, 'err': '要求された動作の実行に失敗しました'});
+							}
+						});
+					}
+					else {
+						res.send({'results': false, 'err': '団体のリーダーは自分自身を団体から削除することはできません。'});
+					}
+				}
+				else {
+					res.send({'results': false, 'err': '要求された動作の実行に失敗しました。権限がありません。'});
+				}
+			}
+			else {
+				res.send({'results': false, 'err': '要求された動作の実行に失敗しました。団体が存在しません。'});
+			}
+		}	
 	});
+
 });
 
 module.exports = router;

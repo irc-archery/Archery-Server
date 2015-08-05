@@ -5,7 +5,6 @@ var router = express.Router();
 var loginCheck = function(req, res, next) {
 
 	console.log('bellow is req.session.p_id');
-
 	console.log(req.session.p_id);
 
 	if(req.session.p_id) {
@@ -27,12 +26,24 @@ var loginCheck = function(req, res, next) {
 				if(req.session.o_id) {
 					var checkOrganization = 'select * from organization where o_id = ' + connection.escape(req.session.o_id);
 
+					console.log('checkOrganization');
+					console.log(checkOrganization);
+
 					connection.query(checkOrganization, function(err2, results2) {
-						if(Object.keys(results2).length === 0) {
-							// 団体に所属していない
+						console.log('results2');
+						console.log(results2);
+
+						if(Object.keys(results2).length === 0 || results2[0].p_id != req.session.p_id) {
+							// 団体に所属していない or sessionとの整合性が取れていない
 							req.session.o_id = undefined;
 						}
 					});
+				}
+				else {
+					if(results[0].o_id) {
+						// 団体に所属しているのにもかかわらず、sessionに保存されていない... So, save the o_id on session store
+						req.session.o_id = results[0].o_id;	
+					}		
 				}
 
 				next();
@@ -61,7 +72,13 @@ router.get('/', loginCheck, function(req, res) {
 	// 団体画面の出力
 	var o_id = req.session.o_id;
 
-	if(o_id != undefined) {
+	console.log('typeof o_id')
+	console.log(typeof o_id)
+
+	console.log('o_id');
+	console.log(o_id);
+
+	if(o_id != undefined && o_id != 'null') {
 		res.render('organization');
 	}
 	else{
@@ -133,11 +150,34 @@ router.delete('/:id', loginCheck, function(req, res) {
 router.get('/members', loginCheck, function(req, res) {
 	// メンバー管理画面
 
+	var p_id = req.session.p_id;
 	var o_id = req.session.o_id;
 
+	console.log('fnit o_id');
+	console.log(o_id);
+
 	// ユーザーが団体に所属している
-	if (o_id !== undefined) {
-		res.render('memberAdmin');
+	if (o_id != undefined && o_id != null) {
+
+		// このユーザーのpermissionを確認する
+		var checkOrganizationCreaterSql = 'select p_id from organization where o_id = ' + connection.escape(o_id);
+
+		connection.query(checkOrganizationCreaterSql, function(err, checkOrganizationCreaterData) {
+			if(!err) {
+
+				if(checkOrganizationCreaterData[0].p_id === p_id) {
+					// このユーザーは管理画面にはいる権限がある
+
+					res.render('memberAdmin');
+				}
+				else {
+					res.redirect('/organization');
+				}
+			}	
+			else {
+				res.redirect('/organization');
+			}
+		});
 	}
 
 	// ユーザーが団体に所属していない

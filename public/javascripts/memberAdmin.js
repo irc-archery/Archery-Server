@@ -42,6 +42,68 @@ function getMembers() {
 	});
 }
 
+// メンバー追加ボタン
+$('.addMember').on('click', function() {
+
+	var data = {};
+	var dataFlag = true;
+
+	data.email = $('#email').val();
+	data.password = $('#password').val();
+
+	console.log(data);
+
+	if(data.email == '') {
+		$('#email').parent().addClass('has-error');	
+		dataFlag = false
+	}
+
+	if(data.password == '') {
+		$('#password').parent().addClass('has-error');
+		dataFlag = false;
+	}
+
+	if(dataFlag) {
+
+		$('.has-error').removeClass('has-error');
+
+		$.ajax({
+			url: '/app/organization/members/',
+			type: 'POST',
+			dataType: 'json',
+			data: data,
+			success: function(data, textStatus) {
+				if(data != undefined) {
+
+					var code = '';
+
+					if(data.results == true) {
+						code += '<div class="alert alert-success" role="alert">';
+  						code +=	'アカウントのメンバーの追加に成功しました'; 
+  						code += '</div>';
+
+  						$('#email').val('');
+  						$('#password').val('');
+					}
+					else if(data.results == false) {
+						code += '<div class="alert alert-danger" role="alert">';
+  						code +=	'アカウントのメンバーの追加に失敗しました。ログイン名とパスワードを確認してください。'; 
+  						code += '</div>';
+					}
+
+					$('.infoArea').empty();
+					$('.infoArea').html(code).hide().fadeIn(600);
+
+					getMembers();
+				}
+			},
+			error: function(err) {
+				console.log(err);
+			}
+		});
+	}
+});
+
 // アカウント削除のモーダルウィンドウを表示
 $('#memberListArea').on('click', '.openModal', function() {
 
@@ -73,12 +135,23 @@ $('.deleteAccount').on('click', function() {
 		    console.log(data);
 
 		    if(data != undefined) {
+
+		    	var code = '';
+
 		    	if(data.results == true) {
-		    		alert('ユーザーの削除に成功しました。');	
+					code += '<div class="alert alert-success" role="alert">';
+					code +=	'アカウントのメンバーの削除に成功しました'; 
+					code += '</div>';
 		    	}
 		    	else if(data.results == false){
-		    		alert('ユーザーの削除に失敗しました。');	
+					code += '<div class="alert alert-danger" role="alert">';
+					code += data.err;
+					code += '</div>';
 		    	}
+
+		    	$('.infoArea2').empty();
+		    	$('.infoArea2').html(code);
+
 	    		getMembers();
 		    }
 		},
