@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<title>Archery</title>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+	<link rel="stylesheet" type="text/css" href="/components/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/components/fontawesome/css/font-awesome.min.css"> 
+</head>
+<body id="body">
+    <header id="topBar" class="navbar navbar-fixed-top">
+        <div class="container">
+                <a href="/personal"><div class="backButton"><i class="fa fa-arrow-left"></i></div></a>
+                <h1>団体ページ</h1>
+                <div class="dropdown navButtonArea">
+                    <div id="navButton" class="navButton pull-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></div>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navButton">
+                        <li><a href="/personal">マイページ</a></li>
+                        <li><a href="/organization">団体ページ</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/matchIndex">試合一覧</a></li>
+                        <li><a href="/insertMatch">試合作成</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/organization/create">団体作成</li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/logout">ログアウト</a></li>
+                    </ul>
+            </div>
+        </div>
+    </header>
+    <main class="container common organization" role='main'>
+
+        <div class="alert alert-info">
+            
+            <p>団体に所属していません。団体の参加は、顧問の先生にお願いをしてメンバー管理画面より参加するか、<a href="/organization/create">団体作成画面</a>より新たに団体を作成してください。</p>
+
+        </div>
+
+    </main>
+
+    <footer>
+        <p><small>Copyright 2015 IRC. All Rights Reserved.</small></p>
+    </footer>
+    <script src="/javascripts/jquery.min.js"></script>
+    <script src="/components/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/javascripts/common.js"></script>
+</body>
+</html>

@@ -66,7 +66,6 @@ router.get('/', loginCheck, function(req, res) {
 	}
 	else{
 		res.render('notBelong');
-
 	}
 });
 
@@ -106,17 +105,17 @@ router.post('/', loginCheck, function(req, res) {
 			var responseData = {};
 
 			if(!err){
-				responseData['results'] = true;
-				responseData['err'] = null;
-
+				// 作成成功
 				req.session.o_id = insertOrganizationResults.insertId;
+
+				res.render('afterCreateOrganization');
 			}
 			else {
-				responseData['results'] = false;	
-				responseData['err'] = err;
+				// 作成失敗
+
+				res.render('');
 			}
 
-			res.send(responseData);
 		});
 	});
 });

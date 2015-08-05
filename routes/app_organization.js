@@ -81,7 +81,7 @@ router.get('/', loginCheck, function(req, res) {
 			connection.query(organizationAdminIdSql, function(err, organizationAdminIdResults) {
 
 				// 団体データを抽出
-				var organizationDataSql = 'select organizationName, DATE_FORMAT(establish, "%Y/%m/%d") as establish, (select count(*) from account where o_id = ' + connection.escape(o_id) + ') as members, (select concat(account.lastName, account.firstName) as admin from account where account.p_id = ' + organizationAdminIdResults[0].p_id + ') as admin, place, email from organization where organization.o_id = ' + connection.escape(o_id);
+				var organizationDataSql = 'select o_id, organizationName, DATE_FORMAT(establish, "%Y/%m/%d") as establish, (select count(*) from account where o_id = ' + connection.escape(o_id) + ') as members, (select concat(account.lastName, account.firstName) as admin from account where account.p_id = ' + organizationAdminIdResults[0].p_id + ') as admin, place, email from organization where organization.o_id = ' + connection.escape(o_id);
 
 				connection.query(organizationDataSql, function(err, organizationDataResults) {
 
@@ -173,64 +173,74 @@ router.delete('/:id', loginCheck, function(req, res) {
 
 	var o_id = req.params.id;
 
-	// sessionを参照し、このp_idのユーザーがこの団体を削除する権限があるかどうか調べる
-	// 現段階ではorganizationの設立者のみが削除できるようにSQL文を書く
-	var permissionCheckSql = 'select p_id from organization where o_id = ' + connection.escape(o_id);
-
 	var resData = {'results': false, 'err': null};
 
-	// 削除したい団体の設立者を抽出
-	connection.query(permissionCheckSql, function(err, permissionCheckResults) {
 
-		if(!err) {
-			// 団体の設立者のみが削除可能
-			if(permissionCheckResults[0].p_id === req.session.p_id) {
+	if(o_id != 'undefined') {
 
-				// 団体削除SQL
-				var deleteOrganizationSql = 'delete from organization where o_id = ' + connection.escape(o_id);
+		// sessionを参照し、このp_idのユーザーがこの団体を削除する権限があるかどうか調べる
+		// 現段階ではorganizationの設立者のみが削除できるようにSQL文を書く
+		var permissionCheckSql = 'select p_id from organization where o_id = ' + connection.escape(o_id);
 
-				// 団体に所属しているユーザーのo_idを更新
-				var updateOrganizationSql = 'update account set account.o_id = NULL where account.o_id = ' + connection.escape(o_id);
+		// 削除したい団体の設立者を抽出
+		connection.query(permissionCheckSql, function(err, permissionCheckResults) {
 
-				// 団体削除
-				connection.query(deleteOrganizationSql, function(err, deleteOrganizationResults) {
-					if(!err) {
-						//団体削除完了. So 団体に所属していたユーザーのo_idを更新
-						connection.query(updateOrganizationSql, function(err, updateOrganizationResults) {
+			if(!err) {
+				// 団体の設立者のみが削除可能
+				if(permissionCheckResults[0].p_id === req.session.p_id) {
 
-							if(!err) {
-								req.session.o_id = undefined;
+					// 団体削除SQL
+					var deleteOrganizationSql = 'delete from organization where o_id = ' + connection.escape(o_id);
 
-								console.log('団体の削除が完了しました');
-								resData['results'] = true;
+					// 団体に所属しているユーザーのo_idを更新
+					//var updateOrganizationSql = 'update account set account.o_id = NULL where account.o_id = ' + connection.escape(o_id);
+
+					// 団体削除
+					connection.query(deleteOrganizationSql, function(err, deleteOrganizationResults) {
+						if(!err) {
+							//団体削除完了. So 団体に所属していたユーザーのo_idを更新
+							//connection.query(updateOrganizationSql, function(err, updateOrganizationResults) {
+
+								if(!err) {
+									req.session.o_id = undefined;
+
+									console.log('団体の削除が完了しました');
+									resData['results'] = true;
+								}
+								else {
+									console.log('ユーザーの団体情報更新に失敗しました');
+									resData['err'] = 'ユーザーの団体情報更新に失敗しました';
+								}
+
 								res.send(resData);
-							}
-							else {
-								console.log('ユーザーの団体情報更新に失敗しました');
-								resData['err'] = 'ユーザーの団体情報更新に失敗しました';
-								res.send(resData);
-							}
-						});
-					}
-					else {
-						console.log('団体の削除に失敗しました');
-						resData['err'] = '団体の削除に失敗しました';
-						res.send(resData);
-					}
-				});
+							//});
+						}
+						else {
+							console.log('団体の削除に失敗しました');
+							resData['err'] = '団体の削除に失敗しました';
+							res.send(resData);
+						}
+					});
+				}
+				else {
+					console.log('団体削除の権限がありません');
+					resData['err'] = '団体削除の権限がありません';
+					res.send(resData);
+				}
 			}
 			else {
-				console.log('団体削除の権限がありません');
-				resData['err'] = '団体削除の権限がありません';
+				console.log('不正な団体IDです');
+				resData['err'] = '不正な団体IDです';
 				res.send(resData);
 			}
-		}
-		else {
-			console.log('不正な団体IDです');
-			resData['err'] = '不正な団体IDです';
-			res.send(resData);
-		}
-	});
+		});
+	}	
+	else {
+		console.log('不正な団体IDです');
+		resData['err'] = '不正な団体IDです';
+		res.send(resData);
+	}
+
 });
 
 // get /organization/members

@@ -23,9 +23,9 @@
                         <li><a href="/matchIndex">試合一覧</a></li>
                         <li><a href="/insertMatch">試合作成</a></li>
                         <li role="separator" class="divider"></li>
-                        <li class="memberAdmin"><a href="#">メンバー管理</a></li>
-                        <li class="deleteOrganization"><a href="#">団体削除</li>
-                        <li role="separator" class="divider"></li>
+                        <li class="memberAdmin creater"><a href="#">メンバー管理</a></li>
+                        <li class="deleteOrganization creater"><a href="#">団体削除</li>
+                        <li role="separator" class="divider creater"></li>
                         <li><a href="/logout">ログアウト</a></li>
                     </ul>
             </div>
@@ -34,7 +34,7 @@
     <main class="container common organization" role='main'>
 
     <section class="panel">
-        <h2 class="panel-heading"><i class="fa fa-user"></i> 団体情報</h2>
+        <h2 class="panel-heading"><i class="fa fa-info"></i> 団体情報</h2>
         <div class="panel-body">
             <dl class="dl-horizontal">
                 <dt>団体名</dt><dd class="organizationName"></dd>
@@ -48,7 +48,7 @@
     </section>
 
     <section class="panel">
-        <h2 class="panel-heading"><i class="fa fa-user"></i> 選手一覧</h2>
+        <h2 class="panel-heading"><i class="fa fa-users"></i> 選手一覧</h2>
         <div class="panel-body">
             <table id="memberListArea" class="table table-bordered">
                 <tr><th>選手名</th><th>生年月日</th><th>Eメール</th></tr>

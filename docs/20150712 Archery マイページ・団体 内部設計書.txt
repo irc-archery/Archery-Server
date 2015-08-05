@@ -1,6 +1,8 @@
 Archery マイページ・団体 内部設計書
-2015 07 15 
+2015 08 05
 
+08/05
+団体削除に使用するo_idを get /organization/ のresponseに追加
 
 マイページ画面
 
@@ -76,6 +78,7 @@ RequestURI(for app) : http://hostname/app/organization
 Response Data Format: 
 {
 	"status": 1,				// ユーザが団体に所属しているか 1: 所属している, 0: 所属していない
+	"o_id": int,				// 団体削除時に使用
 	"organizationName": string, // ユーザーが所属している団体名
 	"establish": string,		// 団体設立日
 	"members": int,				// メンバー数
@@ -118,7 +121,14 @@ Response Data Format:
 
 HttpMethod : GET
 RequestURI(for browser) : http://hostname/organization/check/x 	// xは権限を確認したい団体のo_id
+RequestURI(for app) : http://hostname/app/organization/check/x
+※ヘッダ情報にセッションIDを送付する。
 
+Response Data Format: 
+{
+	"permission": bool,	// true or false
+	"err": string		// error message or null
+}
 
 
 団体作成画面

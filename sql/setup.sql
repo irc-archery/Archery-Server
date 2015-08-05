@@ -27,7 +27,7 @@ create table `account` (
 	`sex` int,
 	index(`p_id`),
 	foreign key(`o_id`) references `organization`(`o_id`)
-	on update cascade on delete cascade
+	on update cascade on delete set null
 ) CHARACTER SET 'utf8' ENGINE = InnoDB;
 
 create table `match` (
@@ -47,7 +47,7 @@ create table `match` (
 	foreign key(`p_id`) references `account`(`p_id`)
 	on update cascade on delete cascade,
 	foreign key(`o_id`) references `organization`(`o_id`)
-	on update cascade on delete cascade
+	on update cascade on delete set null
 ) CHARACTER SET 'utf8' ENGINE = InnoDB;
 
 create table `scoreCard` (
@@ -90,7 +90,7 @@ create table `scorePerEnd` (
 	foreign key(`p_id`) references `account`(`p_id`)
 	on update cascade on delete cascade,
 	foreign key(`o_id`) references `organization`(`o_id`)
-	on update cascade on delete cascade
+	on update cascade on delete set null
 ) CHARACTER SET 'utf8' ENGINE = InnoDB;
 
 create table `scoreTotal` (
@@ -107,7 +107,7 @@ create table `scoreTotal` (
 	foreign key (`p_id`) references `account`(`p_id`)
 	on update cascade on delete cascade,
 	foreign key (`o_id`) references `organization`(`o_id`)
-	on update cascade on delete cascade
+	on update cascade on delete set null
 ) CHARACTER SET `utf8` ENGINE = InnoDB;
 
 # sample data of organization
