@@ -133,6 +133,7 @@ router.get('/createAccount', function(req, res) {
 
 // 試合一覧画面
 router.get('/matchIndex', loginCheck, function(req, res, next) {
+
 	res.render('matchIndex');
 });
 
