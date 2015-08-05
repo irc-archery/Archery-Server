@@ -91,7 +91,8 @@ Response Data Format:
 		},
 		{ ... }, 
 		{ ... }
-	]
+	],
+	"permission": bool			// このユーザーが団体を削除することができるかどうか(団体の設立者かどうか) できる : true, できない : false
 }
 
 // ユーザーが団体に所属していない場合
@@ -112,6 +113,11 @@ Response Data Format:
 	"results": bool,	// true or false
 	"err": string		// error message or null
 }
+
+団体削除権限確認API
+
+HttpMethod : GET
+RequestURI(for browser) : http://hostname/organization/check/x 	// xは権限を確認したい団体のo_id
 
 
 

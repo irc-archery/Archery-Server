@@ -7,9 +7,6 @@ var loginCheck = function(req, res, next) {
 	console.log('bellow is req.session.p_id');
 	console.log(req.session.p_id);
 
-	console.log('req.headers for app cookie');
-	console.log(req.headers);
-
 	if(req.session.p_id) {
 		console.log('success loginCheck with sessionID');
 
@@ -101,6 +98,8 @@ router.get('/', loginCheck, function(req, res) {
 						organizationDataResults[0]['status'] = 1;
 
 						organizationDataResults[0]['memberList'] = extractMembersResults;
+
+						organizationDataResults[0]['permission'] = organizationAdminIdResults[0].p_id == p_id ? true : false;
 
 						console.log('organizationDataResults[0]');
 						console.log(organizationDataResults[0]);
