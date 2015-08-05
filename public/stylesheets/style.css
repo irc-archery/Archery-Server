@@ -234,3 +234,12 @@ main.common .resultsArea h3{
   width: 90%;
   margin: 0 auto 30px;
 }
+
+/* memberAdmin page */
+main.common .warning{
+  background: #FF5722; 
+}
+
+.bottom {
+  margin-bottom: 20px;
+}
