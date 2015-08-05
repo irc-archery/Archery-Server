@@ -55,17 +55,23 @@ $(function() {
 
 			    		record += '<tr><td>' + data.record[i].created + '</td><td>' + data.record[i].matchName + '</td><td>' + data.record[i].sum + '</td><td>' + data.record[i].sum / data.record[i].perEnd / data.record[i].arrows + '</td></tr>';
 			    	}
+
+			    	$('#recordArea').append(record);
+
+			    	displayLineChart()
 		    	}	
 		    	else {
 
-		    		record += '<div class="alert alert-info" role="alert">まだ、得点表は作成されていません。得点表を作成するためには、<a href="/matchIndex" class="alert-link">試合一覧画面</a>より参加したい試合を選択し、得点表を作成してください。</div>';
+		    		$('#recordArea').remove();
+
+		    		$('.infoArea').html('<div class="alert alert-info" role="alert">まだ、得点表は作成されていません。得点表を作成するためには、<a href="/matchIndex" class="alert-link">試合一覧画面</a>より参加したい試合を選択し、得点表を作成してください。</div>');
+
+		    		$('.canvasArea').empty();
+
+		    		$('.infoArea2').html('<div class="alert alert-info" role="alert">得点表を作成するとここに最新5件の成績が表示されます。</div>');
 		    	}
 
-		    	$('#recordArea').append(record);
-
 		    	Record = data.record;
-
-		    	displayLineChart()
 		    }
 		},
 		error: function(err) {
@@ -82,9 +88,11 @@ $(window).resize(function() {
 		clearTimeout(timer);
 	}
 	timer = setTimeout(function() {
-		$('.canvasArea').empty();
-		$('.canvasArea').html('<canvas id="lineChart"></canvas>');
-		displayLineChart();	
+		if(Object.keys(Record).length !== 0) {
+			$('.canvasArea').empty();
+			$('.canvasArea').html('<canvas id="lineChart"></canvas>');
+			displayLineChart();	
+		}
 	}, 200);
 });
 
