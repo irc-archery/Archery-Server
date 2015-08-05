@@ -33,6 +33,12 @@ var loginCheck = function(req, res, next) {
 						}
 					});
 				}
+				else {
+					if(results[0].o_id) {
+						// 団体に所属しているのにもかかわらず、sessionに保存されていない... So, save the o_id on session store
+						req.session.o_id = results[0].o_id;	
+					}		
+				}
 
 				next();
 			}

@@ -26,13 +26,7 @@ var loginCheck = function(req, res, next) {
 				if(req.session.o_id) {
 					var checkOrganization = 'select * from organization where o_id = ' + connection.escape(req.session.o_id);
 
-					console.log('checkOrganization');
-					console.log(checkOrganization);
-
 					connection.query(checkOrganization, function(err2, results2) {
-						console.log('results2');
-						console.log(results2);
-
 						if(Object.keys(results2).length === 0 || results2[0].p_id != req.session.p_id) {
 							// 団体に所属していない or sessionとの整合性が取れていない
 							req.session.o_id = undefined;
