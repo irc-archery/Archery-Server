@@ -87,7 +87,7 @@ $('.addMember').on('click', function() {
 					}
 					else if(data.results == false) {
 						code += '<div class="alert alert-danger" role="alert">';
-  						code +=	'アカウントのメンバーの追加に失敗しました。ログイン名とパスワードを確認してください。'; 
+						code += data.err;
   						code += '</div>';
 					}
 
