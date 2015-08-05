@@ -24,23 +24,20 @@ var loginCheck = function(req, res, next) {
 				// アカウントは存在する
 
 				if(req.session.o_id) {
-					var checkOrganization = 'select * from organization where o_id = ' + connection.escape(req.session.o_id);
 
-					connection.query(checkOrganization, function(err2, results2) {
-						if(Object.keys(results2).length === 0 || results2[0].o_id != req.session.o_id) {
-							// 団体に所属していない
-							req.session.o_id = undefined;
-						}
-						next();
-					});
+					// sessionに保存されているo_idとdbに保存されているo_idの整合性を確かめる
+					if(results[0].o_id != req.session.o_id) {
+						req.session.o_id = undefined;
+					}
 				}
 				else {
 					if(results[0].o_id) {
 						// 団体に所属しているのにもかかわらず、sessionに保存されていない... So, save the o_id on session store
 						req.session.o_id = results[0].o_id;	
 					}		
-					next();
 				}
+				
+				next();
 			}
 			else {
 				// アカウントは存在しない

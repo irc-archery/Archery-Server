@@ -24,23 +24,20 @@ var loginCheck = function(req, res, next) {
 				// アカウントは存在する
 
 				if(req.session.o_id) {
-					var checkOrganization = 'select * from organization where o_id = ' + connection.escape(req.session.o_id);
 
-					connection.query(checkOrganization, function(err2, results2) {
-						if(Object.keys(results2).length === 0 || results2[0].o_id != req.session.o_id) {
-							// 団体に所属していない
-							req.session.o_id = undefined;
-						}
-						next();
-					});
+					// sessionに保存されているo_idとdbに保存されているo_idの整合性を確かめる
+					if(results[0].o_id != req.session.o_id) {
+						req.session.o_id = undefined;
+					}
 				}
 				else {
 					if(results[0].o_id) {
 						// 団体に所属しているのにもかかわらず、sessionに保存されていない... So, save the o_id on session store
 						req.session.o_id = results[0].o_id;	
 					}		
-					next();
 				}
+				
+				next();
 			}
 			else {
 				// アカウントは存在しない
@@ -155,330 +152,66 @@ router.get('/', loginCheck, function(req, res) {
 router.delete('/', loginCheck, function(req, res) {
 	// sessionで参照できるアカウントを削除
 	var p_id = req.session.p_id;
+	var o_id = req.session.o_id;
 
-	var deleteAccountSql = 'delete from account where p_id = ' + connection.escape(p_id);
+	var checkOrganizationCreaterSql = 'select p_id from organization where o_id = ' + connection.escape(o_id);
 
-	connection.query(deleteAccountSql, function(err, deleteAccountData) {
-
-		console.log('deleteAccountData');
-		console.log(deleteAccountData);
-
-		console.log('err');
-		console.log(err);
-
-		var resData = {};
-
+	// 削除したいユーザーが団体のリーダーではないかを確かめる
+	connection.query(checkOrganizationCreaterSql, function(err, checkOrganizationCreaterData) {
 		if(!err) {
-			resData['results'] = true;
-			resData['err'] = null;
+			if(Object.keys(checkOrganizationCreaterData).length !== 0) {
+				// 団体に所属している
+				if(checkOrganizationCreaterData[0].p_id == p_id) {
+					// 団体のリーダーである so, 初めに団体を削除する	
+					var deleteOrganizationSql = 'delete from organization where o_id = ' + connection.escape(o_id);
 
-			req.session.p_id = undefined;
-			req.session.o_id = undefined;
+					connection.query(deleteOrganizationSql, function(err2, deleteOrganizationData) {
+						if(!err2) {
+							deleteAccount(req, res);
+						}	
+					});
+				}
+				else {
+					// 団体のリーダーではない
+					deleteAccount(req, res);
+				}
+			}	
+			else {
+				// 団体に所属していない
+				deleteAccount(req, res);
+			}
 		}
-		else {
-			resData['results'] = false;
-			resData['err'] = 'アカウント削除に失敗しました';
-		}
-
-		res.send(resData);
 	});
 
-	/*
+	function deleteAccount(req, res) {
 
-	// 初めに削除したいユーザーが団体のリーダーではないか確かめる
-	// 団体のリーダーの場合は先に団体を削除してもらう
+		var deleteAccountSql = 'delete from account where p_id = ' + connection.escape(p_id);
 
-	// このユーザーが団体のリーダーではないか確認する
-	var checkOrganizationLeaderSql = 'select * from organization where p_id = ' + p_id;
+		connection.query(deleteAccountSql, function(err, deleteAccountData) {
 
-	console.log(checkOrganizationLeaderSql);
+			console.log('deleteAccountData');
+			console.log(deleteAccountData);
 
-	connection.query(checkOrganizationLeaderSql, function(errCOL, checkOrganizationLeaderResults) {
-		if(!errCOL) {
-			console.log('checkOrganizationLeaderResults')
-			console.log(checkOrganizationLeaderResults)
-			console.log('Object.keys(checkOrganizationLeaderResults).length !== 0')
-			console.log(Object.keys(checkOrganizationLeaderResults).length)
+			console.log('err');
+			console.log(err);
 
-			if(Object.keys(checkOrganizationLeaderResults).length === 0) {
-				// 団体のリーダーではない
+			var resData = {};
 
-				// 1. ユーザーが作成した試合を抽出
-				// 2. 試合とその試合に属している得点表を削除
-				// 2.5 試合を削除する
-				// 3. そのユーザーが作成した得点表を削除
-				// 4. ユーザー削除する
+			if(!err) {
+				resData['results'] = true;
+				resData['err'] = null;
 
-				// ユーザーが作成した試合とその試合に属している得点表を削除する
-
-				// 1. ユーザーが作成したm_idを抽出
-
-				var extractMatchIdSql = 'select m_id from `match` where p_id = ' + p_id;
-
-				console.log('extractMatchIdSql');
-				console.log(extractMatchIdSql);
-
-				connection.query(extractMatchIdSql, function(err, extractMatchIdResults) {
-
-					console.log('extractMatchIdResults');
-					console.log(extractMatchIdResults);
-
-
-					if(Object.keys(extractMatchIdResults).length !== 0) {
-						// ユーザーが作成した試合が存在する
-
-						// 2. 試合に関連付けられたデータを削除
-
-						// 試合に所属している scorePerEnd, scoreTotalを削除するためにsc_idを抽出するSQL文
-						var extractScoreCardIdSql = 'select sc_id from `scoreCard` where m_id = ' + extractMatchIdResults[0].m_id;
-
-						for(var i = 1; i < extractMatchIdResults.length; i++) {
-							extractScoreCardIdSql += ' or m_id = ' + extractMatchIdResults[i].m_id;
-						}
-
-						console.log('extractScoreCardIdSql');
-						console.log(extractScoreCardIdSql);
-
-						// sc_idを抽出
-						connection.query(extractScoreCardIdSql, function(err, extractScoreCardIdResults) {
-
-							console.log('extractScoreCardIdResults');
-							console.log(extractScoreCardIdResults);
-
-							if(extractScoreCardIdResults != undefined) {
-								// ユーザーが作成した試合に関連付けられた得点表が存在する
-
-								// 得点、得点合計、得点表を削除するためのSQL文
-								var deleteScoreCardSql = 'delete from scoreCard where sc_id = ' + extractScoreCardIdResults[0].sc_id;
-								var deleteScorePerEndSql = 'delete from scorePerEnd where sc_id = ' + extractScoreCardIdResults[0].sc_id;
-								var deleteScoreTotalSql = 'delete from scoreTotal where sc_id = ' + extractScoreCardIdResults[0].sc_id;
-
-								// sc_idを追加する
-								for(var i = 0; i < extractScoreCardIdResults.length; i++ ){
-
-									// scoreCard, scorePerEnd, scoreTotalを削除するためsc_idを追加
-									deleteScoreCardSql += ' or sc_id = ' + extractScoreCardIdResults[i].sc_id;
-									deleteScorePerEndSql += ' or sc_id = ' + extractScoreCardIdResults[i].sc_id;
-									deleteScoreTotalSql += ' or sc_id = ' + extractScoreCardIdResults[i].sc_id;
-								}
-
-								console.log('deleteScoreCardSql');
-								console.log(deleteScoreCardSql);
-
-								console.log('deleteScorePerEndSql');
-								console.log(deleteScorePerEndSql);
-
-								console.log('deleteScoreTotalSql');
-								console.log(deleteScoreTotalSql);
-
-								// 得点表合計の削除
-								connection.query(deleteScoreTotalSql, function(err, deleteScoreTotalResults){
-									// 得点表得点の削除
-									connection.query(deleteScorePerEndSql, function(err, deleteScorePerEndResults) {
-										// 得点表の削除
-										connection.query(deleteScoreCardSql, function(err, deleteScoreCardResults) {
-
-											// 試合の削除
-											var deleteMatchSql = 'delete from `match` where m_id = ' + extractMatchIdResults[0].m_id;
-
-											for(var i = 1; i < extractMatchIdResults.length; i++) {
-												deleteMatchSql += ' or m_id = ' + extractMatchIdResults[i].m_id;
-											}
-
-											connection.query(deleteMatchSql, function(err, deleteMatchResults) {
-												// 試合の削除完了..
-												// so, ユーザーが作成した得点表を削除する
-
-												// ユーザーの過去の得点表を削除
-												var deleteScoreCardSql = 'delete from scoreCard where p_id = ' + p_id;
-
-												// ユーザーの過去の得点合計を削除
-												var deleteScoreTotalSql = 'delete from scoreTotal where p_id = ' + p_id;
-
-												// ユーザーの過去の得点を削除
-												var	deleteScorePerEndSql = 'delete from scorePerEnd where p_id = ' + p_id;
-
-												// ユーザーの得点表データの削除
-												connection.query(deleteScoreCardSql, function(err, results) {
-													connection.query(deleteScoreTotalSql, function(err, results) {
-														connection.query(deleteScorePerEndSql, function(err, results) {
-
-															// 4. ユーザーの削除
-
-															// ユーザー削除SQL
-															var deleteAccountSql = 'delete from account where p_id = ' + p_id;
-
-															// ユーザーデータの削除
-															connection.query(deleteAccountSql , function(errAc, results) {
-																if(!errAc) {
-
-																	var resData = {};
-
-																	console.log('success to delete account');
-
-																	resData['results'] = true;
-																	resData['err'] = null;
-
-																	req.session.p_id = undefined;
-																	req.session.o_id = undefined;
-
-																	console.log('send bellow data as response of delete /app/personal');
-																	console.log(resData);
-
-																	res.send(resData);
-																}
-																else {
-																	// アカウント削除に失敗
-																	console.log('faild to delete account');
-																	console.log(errAc);
-
-																	res.send({'results': false, 'err': 'ユーザーデータの削除に失敗しました'});
-																}
-															});
-														});
-													});
-												});
-											});
-										});
-									});
-								});
-							}
-							else {
-								// 試合の責任者ではあるがその試合には一つも得点表がない
-								console.log('case of 試合の責任者ではあるがその試合には一つも得点表がない');
-
-								// 試合の削除
-								var deleteMatchSql = 'delete from `match` where m_id = ' + extractMatchIdResults[0].m_id;
-
-								for(var i = 1; i < extractMatchIdResults.length; i++) {
-									deleteMatchSql += ' or m_id = ' + extractMatchIdResults[i].m_id;
-								}
-
-								connection.query(deleteMatchSql, function(err, deleteMatchResults) {
-									// 試合の削除完了..
-									// so, ユーザーが作成した得点表を削除する
-
-									// ユーザーの過去の得点表を削除
-									var deleteScoreCardSql = 'delete from scoreCard where p_id = ' + p_id;
-
-									// ユーザーの過去の得点合計を削除
-									var deleteScoreTotalSql = 'delete from scoreTotal where p_id = ' + p_id;
-
-									// ユーザーの過去の得点を削除
-									var	deleteScorePerEndSql = 'delete from scorePerEnd where p_id = ' + p_id;
-
-									// ユーザーの得点表データの削除
-									connection.query(deleteScoreCardSql, function(err, results) {
-										connection.query(deleteScoreTotalSql, function(err, results) {
-											connection.query(deleteScorePerEndSql, function(err, results) {
-
-												// 4. ユーザーの削除
-
-												// ユーザー削除SQL
-												var deleteAccountSql = 'delete from account where p_id = ' + p_id;
-
-												// ユーザーデータの削除
-												connection.query(deleteAccountSql , function(errAc, results) {
-													if(!errAc) {
-
-														var resData = {};
-
-														console.log('success to delete account');
-
-														resData['results'] = true;
-														resData['err'] = null;
-
-														req.session.p_id = undefined;
-														req.session.o_id = undefined;
-
-														console.log('send bellow data as response of delete /app/personal');
-														console.log(resData);
-
-														res.send(resData);
-													}
-													else {
-														// アカウント削除に失敗
-														console.log('faild to delete account');
-														console.log(errAc);
-
-														res.send({'results': false, 'err': 'Faild to delete your account.'});
-													}
-												});
-											});
-										});
-									});
-								});
-
-							}
-						});
-					}
-					else {
-						// ユーザーが作成した試合が存在しない
-						console.log('case of ユーザーが作成した試合が存在しない');
-
-						// ユーザーの過去の得点表を削除
-						var deleteScoreCardSql = 'delete from scoreCard where p_id = ' + p_id;
-
-						// ユーザーの過去の得点合計を削除
-						var deleteScoreTotalSql = 'delete from scoreTotal where p_id = ' + p_id;
-
-						// ユーザーの過去の得点を削除
-						var	deleteScorePerEndSql = 'delete from scorePerEnd where p_id = ' + p_id;
-
-						// ユーザーの得点表データの削除
-						connection.query(deleteScoreCardSql, function(err, results) {
-							connection.query(deleteScoreTotalSql, function(err, results) {
-								connection.query(deleteScorePerEndSql, function(err, results) {
-
-									// 4. ユーザーの削除
-
-									// ユーザー削除SQL
-									var deleteAccountSql = 'delete from account where p_id = ' + p_id;
-
-									// ユーザーデータの削除
-									connection.query(deleteAccountSql , function(errAc, results) {
-										if(!errAc) {
-
-											var resData = {};
-
-											console.log('success to delete account');
-
-											resData['results'] = true;
-											resData['err'] = null;
-
-											req.session.p_id = undefined;
-											req.session.o_id = undefined;
-
-											console.log('send bellow data as response of delete /app/personal');
-											console.log(resData);
-
-											res.send(resData);
-										}
-										else {
-											// アカウント削除に失敗
-											console.log('faild to delete account');
-											console.log(errAc);
-
-											res.send({'results': false, 'err': 'ユーザーデータの削除に失敗しました'});
-										}
-									});
-								});
-							});
-						});
-					}
-				});
+				req.session.p_id = undefined;
+				req.session.o_id = undefined;
 			}
 			else {
-				console.log('this user is organization leader. so first it should delete its organization');
-				// このユーザーは団体の責任者. foreign key制約のため初めに団体を削除しなければ、このアカウントを削除できない
-				res.send({'results': false, 'err': '初めに団体を削除をしてください。'});
+				resData['results'] = false;
+				resData['err'] = 'アカウント削除に失敗しました';
 			}
-		}
-		else {
-			console.log('faild to check leader account');
-		}
-	});
-*/
+
+			res.send(resData);
+		});
+	}
 });
 
 // get /personal/record/
