@@ -153,6 +153,10 @@ tr:hover{
   color: white;
 }
 
+.err {
+  display: none;
+}
+
 /* personal page */
 
 main.common section{

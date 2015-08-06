@@ -31,44 +31,51 @@
 
             <div class="form-group">
                 <label class="control-label" for="lastName">姓</label>
-                <input id="lastName" class="form-control" name="lastName" type="text" placeholder="姓">
+                <input id="lastName" class="form-control lastName" name="lastName" type="text" placeholder="姓">
+                <span class="err text-danger"><small>入力必須項目です</small></span>
             </div>
 
             <div class="form-group">
                 <label class="control-label" for="firstName">名</label>
-                <input id="firstName" class="form-control" name="firstName" type="text" placeholder="名">
+                <input id="firstName" class="form-control firstName" name="firstName" type="text" placeholder="名">
+                <span class="err text-danger"><small>入力必須項目です</small></span>
             </div>
 
             <div class="form-group">
                 <label class="control-label" for="rubyLastName">せい(ふりがな)</label>
-                <input id="rubyLastName" class="form-control" name="rubyLastName" type="text" placeholder="せい">
+                <input id="rubyLastName" class="form-control rubyLastName" name="rubyLastName" type="text" placeholder="せい">
+                <span class="err text-danger"><small>入力必須項目です</small></span>
             </div>
 
             <div class="form-group">
                 <label class="control-label" for="rubyFirstName">めい(ふりがな)</label>
-                <input id="rubyFirstName" class="form-control" name="rubyFirstName" type="text" placeholder="めい">
+                <input id="rubyFirstName" class="form-control rubyFirstName" name="rubyFirstName" type="text" placeholder="めい">
+                <span class="err text-danger"><small>入力必須項目です</small></span>
             </div>
 
             <div class="form-group">
                 <label class="control-label" for="email">Eメールアドレス(ログイン名として使用します)</label>
-                <input id="email" class="form-control" name="email" type="email" placeholder="example@email.com">
+                <input id="email" class="form-control email" name="email" type="email" placeholder="example@email.com">
+                <span class="err text-danger"><small>入力必須項目です</small></span>
             </div>
 
-            <div class="">
-
-            <div class="form-group">
+            <div class="form-group passwords">
                 <label class="control-label" for="password">パスワード</label>
-                <input id="passwrod" class="form-control" type="password" name="password">
+                <input id="password" class="form-control password" type="password" name="password">
+                <span class="err text-danger"><small>入力必須項目です</small></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group passwords">
                 <label class="control-label" for="password2">パスワードの確認</label>
-                <input id="passwrod2" class="form-control" type="password" name="password2">
+                <input id="password2" class="form-control password" type="password" name="password2">
+                <span class="err text-danger"><small>入力必須項目です</small></span>
+                <p class="passwordErr err text-danger"><small>パスワードが一致しません。もう一度入力してください。</small></p>
             </div>
             
             <div class="form-group">
                 <label class="control-label" for="birth">生年月日</label>
-                <input id="birth" class="form-control" name="birth" type="date" placeholder="1990/01/01">
+                <input id="birth" class="form-control birth" name="birth" type="date" placeholder="1990/01/01">
+                <span class="err text-danger"><small>入力必須項目です</small></span>
             </div>
 
             <div class="form-group">
@@ -83,6 +90,9 @@
 
             <div class="form-group">
                <button id="send" class="btn blue">新規作成</button>
+            </div>
+
+            <div class="errArea">
             </div>
         </div>
     </main>
