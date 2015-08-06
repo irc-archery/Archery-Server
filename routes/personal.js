@@ -64,29 +64,16 @@ router.get('/', loginCheck, function(req, res) {
 	res.render('personal');
 });
 
-// delete /personal/
-router.delete('/', loginCheck, function(req, res) {
-	// sessionで参照できるアカウントを削除
-	res.send('delete /personal/');
-});
-
 // get /personal/record/
 router.get('/record', loginCheck, function(req, res) {
 	// 過去の得点表一覧画面
-	res.send('get /personal/record/');
+	res.render('recordIndex');
 });
 
 // get /personal/record/:id
 router.get('/record/:id', loginCheck, function(req, res) {
 	// :idの得点表画面
-
-	res.send('get /record/' + req.params.id);
-});
-
-
-router.delete('/record/:id', loginCheck, function(req, res) {
-	// :idの得点表削除API
-	res.send('delete /record/' + req.params.id);
+	res.render('record');
 });
 
 module.exports = router;

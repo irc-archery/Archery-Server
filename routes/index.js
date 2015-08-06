@@ -159,12 +159,6 @@ router.get('/scoreCard', loginCheck, mIdCheck, function(req, res) {
 	res.render('scoreCard');
 });
 
-// for debug
-router.get('/socket', function(req, res) {
-	console.log(req.session);
-	res.render('socket');
-});
-
 // browser用のログイン処理
 router.post('/login', function(req, res) {
 	console.log('post /login');

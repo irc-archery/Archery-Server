@@ -63,6 +63,10 @@ header#topBar h1.smallerFont {
   font-size: 24px;
 }
 
+header#topBar h1.smallFont {
+  font-size: 20px;
+}
+
 header#topBar .navButtonArea{
   width: 30px;
   height: 100%;

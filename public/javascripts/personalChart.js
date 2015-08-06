@@ -1,4 +1,4 @@
-var Record;
+var Record = [];
 
 function displayLineChart() {
 

@@ -58,7 +58,6 @@ $(function() {
 
 			    	$('#recordArea').append(record);
 
-			    	displayLineChart()
 		    	}	
 		    	else {
 
@@ -72,6 +71,10 @@ $(function() {
 		    	}
 
 		    	Record = data.record;
+
+		    	if(Object.keys(Record).length !== 0) {
+		    		displayLineChart()
+		   		}
 		    }
 		},
 		error: function(err) {

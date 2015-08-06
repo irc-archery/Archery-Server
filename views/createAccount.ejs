@@ -27,26 +27,26 @@
 
     <main class="container col-sm-offset-2 col-sm-8" role='main'>
 
-        <form id="sendForm" action="/createAccount" method="POST">
+        <div id="sendForm">
 
             <div class="form-group">
                 <label class="control-label" for="lastName">姓</label>
-                <input id="lastName" class="form-control" name="lastName" type="text" placeholder="lastName">
+                <input id="lastName" class="form-control" name="lastName" type="text" placeholder="姓">
             </div>
 
             <div class="form-group">
                 <label class="control-label" for="firstName">名</label>
-                <input id="firstName" class="form-control" name="firstName" type="text" placeholder="firstName">
+                <input id="firstName" class="form-control" name="firstName" type="text" placeholder="名">
             </div>
 
             <div class="form-group">
-                <label class="control-label" for="rubyFirstName">せい(ふりがな)</label>
-                <input id="rubyFirstName" class="form-control" name="rubyFirstName" type="text" placeholder="rubyFirstName">
+                <label class="control-label" for="rubyLastName">せい(ふりがな)</label>
+                <input id="rubyLastName" class="form-control" name="rubyLastName" type="text" placeholder="せい">
             </div>
 
             <div class="form-group">
-                <label class="control-label" for="rubyLastName">めい(ふりがな)</label>
-                <input id="rubyLastName" class="form-control" name="rubyLastName" type="text" placeholder="rubyLastName">
+                <label class="control-label" for="rubyFirstName">めい(ふりがな)</label>
+                <input id="rubyFirstName" class="form-control" name="rubyFirstName" type="text" placeholder="めい">
             </div>
 
             <div class="form-group">
@@ -54,9 +54,16 @@
                 <input id="email" class="form-control" name="email" type="email" placeholder="example@email.com">
             </div>
 
+            <div class="">
+
             <div class="form-group">
                 <label class="control-label" for="password">パスワード</label>
-                   <input id="passowrd" class="form-control" type="password" name="password" placeholder="password">
+                <input id="passwrod" class="form-control" type="password" name="password">
+            </div>
+
+            <div class="form-group">
+                <label class="control-label" for="password2">パスワードの確認</label>
+                <input id="passwrod2" class="form-control" type="password" name="password2">
             </div>
             
             <div class="form-group">
@@ -75,13 +82,14 @@
             </div>
 
             <div class="form-group">
-               <input type="submit" id="send" class="btn blue" value="新規作成">
+               <button id="send" class="btn blue">新規作成</button>
             </div>
-        </form>
+        </div>
     </main>
 
     <script src="/javascripts/jquery.min.js"></script>
     <script src="/components/bootstrap/js/bootstrap.min.js"></script>
     <script src="/javascripts/common.js"></script>
+    <script src="/javascripts/createAccount.js"></script>
 </body>
 </html>

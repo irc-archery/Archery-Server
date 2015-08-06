@@ -232,19 +232,24 @@ RequestURI(for app) : http://hostname/app/personal/record/
 ※ヘッダ情報にセッションIDを送付する。
 
 Response Data Format: 
-[
-	{
+{
+	"status": 1,	
+	"record":  
+	[
+		{
 			"sc_id": int,		// 得点表ID
 			"matchName": string,// 得点表が作成された試合名
 			"created": string,	// 得点表が作成された日時
 			"sum": int,			// 得点合計
-			"avg": int 			// 得点平均
+			"arrows": int,		// 射数
+			"perEnd": int		// セット数 :: 合計 / セット数 / 射数で平均を求め、それを出力する
 		}
 		{ ... },
 		{ ... },
 		{ ... },
 		{ ... }
-]
+	]
+}
 
 得点表取得API
 
