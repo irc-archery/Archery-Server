@@ -70,16 +70,8 @@ router.get('/', loginCheck, function(req, res) {
 	var extractOrganizationIdSql = 'select o_id from account where p_id = ' + p_id;
 
 	connection.query(extractOrganizationIdSql, function(err, extractOrganizationIdResults) {
+
 		var o_id;
-
-		console.log(extractOrganizationIdResults);
-		console.log('extractOrganizationIdResults');
-
-		console.log('extractOrganizationIdResults != undefined');
-		console.log(extractOrganizationIdResults != undefined);
-
-		console.log('Object.keys(extractOrganizationIdResults).length');
-		console.log(Object.keys(extractOrganizationIdResults).length);
 
 		if(Object.keys(extractOrganizationIdResults).length !== 0) {
 			o_id = extractOrganizationIdResults[0].o_id;
@@ -87,7 +79,10 @@ router.get('/', loginCheck, function(req, res) {
 
 		// ユーザー情報を抽出するためのSQL文
 		var userDataSql = 'select p_id, concat(account.lastName, account.firstName) as playerName, concat(account.rubyLastName, account.rubyFirstName) as rubyPlayerName, email, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, sex, (select organization.organizationName from organization where organization.o_id = ' + connection.escape(o_id) + ') as organizationName from account where account.p_id = ' + connection.escape(p_id);
-		var userRecordSql = 'select sc_id, scoreTotal.total as sum from scoreTotal where p_id = ' + connection.escape(p_id) + ' limit 5';
+
+		// 最新5件の得点表のidを抽出
+		//var userRecordSql = 'select sc_id, scoreTotal.total as sum from scoreTotal where p_id = ' + connection.escape(p_id) + ' limit 5';
+		var userRecordSql = 'select sc_id, DATE_FORMAT(created, "%Y/%m/%d %H:%m:%s") as created from scoreCard where p_id = ' + connection.escape(p_id) + ' order by created desc limit 5';
 
 		console.log('userRecordSql');
 		console.log(userRecordSql);
@@ -97,13 +92,17 @@ router.get('/', loginCheck, function(req, res) {
 			// ユーザーの過去の成績を抽出
 			if(userDataResults!='') {
 
+				// 最新5件の得点表のidを抽出する
+				// emit base data
 				connection.query(userRecordSql, function(err, userRecordResults){
 
 					if(userRecordResults != ''){
-						var userRecordMatchSql = 'select `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, `match`.arrows, `match`.perEnd from `match` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + userRecordResults[0].sc_id + ')';
+
+						// これまでの得点表データを抽出
+						var userRecordMatchSql = 'select `match`.matchName, (' + userRecordResults[0].created + ') as created, `match`.arrows, `match`.perEnd, `scoreTotal`.total as sum from `match`, `scoreTotal` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + userRecordResults[0].sc_id + ') and `scoreTotal`.sc_id = ' + userRecordResults[0].sc_id;
 
 						for(var i = 1; i < userRecordResults.length; i++) {
-							userRecordMatchSql += ' union all select `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, `match`.arrows, `match`.perEnd from `match` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + userRecordResults[i].sc_id + ')';
+							userRecordMatchSql += ' union all select `match`.matchName, (' + userRecordResults[0].created + ') as created, `match`.arrows, `match`.perEnd, `scoreTotal`.total as sum from `match`, `scoreTotal` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + userRecordResults[i].sc_id + ') and `scoreTotal`.sc_id = ' + userRecordResults[i].sc_id;
 						}
 
 						console.log('userRecordMatchSql');

@@ -21,13 +21,11 @@ $(function() {
 				// 修正用のhover effectを削除
 				$('.comp').removeClass('comp');
 			}
-
 		},
 		error: function(err) {
-
+			alert('得点表情報の取得に失敗しました。');
 		}
 	});
-
 });
 
 $('.deleteScoreCard').on('click', function() {

@@ -49,8 +49,10 @@ router.post('/login', function(req, res) {
 		// ログイン成功
 		if(Object.keys(results).length !== 0) {
 			console.log('success to login');
+
 			req.session.p_id = results[0].p_id;
 			req.session.o_id = results[0].o_id;
+
 			data['results'] = true;
 			data['err'] = null;
 		}
@@ -58,41 +60,7 @@ router.post('/login', function(req, res) {
 		else {
 			console.log('faild to login');
 			data['results'] = false;
-			data['err'] = 'ログインに失敗しました。';
-		}
-
-		res.send(data);
-	});
-});
-
-// app用のログイン処理
-router.post('/loginForIos', function(req, res) {
-	console.log('post /app/login');
-	console.log(req.body);
-
-	var loginSql = 'select * from account where email = ' + connection.escape(req.body.email) + ' and password = ' + connection.escape(req.body.password) + ';';
-	console.log('loginSql');
-	console.log(loginSql);
-
-	connection.query(loginSql, function(err, results) {
-		console.log('results of loginSql');
-		console.log(results);
-
-		var data = {};
-
-		// ログイン成功
-		if(Object.keys(results).length !== 0) {
-			console.log('success to login');
-			req.session.p_id = results[0].p_id;
-			req.session.o_id = results[0].o_id;
-			data['results'] = true;
-			data['err'] = null;
-		}
-		// ログイン失敗
-		else {
-			console.log('faild to login');
-			data['results'] = false;
-			data['err'] = 'ログインに失敗しました。';
+			data['err'] = 'ログイン名が存在しないか、パスワードが間違っているためログインできませんでした。';
 		}
 
 		res.send(data);

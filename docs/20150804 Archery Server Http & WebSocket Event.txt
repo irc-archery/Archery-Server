@@ -39,6 +39,8 @@ Data Format :
 	'password':	string
 }
 
+Resonse
+
 
 アカウント作成画面
 
