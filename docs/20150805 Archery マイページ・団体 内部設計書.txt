@@ -4,6 +4,10 @@ Archery マイページ・団体 内部設計書
 08/05
 団体削除に使用するo_idを get /organization/ のresponseに追加
 
+08/06
+団体削除権限確認APIを 団体情報抽出API ( get /app/organization )に統合
+
+
 マイページ画面
 
 ログインが完了したら、このページに自動的に遷移する。
@@ -116,20 +120,6 @@ Response Data Format:
 	"results": bool,	// true or false
 	"err": string		// error message or null
 }
-
-団体削除権限確認API
-
-HttpMethod : GET
-RequestURI(for browser) : http://hostname/organization/check/x 	// xは権限を確認したい団体のo_id
-RequestURI(for app) : http://hostname/app/organization/check/x
-※ヘッダ情報にセッションIDを送付する。
-
-Response Data Format: 
-{
-	"permission": bool,	// true or false
-	"err": string		// error message or null
-}
-
 
 団体作成画面
 

@@ -65,13 +65,13 @@ router.get('/', loginCheck, function(req, res) {
 });
 
 // get /personal/record/
-router.get('/record', loginCheck, function(req, res) {
+router.get('/recordIndex', loginCheck, function(req, res) {
 	// 過去の得点表一覧画面
 	res.render('recordIndex');
 });
 
 // get /personal/record/:id
-router.get('/record/:id', loginCheck, function(req, res) {
+router.get('/record/', loginCheck, function(req, res) {
 	// :idの得点表画面
 	res.render('record');
 });

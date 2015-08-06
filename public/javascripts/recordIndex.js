@@ -29,14 +29,12 @@ $(function() {
 
 					$('#recordIndexArea').html(code);
 				}
-
 			}
 		},
 		error: function(err) {
 			console.log(err);
 		}
 	});
-
 });
 
 $('#recordIndexArea').on('click', '.openScoreCard', function() {
@@ -45,4 +43,5 @@ $('#recordIndexArea').on('click', '.openScoreCard', function() {
 	console.log('on click');
 	console.log($(this).data('id'));
 
+	location.href = '/personal/record/?sc_id=' + $(this).data('id');
 });
