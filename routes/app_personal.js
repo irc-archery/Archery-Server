@@ -340,7 +340,6 @@ router.get('/record/:id', loginCheck, function(req, res) {
 					});
 				}
 				else {
-					// res.redirect('/personal/record');
 					console.log('不正なアクセスです');
 				}
 			}
