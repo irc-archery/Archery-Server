@@ -53,11 +53,10 @@ $(function() {
 
 			    	for(var i = 0; i < data.record.length; i++) {
 
-			    		record += '<tr><td>' + data.record[i].created + '</td><td>' + data.record[i].matchName + '</td><td>' + data.record[i].sum + '</td><td>' + data.record[i].sum / data.record[i].perEnd / data.record[i].arrows + '</td></tr>';
+			    		record += '<tr><td>' + data.record[i].created + '</td><td>' + data.record[i].matchName + '</td><td>' + data.record[i].sum + '</td><td>' + (data.record[i].sum != 0 ? data.record[i].sum / data.record[i].perEnd / data.record[i].arrows : 0).toFixed(1) + '</td></tr>';
 			    	}
 
 			    	$('#recordArea').append(record);
-
 		    	}	
 		    	else {
 

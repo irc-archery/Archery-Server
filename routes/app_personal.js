@@ -99,32 +99,50 @@ router.get('/', loginCheck, function(req, res) {
 					if(userRecordResults != ''){
 
 						// これまでの得点表データを抽出
-						var userRecordMatchSql = 'select `match`.matchName, (' + userRecordResults[0].created + ') as created, `match`.arrows, `match`.perEnd, `scoreTotal`.total as sum from `match`, `scoreTotal` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + userRecordResults[0].sc_id + ') and `scoreTotal`.sc_id = ' + userRecordResults[0].sc_id;
+						var userRecordMatchSql = 'select `match`.matchName, DATE_FORMAT("' + userRecordResults[0].created + '", "%Y年%m月%d日") as created, `match`.arrows, `scoreTotal`.total as "sum" from `match`, `scoreTotal` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + userRecordResults[0].sc_id + ') and `scoreTotal`.sc_id = ' + userRecordResults[0].sc_id;
+
+						// 得点表 perEndのカウント
+						var countPerEndSql = 'select count(spe_id) as perEnd from scorePerEnd where scorePerEnd.sc_id = ' + userRecordResults[0].sc_id;
 
 						for(var i = 1; i < userRecordResults.length; i++) {
-							userRecordMatchSql += ' union all select `match`.matchName, (' + userRecordResults[0].created + ') as created, `match`.arrows, `match`.perEnd, `scoreTotal`.total as sum from `match`, `scoreTotal` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + userRecordResults[i].sc_id + ') and `scoreTotal`.sc_id = ' + userRecordResults[i].sc_id;
+							userRecordMatchSql += ' union all select `match`.matchName, DATE_FORMAT("' + userRecordResults[i].created + '", "%Y年%m月%d日") as created, `match`.arrows, `scoreTotal`.total as "sum" from `match`, `scoreTotal` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + userRecordResults[i].sc_id + ') and `scoreTotal`.sc_id = ' + userRecordResults[i].sc_id;
+
+							countPerEndSql += ' union all select count(spe_id) as perEnd from scorePerEnd where scorePerEnd.sc_id = ' + userRecordResults[i].sc_id;
 						}
 
 						console.log('userRecordMatchSql');
 						console.log(userRecordMatchSql);
 
+						console.log('countPerEndSql');
+						console.log(countPerEndSql);
+
+						// これまでの得点表データを抽出
 						connection.query(userRecordMatchSql, function(err, userRecordMatchResults) {
+							// セット数のカウント
+							connection.query(countPerEndSql, function(err, countPerEndData) {
 
-							console.log('userRecordMatchResults');
-							console.log(userRecordMatchResults);
+								console.log('err');
+								console.log(err);
 
-							console.log('userRecordResults');
-							console.log(userRecordResults);
+								console.log('userRecordMatchResults');
+								console.log(userRecordMatchResults);
 
-							userDataResults[0]['record'] = userRecordMatchResults;
+								console.log('userRecordResults');
+								console.log(userRecordResults);
 
-							for(var i = 0; i < userRecordMatchResults.length; i++) {
-								userDataResults[0]['record'][i]['sum'] = userRecordResults[i]['sum'];
-							}
-							console.log('response of GET /personal/')
-							console.log(userDataResults[0]);
+								console.log('countPerEndData');
+								console.log(countPerEndData);
 
-							res.send(userDataResults[0]);
+								userDataResults[0]['record'] = userRecordMatchResults;
+
+								for(var i = 0; i < userRecordMatchResults.length; i++) {
+									userDataResults[0]['record'][i]['perEnd'] = countPerEndData[i]['perEnd'];
+								}
+								console.log('response of GET /personal/')
+								console.log(userDataResults[0]);
+
+								res.send(userDataResults[0]);
+							});
 						});
 					}
 					else {
@@ -220,18 +238,24 @@ router.get('/record', loginCheck, function(req, res) {
 	var p_id = req.session.p_id;
 
 	// ユーザーが過去に作成した得点表のidを抽出するためのSQL文
-	var scoreCardIdSql = 'select sc_id from scoreCard where p_id = ' + connection.escape(p_id);
+	var scoreCardIdSql = 'select sc_id, DATE_FORMAT(created, "%Y/%m/%d %H:%m:%s") as created from scoreCard where p_id = ' + connection.escape(p_id) + ' order by created desc';
+
+	console.log('scoreCardIdSql');
+	console.log(scoreCardIdSql);
 
 	// ユーザーが過去に作成した得点表のidを抽出する
 	connection.query(scoreCardIdSql, function(err, scoreCardIdData) {
 
+		console.log('scoreCardIdData');
+		console.log(scoreCardIdData);
+
 		if(scoreCardIdData != '') {
 
 			// 得点表一覧データを抽出するためのSQL文
-			var personalRecordSql = 'select (' + connection.escape(scoreCardIdData[0].sc_id) + ') as sc_id, `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, `match`.perEnd, `match`.arrows, (select scoreTotal.total from scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' limit 1) as sum from `match` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ')';
+			var personalRecordSql = 'select (' + connection.escape(scoreCardIdData[0].sc_id) + ') as sc_id, `match`.matchName, DATE_FORMAT(' + connection.escape(scoreCardIdData[0].created) + ', "%Y年%m月%d日") as created, (select count(spe_id) from scorePerEnd where scorePerEnd.sc_id = ' + scoreCardIdData[0].sc_id + ') as perEnd, `match`.arrows, (select scoreTotal.total from scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' limit 1) as sum from `match` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ')';
 
 			for(var i = 1; i < scoreCardIdData.length; i++) {
-				 personalRecordSql += 'union all select (' + connection.escape(scoreCardIdData[i].sc_id) + ') as sc_id, `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, `match`.perEnd, `match`.arrows, (select scoreTotal.total from scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[i].sc_id) + ' limit 1) as sum from `match` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[i].sc_id) + ')';
+				personalRecordSql += ' union all select (' + connection.escape(scoreCardIdData[i].sc_id) + ') as sc_id, `match`.matchName, DATE_FORMAT(' + connection.escape(scoreCardIdData[i].created) + ', "%Y年%m月%d日") as created, (select count(spe_id) from scorePerEnd where scorePerEnd.sc_id = ' + scoreCardIdData[i].sc_id + ') as perEnd, `match`.arrows, (select scoreTotal.total from scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[i].sc_id) + ' limit 1) as sum from `match` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[i].sc_id) + ')';
 			}
 
 			console.log('personalRecordSql');
@@ -383,7 +407,6 @@ router.delete('/record/:id', loginCheck, function(req, res) {
 								console.log('faild to delete scoreCard');
 								res.send({'results': false, 'err': '得点表の削除に失敗しました'});
 							}
-
 						});
 					});
 				});

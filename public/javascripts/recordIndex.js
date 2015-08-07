@@ -22,7 +22,7 @@ $(function() {
 						code += '<td>' + data.record[i].matchName + '</td>';
 						code += '<td>' + data.record[i].created + '</td>';
 						code += '<td>' + data.record[i].sum + '</td>';
-						code += '<td>' + data.record[i].sum / data.record[i].perEnd / data.record[i].arrows + '</td>';
+						code += '<td>' + (data.record[i].sum != 0 ? data.record[i].sum / data.record[i].perEnd / data.record[i].arrows : 0).toFixed(1) + '</td>';
 
 						code += '</tr>';
 					}
