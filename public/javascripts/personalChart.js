@@ -21,11 +21,12 @@ function displayLineChart() {
     };
 
     for (var i = 0; i < record.length; i++) {
-      graph.datasets[0].data[i] = record[i].sum;
-      graph.labels[i] =  record[i].created;
+      graph.datasets[0].data[i] = (record[record.length - i - 1].sum != 0 ? record[record.length - i - 1].sum / record[record.length - i - 1].perEnd / record[record.length - i - 1].arrows : 0).toFixed(1);
+      graph.labels[i] = record[record.length - i - 1].created;
     }
 
     var ctx = document.getElementById("lineChart").getContext("2d");
+    
     var options = {
         // X軸 , Y軸の色
         scaleLineColor : "rgba(109,214,218,1)",

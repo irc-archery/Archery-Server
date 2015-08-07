@@ -4,6 +4,10 @@ $('.modal').modal({
 	show: false
 });
 
+$('#navButton').on('click', function() {
+    $(this).dropdown();
+});
+
 // リンクの更新
 $(function() {
   // 得点表一覧へのリンクの生成

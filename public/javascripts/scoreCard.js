@@ -41,7 +41,6 @@ socket.on('extractScoreCard', function(data) {
     // disabled input box
     $('input').attr('disabled', 'disabled');
   }
-
 });
 
 // 得点の追加による更新
