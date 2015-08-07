@@ -219,6 +219,7 @@ main.common .resultsArea .infoArea, main.common .resultsArea .infoArea2{
   text-align: center;
   margin: 0 auto;
 }
+
 .mainVisual img{ 
   width: 100%;
   max-width: 450px;
@@ -233,6 +234,7 @@ main.common .resultsArea .infoArea, main.common .resultsArea .infoArea2{
 }
 
 .chartArea {
+  margin-top: 30px;
   margin-bottom: 30px;
 }
 

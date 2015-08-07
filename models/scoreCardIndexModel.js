@@ -149,6 +149,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 											// session情報の更新に失敗
 											console.log('faild to update sessoin Info');
 											console.log(err);
+											
 											socket.emit('insertScoreCard', {'status': 0, 'err': 'ログインに失敗しました。'});
 										}
 									});
@@ -156,6 +157,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 								else {
 									console.log('faild to get session Info');
 									console.log(err);
+
 									socket.emit('insertScoreCard', {'status': 0, 'err': 'ログインに失敗しました。'});
 								}
 							});

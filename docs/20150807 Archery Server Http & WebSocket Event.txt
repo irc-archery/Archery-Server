@@ -23,6 +23,13 @@ broadcastInsertScore, broadcastUpdateScoreを得点表一覧画面にいても�
 08/04
 ・試合終了の権限を確認するcheckMatchCreaterを追加
 
+08/07
+・insertScoreCard時にログインの成功、失敗を判断するためのkey statusとエラーが起こった場合の
+
+08/08
+・都道府県登録による更新イベントのkeyをprefecturesからPrefecturesに変更
+
+
 ログイン画面
 
 ブラウザ側は /login, アプリ側は /app/login にHTTP通信のPOSTでemailとpasswordを送信。
@@ -273,11 +280,23 @@ Emit Data Format :
 	'm_id': int		// どの試合で得点表を作成したのか, その試合のID
 }
 
+// 成功時
 On Event Name : insertScoreCard
 On Data Format :
 {
-	'sc_id': int
+	'status': 1,	// 得点表作成のステータス
+	'sc_id': int,	// 得点表ID
+	'err': null		// エラーメッセージ(失敗した場合のみ)
 }
+
+// 失敗時
+On Event Name : insertScoreCard
+On Data Format :
+{
+	'sc_id': 0,		// 得点表作成のステータス
+	'err': string	// エラーメッセージ
+}
+
 
 得点表作成
 
@@ -290,12 +309,22 @@ Emit Data Format :
 	'password': string	// ユーザーログイン用のpassword
 }
 
+// 成功時
 On Event Name : insertScoreCard
 On Data Format :
 {
-	'sc_id': int
+	'status': 1,	// 得点表作成のステータス
+	'sc_id': int,	// 得点表ID
+	'err': null		// エラーメッセージ(失敗した場合のみ)
 }
 
+// 失敗時
+On Event Name : insertScoreCard
+On Data Format :
+{
+	'sc_id': 0,		// 得点表作成のステータス
+	'err': string	// エラーメッセージ
+}
 
 得点表画面
 
@@ -455,7 +484,7 @@ Emit Event Name : broadcastInsertPrefectures
 Emit Data Format :
 {
 	'sc_id': int,		// 得点表ID
-	'prefectures': string		// 都道府県
+	'Prefectures': string		// 都道府県
 }
 
 
