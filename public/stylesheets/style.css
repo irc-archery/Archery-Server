@@ -204,7 +204,7 @@ main.common canvas {
 }
 
 main.common .resultsArea h3{
-  margin: 20px;
+  margin:0;
 }
 
 main.common .resultsArea .infoArea, main.common .resultsArea .infoArea2{
@@ -248,4 +248,8 @@ main.common .warning{
 
 .bottom {
   margin-bottom: 20px;
+}
+
+#body .table-responsive {
+  border-top: 0; 
 }

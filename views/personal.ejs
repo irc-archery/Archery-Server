@@ -30,93 +30,90 @@
         </div>
     </header>
     <main class="container common personal" role='main'>
-
-    <section class="panel">
-        <h2 class="panel-heading"><i class="fa fa-user"></i> ユーザー情報</h2>
-        <div class="panel-body">
-            <dl class="dl-horizontal">
-                <dt>氏名</dt><dd class="playerName"></dd>
-                <dt>Eメール</dt><dd class="email"></dd>
-                <dt>生年月日</dt><dd class="birth"></dd>
-                <dt>性別</dt><dd class="sex"></dd>
-                <dt>所属団体</dt><dd><a href="/organization" class="organizationName"></a></dd>
-            </dl>
-            <a href="/organization"><button class="btn blue">団体ページへ</button></a>
-        </div>
-    </section>
-
-    <section class="panel">
-        <h2 class="panel-heading"><i class="fa fa-dot-circle-o"></i> 試合を始める</h2>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-xs-6">
-                    <div class="thumbnail">
-                        <a href="/matchIndex">
-                        <img src="/images/list.png" alt="試合一覧">
-                        </a>
-                        <div class="caption">
-                            <h3>試合一覧</h3>
-                            <p>参加する試合を選びます。</p>
+        <section class="panel">
+            <h2 class="panel-heading"><i class="fa fa-user"></i> ユーザー情報</h2>
+            <div class="panel-body">
+                <dl class="dl-horizontal">
+                    <dt>氏名</dt><dd class="playerName"></dd>
+                    <dt>Eメール</dt><dd class="email"></dd>
+                    <dt>生年月日</dt><dd class="birth"></dd>
+                    <dt>性別</dt><dd class="sex"></dd>
+                    <dt>所属団体</dt><dd><a href="/organization" class="organizationName"></a></dd>
+                </dl>
+                <a href="/organization"><button class="btn blue">団体ページへ</button></a>
+            </div>
+        </section>
+        <section class="panel">
+            <h2 class="panel-heading"><i class="fa fa-dot-circle-o"></i> 試合を始める</h2>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="thumbnail">
                             <a href="/matchIndex">
-                                <button class="btn blue">試合一覧</button>
+                            <img src="/images/list.png" alt="試合一覧">
                             </a>
+                            <div class="caption">
+                                <h3>試合一覧</h3>
+                                <p>参加する試合を選びます。</p>
+                                <a href="/matchIndex">
+                                    <button class="btn blue">試合一覧</button>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-xs-6">
-                    <div class="thumbnail">
-                        <a href="/insertMatch">
-                        <img src="/images/gears.png" alt="試合作成">
-                        </a>
-                        <div class="caption">
-                            <h3>試合作成</h3>
-                            <p>新しく試合を作成します。</p>
+                    <div class="col-xs-6">
+                        <div class="thumbnail">
                             <a href="/insertMatch">
-                                <button class="btn blue">試合作成</button>
+                            <img src="/images/gears.png" alt="試合作成">
                             </a>
+                            <div class="caption">
+                                <h3>試合作成</h3>
+                                <p>新しく試合を作成します。</p>
+                                <a href="/insertMatch">
+                                    <button class="btn blue">試合作成</button>
+                                </a>
+                            </div>
                         </div>
+                        </a>
                     </div>
-                    </a>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="panel resultsArea">
-    <h2 class="panel-heading"><i class="fa fa-line-chart"></i> 過去の成績</h2>
+        <section class="panel resultsArea">
+        
+            <h2 class="panel-heading"><i class="fa fa-line-chart"></i> 過去の成績</h2>
 
-        <h3>過去の成績(最新5件)</h3>
+            <div class="panel-body">
+                <h3>過去の成績(最新5件)</h3>
 
-        <div class="table-responsive">
-        <table class="table table-bordered" id="recordArea">
-        </table>
-        </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="recordArea">
+                        <tr><th>日時</th><th>試合</th><th>合計</th><th>平均</th></tr>
+                    </table>
+                </div>
 
-        <div class="infoArea">
-        </div>
+                <div class="infoArea">
+                </div>
 
+                <div class="chartArea">
+                    <h3>グラフ</h3>
 
-        <div class="chartArea">
-            <h3>グラフ</h3>
+                    <div class="canvasArea">
+                        <canvas id="lineChart"></canvas>
+                    </div>
 
-            <div class="canvasArea">
-                <canvas id="lineChart"></canvas>
+                    <div class="infoArea2">
+                    </div>
+
+                </div>
+                <a href="/personal/recordIndex" class="btn-record">
+                    <button class="btn blue">過去の得点表一覧へ</button>
+                </a>
             </div>
-
-            <div class="infoArea2">
-            </div>
-
-        </div>
-
-        <a href="/personal/recordIndex" class="btn-record">
-            <button class="btn blue">過去の得点表一覧へ</button>
-        </a>
-
-    </section>
-
+        </section>
     </main>
-
     <footer>
         <p><small>Copyright 2015 IRC. All Rights Reserved.</small></p>
     </footer>

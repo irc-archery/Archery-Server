@@ -49,7 +49,7 @@ $(function() {
 
 		    	if(data.record != '') {
 
-		    		record += '<tr><th>日時</th><th>試合</th><th>合計</th><th>平均</th></tr>';
+		    		record += '';
 
 			    	for(var i = 0; i < data.record.length; i++) {
 
