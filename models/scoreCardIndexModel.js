@@ -130,7 +130,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 											console.log(sessionInfoResults);
 
 											console.log('emit insertScoreCard');
-											socket.emit('insertScoreCard', {'sc_id': insertScoreCardData.insertId});
+											socket.emit('insertScoreCard', {'status' : 1, 'err':null, 'sc_id': insertScoreCardData.insertId});
 
 											// broadcast scoreCard information: added now
 
@@ -149,12 +149,14 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 											// session情報の更新に失敗
 											console.log('faild to update sessoin Info');
 											console.log(err);
+											socket.emit('insertScoreCard', {'status': 0, 'err': 'ログインに失敗しました。'});
 										}
 									});
 								}
 								else {
 									console.log('faild to get session Info');
 									console.log(err);
+									socket.emit('insertScoreCard', {'status': 0, 'err': 'ログインに失敗しました。'});
 								}
 							});
 						});
@@ -163,6 +165,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 				// ログイン失敗
 				else {
 					console.log('faild to login');
+					socket.emit('insertScoreCard', {'status': 0, 'err': 'ログイン名が存在しないか、パスワードが間違っているためログインできませんでした。'});
 				}
 			});
 		});
@@ -210,7 +213,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 
 										// 得点表のIDをemitする
 										console.log('emit insertScoreCard');
-										socket.emit('insertScoreCard', {'sc_id': insertScoreCardData.insertId});
+										socket.emit('insertScoreCard', {'sc_id': insertScoreCardData.insertId, 'status': 1, 'err': null});
 
 										// broadcast scoreCard information: added now
 
@@ -231,6 +234,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 							// ログイン失敗
 							else {
 								console.log('faild to login');
+								socket.emit('insertScoreCard', {'status': 0, 'err': 'ログインに失敗しました。'});
 							}
 						});
 					}

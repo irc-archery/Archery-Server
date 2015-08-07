@@ -201,6 +201,7 @@ main.common canvas {
   display: block;
   width: 95%;
   margin: 0 auto;
+  min-height: 300px;
 }
 
 main.common .resultsArea h3{

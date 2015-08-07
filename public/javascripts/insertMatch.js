@@ -1,22 +1,50 @@
 var socket = io('/matchIndex');
 
+// foucs時のerr処理
+$('#matchName').focus(function() {
+
+  if($(this).val() != '') {
+    $(this).parent().removeClass('has-error');  
+    $(this).next('.text-danger').hide();
+  }
+
+}).blur(function() {
+
+  if($(this).val() == '') {
+    $(this).parent().addClass('has-error');
+    $(this).next('.text-danger').show();
+  }
+
+  if($(this).val() != '') {
+    $(this).parent().removeClass('has-error');  
+    $(this).next('.text-danger').hide();
+  }
+});
+
 // Emit Insert Match
 function insertMatch() {
 
-  var data = new Object();
+  if($('#matchName').val() != '') {
 
-  data['sessionID'] = document.cookie;
-  data['matchName'] = $('#matchName').val();
-  data['sponsor'] = $('#sponsor').val();
-  data['arrows'] = 6;
-  data['perEnd'] = 6;
-  data['length'] = $('#length').val();
-  data['permission'] = $('#permission').val();
+    var data = new Object();
 
-  console.log('emit insertMatch');
-  console.log(data);
+    data['sessionID'] = document.cookie;
+    data['matchName'] = $('#matchName').val();
+    data['sponsor'] = $('#sponsor').val();
+    data['arrows'] = 6;
+    data['perEnd'] = 6;
+    data['length'] = $('#length').val();
+    data['permission'] = $('#permission').val();
 
-  socket.emit('insertMatch', data);
+    console.log('emit insertMatch');
+    console.log(data);
+
+    socket.emit('insertMatch', data);
+  }
+  else {
+    $('#matchName').parent().addClass('has-error');
+    $('#matchName').next('.text-danger').show();
+  }
 };
 
 socket.on('insertMatch', function(data) {

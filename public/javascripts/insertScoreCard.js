@@ -35,15 +35,14 @@ socket.on('insertScoreCard', function(data) {
   console.log('on insertScoreCard')
   console.log(data);
 
-  location.href = '/scoreCard?m_id=' + getQueryString().m_id + '&sc_id=' + data.sc_id;
-});
-
-socket.on('insertScoreCard', function(data) {
-
-  console.log('on insertScoreCard')
-  console.log(data);
-
-  location.href = '/scoreCard?m_id=' + getQueryString().m_id + '&sc_id=' + data.sc_id;
+  if(data != '') {
+    if(data.status == true) {
+      location.href = '/scoreCard?m_id=' + getQueryString().m_id + '&sc_id=' + data.sc_id;
+    }
+    else if(data.status == false) {
+      alert(data.err); 
+    }
+  }
 });
 
 $(function() {
