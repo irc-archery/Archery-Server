@@ -119,13 +119,6 @@ footer p{
   margin-bottom: 20px;
 }
 
-table {
-	margin-top: 20px;
-}
-
-table {
-  margin-top: 20px; }
-
 tr:hover{
   background: #eee;
   cursor: pointer;
@@ -166,7 +159,7 @@ main.common section{
 main.common h2{
   font-size: 22px;
   margin: 0;
-  padding: 0;
+  margin-bottom: 10px;
   padding: 10px;
   color: white;
   background: #009688;

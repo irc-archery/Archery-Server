@@ -91,9 +91,12 @@ router.get('/', loginCheck, function(req, res) {
 
 					var extractMembersSql = 'select account.p_id, concat(account.lastName, account.firstName) as playerName, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, account.email from account where account.o_id = ' + connection.escape(o_id);
 
+					console.log(extractMembersSql);
+
 					console.log('extractMembersSql');
 					console.log(extractMembersSql);
 
+					// メンバー一覧を抽出
 					connection.query(extractMembersSql, function(err, extractMembersResults) {
 
 						console.log('extractMembersResults');

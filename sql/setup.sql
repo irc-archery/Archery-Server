@@ -111,15 +111,15 @@ create table `scoreTotal` (
 ) CHARACTER SET `utf8` ENGINE = InnoDB;
 
 # sample data of organization
-insert into organization(p_id, organizationName, establish, place, email) values(1, '宮城県工業高等学校', now(), '仙台市', 'example@gmail.com');
-insert into organization(p_id, organizationName, establish, place, email) values(2, '仙台工業高等学校', now(), '仙台市', 'example2@gmail.com');
-insert into organization(p_id, organizationName, establish, place, email) values(3, 'ふにっと第一高等学校', now(), '仙台市 ふに区', 'example4@gmail.com');
+#insert into organization(p_id, organizationName, establish, place, email) values(1, '宮城県工業高等学校', now(), '仙台市', 'example@gmail.com');
+#insert into organization(p_id, organizationName, establish, place, email) values(2, '仙台工業高等学校', now(), '仙台市', 'example2@gmail.com');
+#insert into organization(p_id, organizationName, establish, place, email) values(3, 'ふにっと第一高等学校', now(), '仙台市 ふに区', 'example4@gmail.com');
 
 # sample data of account
-insert into account(o_id, firstName, lastName, email, password, birth, sex) values(1, '太郎', '県工', 'kenkou@gmail.com', 'password', '1997-08-06', 1);
-insert into account(o_id, firstName, lastName, email, password, birth, sex) values(1, '二郎', '県工', 'kenkou2@gmail.com', 'password', '1998-05-05', 1);
-insert into account(o_id, firstName, lastName, email, password) values(2, 'Fnit', 'Watanabe', 'example@gmail.com', 'password');
-insert into account(o_id, firstName, lastName, email, password) values(3, '渡辺', 'ふにすけ', 'example4@gmail.com', 'password');
+#insert into account(o_id, firstName, lastName, email, password, birth, sex) values(1, '太郎', '県工', 'kenkou@gmail.com', 'password', '1997-08-06', 1);
+#insert into account(o_id, firstName, lastName, email, password, birth, sex) values(1, '二郎', '県工', 'kenkou2@gmail.com', 'password', '1998-05-05', 1);
+#insert into account(o_id, firstName, lastName, email, password) values(2, 'Fnit', 'Watanabe', 'example@gmail.com', 'password');
+#insert into account(o_id, firstName, lastName, email, password) values(3, '渡辺', 'ふにすけ', 'example4@gmail.com', 'password');
 
 
 # sample data of match

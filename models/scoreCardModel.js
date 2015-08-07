@@ -39,80 +39,107 @@ function scoreCardModel(io, connection, sessions, ios) {
 							// データが正常に取得できていたら
 							if(scoreCardIdData != ''){
 
-								var scoreCardSql = '';
-
 								// 得点表データの抽出を行うSQL文
-								scoreCardSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, (select organizationName from organization where o_id = (select o_id from account where p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ')) as organizationName, `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, scoreCard.prefectures, scoreCard.number, `match`.length, `match`.perEnd as maxPerEnd, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scoreCard`, `account`, `organization`, `match`, `scoreTotal` where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and account.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' and `match`.m_id = ' + connection.escape(scoreCardIdData[0].m_id) + ' and scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scoreTotal.p_id = ' + connection.escape(scoreCardIdData[0].p_id)+ ';';
+								// scoreCardSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, (select organizationName from organization where o_id = (select o_id from account where p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ')) as organizationName, `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, scoreCard.prefectures, scoreCard.number, `match`.length, `match`.perEnd as maxPerEnd, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scoreCard`, `account`, `organization`, `match`, `scoreTotal` where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and account.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' and `match`.m_id = ' + connection.escape(scoreCardIdData[0].m_id) + ' and scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scoreTotal.p_id = ' + connection.escape(scoreCardIdData[0].p_id)+ ';';
+								var scoreCardSql = 'select scoreCard.sc_id, scoreCard.p_id, scoreCard.prefectures, scoreCard.number, (select concat(account.lastName, account.firstName) from account where account.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ') as playerName, (select organizationName from organization where o_id = (select o_id from account where p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ')) as organizationName from `scoreCard` where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id);
+
+								// 試合データを抽出するためのSQL文
+								var matchSql = 'select `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, `match`.length, `match`.perEnd as maxPerEnd from `match` where `match`.m_id = ' + connection.escape(scoreCardIdData[0].m_id);
+
+								// 得点表の現在のセット数をカウントするためのSQL文
+								var countPerEndSql = 'select count(spe_id) as countPerEnd from scorePerEnd where scorePerEnd.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id);
+
+								// 得点データの抽出を行うSQL文
+								var scorePerEndSql = 'select scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.updatedScore_1, scorePerEnd.updatedScore_2, scorePerEnd.updatedScore_3, scorePerEnd.updatedScore_4, scorePerEnd.updatedScore_5, scorePerEnd.updatedScore_6, scorePerEnd.subTotal, scorePerEnd.perEnd from `scorePerEnd` where scorePerEnd.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' order by scorePerEnd.perEnd asc;';
+
+								// 得点合計データの抽出を行うSQL分
+								var scoreTotalSql = 'select scoreTotal.ten, scoreTotal.x, scoreTotal.total from scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id);
 
 								console.log('scoreCardSql');
 								console.log(scoreCardSql);
 
-								// 得点表の現在のセット数をカウントするためのSQL文
-								var countPerEndSql = 'select count(spe_id) as countPerEnd from scorePerEnd where scorePerEnd.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ';';
+								console.log('matchSql');
+								console.log(matchSql);
 
-								// 得点データの抽出を行うSQL文
-								var scorePerEndSql = 'select scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.updatedScore_1, scorePerEnd.updatedScore_2, scorePerEnd.updatedScore_3, scorePerEnd.updatedScore_4, scorePerEnd.updatedScore_5, scorePerEnd.updatedScore_6, scorePerEnd.subTotal, scorePerEnd.perEnd from `scorePerEnd` where scorePerEnd.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' order by scorePerEnd.perEnd asc;';
+								console.log('countPerEndSql');
+								console.log(countPerEndSql);
 
 								console.log('scorePerEndSql');
 								console.log(scorePerEndSql);
 
+								console.log('scoreTotalSql');
+								console.log(scoreTotalSql);
+
 								// 得点表データの抽出
 								connection.query(scoreCardSql, function (err, scoreCardData) {
-									// セット数の抽出
-									connection.query(countPerEndSql, function(err, countPerEndData){
-										// 得点データの抽出
-										connection.query(scorePerEndSql, function (err, scorePerEndData) {
+									// 試合データの抽出
+									connection.query(matchSql, function(err, matchData) {
+										// セット数の抽出
+										connection.query(countPerEndSql, function(err, countPerEndData){
+											// 得点データの抽出
+											connection.query(scorePerEndSql, function (err, scorePerEndData) {
+												// 得点合計データの抽出
+												connection.query(scoreTotalSql, function(err, scoreTotalData) {
 
-											console.log('scoreCardData');
-											console.log(scoreCardData);
+													console.log('scoreCardData');
+													console.log(scoreCardData);
 
-											console.log('countPerEndData');
-											console.log(countPerEndData);
+													console.log('matchData');
+													console.log(matchData);
 
-											console.log('scorePerEndData');
-											console.log(scorePerEndData);
+													console.log('countPerEndData');
+													console.log(countPerEndData);
 
-											// ２つのSQL文の結果を結合
-											scoreCardData[0]['score'] = scorePerEndData;
+													console.log('scorePerEndData');
+													console.log(scorePerEndData);
 
-											var p_idPermission = ( p_id === scoreCardIdData[0].p_id ? true : false );
-											console.log('p_idPermission = ( p_id === scoreCardIdData[0].p_id ? true : false ');
+													console.log('scoreTotalSql');
+													console.log(scoreTotalSql);
 
-											console.log('p_id : ' + p_id);
-											console.log('scoreCardIdData : ' + scoreCardIdData[0].p_id);
+													// Check Permission
+													var p_idPermission = ( p_id === scoreCardIdData[0].p_id ? true : false );
 
-											var sc_idPermission = false;
+													var sc_idPermission = false;
 
-											if(body.sess.subUser != undefined) {
+													// 他人のアカウントの得点表を作成した場合の権限処理
+													if(body.sess.subUser != undefined) {
 
-												for(var i = 0; i < body.sess.subUser.length; i++) {
-													if(body.sess.subUser[i].sc_id === scoreCardIdData[0].sc_id) {
-														sc_idPermission = true;
+														for(var i = 0; i < body.sess.subUser.length; i++) {
+															if(body.sess.subUser[i].sc_id === scoreCardIdData[0].sc_id) {
+																sc_idPermission = true;
+															}
+														}
 													}
-												}
-											}
-
-											console.log('body.sess.subUser : ');
-											console.log(body.sess.subUser);
-
-											console.log('body.sess.subUser != undefined');
-											console.log(body.sess.subUser != undefined);
-
-											console.log('scoreCardIdData[0].sc_id');
-											console.log(scoreCardIdData[0].sc_id);
 
 
-											// パーミッションを追加
-											scoreCardData[0]['permission'] = p_idPermission || sc_idPermission;
+													// 試合データの結合
+													Object.keys(matchData[0]).forEach(function(key) {
+														scoreCardData[0][key] = matchData[0][key];
+													});
 
-											scoreCardData[0]['countPerEnd'] = countPerEndData[0].countPerEnd;
+													// セット数の結合
+													scoreCardData[0]['countPerEnd'] = countPerEndData[0]['countPerEnd'];
 
-											// Emit log
-											console.log('emit : extractScoreCard');
-											console.log(scoreCardData[0]);
+													// 得点データの結合
+													scoreCardData[0]['score'] = scorePerEndData;
 
-											// 得点表データのEmit
-											socket.emit('extractScoreCard', scoreCardData[0]);
+													// 得点合計データの結合
+													Object.keys(scoreTotalData[0]).forEach(function(key) {
+														scoreCardData[0][key] = scoreTotalData[0][key];
+													});
+
+													// パーミッションを追加
+													scoreCardData[0]['permission'] = p_idPermission || sc_idPermission;
+
+
+													// Emit log
+													console.log('emit : extractScoreCard');
+													console.log(scoreCardData[0]);
+
+													// 得点表データのEmit
+													socket.emit('extractScoreCard', scoreCardData[0]);
+												});
+											});
 										});
 									});
 								});
