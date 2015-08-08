@@ -1,0 +1,126 @@
+サーバーインストール手順書
+
+動作環境
+
+・CentOS release 6.6 (Final)
+・Nodejs v0.12.7
+
+・MySQL v5.6.24
+・CouchDB v1.6.1
+
+・Express v4.11.2
+・Socket.IO v1.3.5
+
+手順
+1. Nodejsをインストール
+1. MySQLをインストール
+2. CouchDBをインストール
+3. リポジトリをクローン
+4. サーバーの設定 (環境変数, iptables)
+
+1. Install Nodejs
+Nodejsをインストールします。
+ここでは、複数のnode.jsのバージョンを管理することができるnaveを使用してNode.jsをインストールする手順を紹介します。
+1. nave リポジトリをクローン
+Terminal上から以下のコマンドの入力してください。(Gitが必要となります)
+
+git clone git@github.com:isaacs/nave
+
+2. インストールに使用する nave.shファイルをカレントディレクトリにコピーする
+
+cp ~/nave/nave.sh ~/
+
+3. nave.shを使用してNodejsの安定版をインストールする
+
+./nave.sh install stable
+
+4. run
+
+./nave.sh use stable
+
+
+
+
+
+2. Install MySQL
+MySQLをインストールします。
+
+RPM パッケージを取得
+wget http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+
+yumでインストール
+yum localinstall mysql-community-release-el6-5.noarch.rpm
+
+yum install mysql-community-server
+
+MySQL起動
+/etc/rc.d/init.d/mysqld start
+
+
+
+3. Install CouchDB
+
+
+1. リポジトリのインストール
+
+wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+rpm -Uvh remi-release-6.rpm epel-release-6-8.noarch.rpm
+
+2. ビルドに必要なツールをインストール
+yum install libicu-devel openssl-devel curl-devel make gcc erlang js-devel libtool which gcc-c++
+
+3. ミラーサイトからCouchDBのソースコードをダウンロード
+wget http://apache.cs.utah.edu/couchdb/source/1.6.1/apache-couchdb-1.6.1.tar.gz
+
+※ミラーサイト一覧
+https://www.apache.org/dyn/closer.cgi?path=/couchdb/source/1.6.1/apache-couchdb-1.6.1.tar.gz
+
+4, CouchDBのインストール 
+gunzip -c apache-couchdb-1.6.1.tar.gz | tar -xvf -
+cd apache-couchdb-1.6.1
+./configure --with-erlang=/usr/lib64/erlang/usr/include
+
+make
+make install
+
+5. CouchDBユーザーを作成
+adduser -r --home /usr/local/var/lib/couchdb -M --shell /bin/bash --comment "CouchDB Administrator" couchdb
+chown -R couchdb:couchdb /usr/local/etc/couchdb
+chown -R couchdb /usr/local/var/lib/couchdb
+chown -R couchdb /usr/local/var/run/couchdb
+chown -R couchdb:couchdb /usr/local/var/log/couchdb
+chmod -R 0770 /usr/local/etc/couchdb
+chmod -R 0770 /usr/local/var/lib/couchdb
+chmod -R 0770 /usr/local/var/log/couchdb
+chmod -R 0770 /usr/local/var/run/couchdb
+
+5. Couchdbの設定ファイルを編集
+vim /usr/local/etc/couchdb/local.ini
+
+以下を [httpd]の下に追加
+bind_address = x.x.x.x // 使用しているサーバのIPアドレス
+
+6. CouchDBを起動
+ln -s /usr/local/etc/rc.d/couchdb /etc/init.d/couchdb
+chkconfig --add couchdb
+chkconfig --level 1234 couchdb on
+
+
+4. リポジトリをクローンする
+
+git clone git@github.com:irc-archery/Archery-Server
+
+run.shファイルを編集し,使用している環境に合わせて環境変数を設定する
+
+サーバーを起動
+
+./run.sh
+
+(option)
+プロセスを永続させる場合は forever を使用すると便利です。
+
+npm install -g forever
+
+run.shファイルを末端を以下のように変更
+forever start bin/www
