@@ -241,7 +241,19 @@ $('.ime .rows div div').on('click', function() {
 
   // 規定の射数まで得点の記入が完了
   if(active_arrows > 6) {
-    if(window.confirm('この得点で決定しますか?') == true) {
+
+    var mess = 'この得点で決定しますか?\n';
+
+    mess += active_perEnd + '回目 :'; 
+
+    for(var i = 1; i <= 6; i++) {
+      mess += ' ' + $('.perEnd' + active_perEnd + ' .score' + i).text() + ','; 
+    }
+
+    // 末端の, を削除
+    mess = mess.substr(0, (mess.length - 1));
+
+    if(window.confirm(mess) == true) {
 
       light(active_perEnd, 0);
 

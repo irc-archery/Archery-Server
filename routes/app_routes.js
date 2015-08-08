@@ -43,7 +43,7 @@ router.post('/createAccount', function(req, res) {
 
 			console.log(typeof hostMail)
 
-			mess += 'ご不明な点がありましたらこのメールに返信して連絡ください。';
+			mess += 'ご不明な点がありましたらこのメールに返信してご連絡ください。';
 
 			var mailOptions = {
 				from: process.env.EMAIL,
