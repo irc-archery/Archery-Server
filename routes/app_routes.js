@@ -1,13 +1,14 @@
 var express = require('express');
 var connection = require('../models/mysql.js')();
 var router = express.Router();
+var crypto = require('../models/crypto.js');
 
 // ユーザーの登録を行うPOSTの処理
 router.post('/createAccount', function(req, res) {
 	console.log('post /app/createAccount');
 	console.log(req.body);
 
-	var createAccountSql = 'insert into account(firstName, lastName, rubyFirstName, rubyLastName, email, password, birth, type, sex) values(' + connection.escape(req.body.firstName) + ', ' + connection.escape(req.body.lastName) + ', ' + connection.escape(req.body.rubyFirstName) + ', ' + connection.escape(req.body.rubyLastName) + ', ' + connection.escape(req.body.email) + ', ' + connection.escape(req.body.password) + ', ' + connection.escape(req.body.birth) + ', ' + 2 + ', ' + connection.escape(req.body.sex) + ');';
+	var createAccountSql = 'insert into account(firstName, lastName, rubyFirstName, rubyLastName, email, password, birth, type, sex) values(' + connection.escape(req.body.firstName) + ', ' + connection.escape(req.body.lastName) + ', ' + connection.escape(req.body.rubyFirstName) + ', ' + connection.escape(req.body.rubyLastName) + ', ' + connection.escape(req.body.email) + ', ' + connection.escape(crypto.encryption(req.body.password)) + ', ' + connection.escape(req.body.birth) + ', ' + 2 + ', ' + connection.escape(req.body.sex) + ');';
 	console.log(createAccountSql);
 
 	connection.query(createAccountSql, function(err, results) {
@@ -36,7 +37,7 @@ router.post('/login', function(req, res) {
 	console.log('post /app/login');
 	console.log(req.body);
 
-	var loginSql = 'select * from account where email = ' + connection.escape(req.body.email) + ' and password = ' + connection.escape(req.body.password) + ';';
+	var loginSql = 'select * from account where email = ' + connection.escape(req.body.email);
 	console.log('loginSql');
 	console.log(loginSql);
 
@@ -48,13 +49,22 @@ router.post('/login', function(req, res) {
 
 		// ログイン成功
 		if(Object.keys(results).length !== 0) {
-			console.log('success to login');
 
-			req.session.p_id = results[0].p_id;
-			req.session.o_id = results[0].o_id;
+			if(crypto.decryptioin(results[0].password) === req.body.password) {
 
-			data['results'] = true;
-			data['err'] = null;
+				console.log('success to login');
+
+				req.session.p_id = results[0].p_id;
+				req.session.o_id = results[0].o_id;
+
+				data['results'] = true;
+				data['err'] = null;
+			}
+			else {
+				console.log('faild to login');
+				data['results'] = false;
+				data['err'] = 'ログイン名が存在しないか、パスワードが間違っているためログインできませんでした。';
+			}
 		}
 		// ログイン失敗
 		else {

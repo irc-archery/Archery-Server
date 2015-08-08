@@ -14,4 +14,6 @@ export COUCHDB_HOST="127.0.0.1"
 export SESSION_SECRET="sessionSecret"
 export COOKIE_SECRET="cookieSecret"
 
+export HASH_PASSWORD="hashPassword"
+
 npm start

@@ -1,5 +1,6 @@
 var http = require('http');
 var addPrefix = require('./addPrefix');
+var crypto = require('../models/crypto.js');
 
 function scoreCardIndexModel(io, connection, sessions, ios) {
 
@@ -77,7 +78,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 			console.log(data);
 
 			// ログイン処理
-			var loginSql = 'select * from account where email = ' + connection.escape(data.email) + ' and password = ' + connection.escape(data.password) + ';';
+			var loginSql = 'select * from account where email = ' + connection.escape(data.email);
 
 			connection.query(loginSql, function(err, results) {
 				console.log('results of loginSql');
@@ -85,84 +86,90 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 
 				// ログイン成功
 				if(results != '') {
-					console.log('success to login');	
+					if(crypto.decryption(results[0].password) === data.password) {
+						console.log('success to login');	
 
-					// 得点表作成
-					var insertScoreCardSql = 'insert into scoreCard(p_id, m_id, created) values(' + connection.escape(results[0].p_id) + ', ' + connection.escape(data.m_id) + ', now())';
+						// 得点表作成
+						var insertScoreCardSql = 'insert into scoreCard(p_id, m_id, created) values(' + connection.escape(results[0].p_id) + ', ' + connection.escape(data.m_id) + ', now())';
 
-					connection.query(insertScoreCardSql, function (err, insertScoreCardData) {
+						connection.query(insertScoreCardSql, function (err, insertScoreCardData) {
 
-						console.log('insertScoreCardData');
-						console.log(insertScoreCardData);
+							console.log('insertScoreCardData');
+							console.log(insertScoreCardData);
 
-						// 得点表データに対応するscoreTotalのrecordをinsertする
-						var insertScoreTotalSql = 'insert into scoreTotal(sc_id, p_id, o_id) values(' + insertScoreCardData.insertId + ', ' + connection.escape(results[0].p_id) + ', ' + connection.escape(results[0].o_id) + ');';
+							// 得点表データに対応するscoreTotalのrecordをinsertする
+							var insertScoreTotalSql = 'insert into scoreTotal(sc_id, p_id, o_id) values(' + insertScoreCardData.insertId + ', ' + connection.escape(results[0].p_id) + ', ' + connection.escape(results[0].o_id) + ');';
 
-						connection.query(insertScoreTotalSql, function(err, insertScoreTotalData) {
+							connection.query(insertScoreTotalSql, function(err, insertScoreTotalData) {
 
-							// 現在ログイン中のプレイヤーに得点表の権限を与える
-							sessions.get(addPrefix(data.sessionID), function(err, sessionInfo) {
-								if(!err) {
-									console.log('sessionInfo');
-									console.log(sessionInfo);
+								// 現在ログイン中のプレイヤーに得点表の権限を与える
+								sessions.get(addPrefix(data.sessionID), function(err, sessionInfo) {
+									if(!err) {
+										console.log('sessionInfo');
+										console.log(sessionInfo);
 
-									var subUser = {'sc_id': insertScoreCardData.insertId};
+										var subUser = {'sc_id': insertScoreCardData.insertId};
 
-									console.log(sessionInfo['sess']['subUser']);
+										console.log(sessionInfo['sess']['subUser']);
 
-									if(sessionInfo['sess']['subUser'] != undefined) {
-										sessionInfo['sess']['subUser'][sessionInfo['sess']['subUser'].length] = subUser;
-									}
-									else {
-										sessionInfo['sess']['subUser'] = [];
-										sessionInfo['sess']['subUser'][0] = subUser;
-									}
-
-									console.log(sessionInfo);
-
-									// session情報の更新
-									sessions.insert(sessionInfo, function(err, sessionInfoResults) {
-
-										if(!err) {
-
-											// 得点表のIDをemitする
-											console.log('sessionInfoResults');
-											console.log(sessionInfoResults);
-
-											console.log('emit insertScoreCard');
-											socket.emit('insertScoreCard', {'status' : 1, 'err':null, 'sc_id': insertScoreCardData.insertId});
-
-											// broadcast scoreCard information: added now
-
-											// 得点表データを抽出するためのSQL文 
-											var scoreCardDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total, (select count(scorePerEnd.perEnd) from scorePerEnd where scorePerEnd.sc_id = ' + insertScoreCardData.insertId + ') as perEnd from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
-
-											// 得点表データを抽出
-											connection.query(scoreCardDataSql, function(err, scoreCardData) {
-												console.log('emit broadcastInsertScoreCard');
-												console.log(scoreCardData);
-
-												socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastInsertScoreCard', scoreCardData[0]);
-											});
+										if(sessionInfo['sess']['subUser'] != undefined) {
+											sessionInfo['sess']['subUser'][sessionInfo['sess']['subUser'].length] = subUser;
 										}
 										else {
-											// session情報の更新に失敗
-											console.log('faild to update sessoin Info');
-											console.log(err);
-											
-											socket.emit('insertScoreCard', {'status': 0, 'err': 'ログインに失敗しました。'});
+											sessionInfo['sess']['subUser'] = [];
+											sessionInfo['sess']['subUser'][0] = subUser;
 										}
-									});
-								}
-								else {
-									console.log('faild to get session Info');
-									console.log(err);
 
-									socket.emit('insertScoreCard', {'status': 0, 'err': 'ログインに失敗しました。'});
-								}
+										console.log(sessionInfo);
+
+										// session情報の更新
+										sessions.insert(sessionInfo, function(err, sessionInfoResults) {
+
+											if(!err) {
+
+												// 得点表のIDをemitする
+												console.log('sessionInfoResults');
+												console.log(sessionInfoResults);
+
+												console.log('emit insertScoreCard');
+												socket.emit('insertScoreCard', {'status' : 1, 'err':null, 'sc_id': insertScoreCardData.insertId});
+
+												// broadcast scoreCard information: added now
+
+												// 得点表データを抽出するためのSQL文 
+												var scoreCardDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total, (select count(scorePerEnd.perEnd) from scorePerEnd where scorePerEnd.sc_id = ' + insertScoreCardData.insertId + ') as perEnd from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
+
+												// 得点表データを抽出
+												connection.query(scoreCardDataSql, function(err, scoreCardData) {
+													console.log('emit broadcastInsertScoreCard');
+													console.log(scoreCardData);
+
+													socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastInsertScoreCard', scoreCardData[0]);
+												});
+											}
+											else {
+												// session情報の更新に失敗
+												console.log('faild to update sessoin Info');
+												console.log(err);
+												
+												socket.emit('insertScoreCard', {'status': 0, 'err': 'ログインに失敗しました。'});
+											}
+										});
+									}
+									else {
+										console.log('faild to get session Info');
+										console.log(err);
+
+										socket.emit('insertScoreCard', {'status': 0, 'err': 'ログインに失敗しました。'});
+									}
+								});
 							});
 						});
-					});
+					}	
+					else {
+						console.log('faild to login');
+						socket.emit('insertScoreCard', {'status': 0, 'err': 'ログイン名が存在しないか、パスワードが間違っているためログインできませんでした。'});
+					}
 				}
 				// ログイン失敗
 				else {

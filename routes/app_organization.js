@@ -1,6 +1,7 @@
 var express = require('express');
 var connection = require('../models/mysql.js')();
 var router = express.Router();
+var crypto = require('../models/crypto.js');
 
 var loginCheck = function(req, res, next) {
 
@@ -310,7 +311,7 @@ router.post('/members', loginCheck, function(req, res) {
 	console.log(req.body);
 
 	// 1. ログイン処理
-	var loginSql = 'select p_id, o_id from account where email = ' + connection.escape(req.body.email) + ' and password = ' + connection.escape(req.body.password) + ';';
+	var loginSql = 'select p_id, o_id from account where email = ' + connection.escape(req.body.email);
 
 	connection.query(loginSql, function(err, results) {
 		console.log('results of loginSql');
@@ -318,47 +319,54 @@ router.post('/members', loginCheck, function(req, res) {
 
 		// ログイン成功
 		if(Object.keys(results).length !== 0) {
-			console.log('success to login');
 
-			if(!results[0].o_id) {
+			if(crypto.decryption(results[0].password) === req.body.password) {
 
-				// 団体に参加したいユーザーのp_id
-				var addP_id = results[0].p_id;
+				console.log('success to login');
 
-				// 団体メンバーのp_id
-				var memberP_id = req.session.p_id;
+				if(!results[0].o_id) {
 
-				// extract o_id
-				var extractO_idSql = 'select o_id from account where p_id = ' + memberP_id;
+					// 団体に参加したいユーザーのp_id
+					var addP_id = results[0].p_id;
 
-				connection.query(extractO_idSql, function(err, extractO_idResults) {
+					// 団体メンバーのp_id
+					var memberP_id = req.session.p_id;
 
-					var o_id = extractO_idResults[0].o_id;
+					// extract o_id
+					var extractO_idSql = 'select o_id from account where p_id = ' + memberP_id;
 
-					var updateO_idSql = 'update account set o_id = ' + connection.escape(o_id) + ' where p_id = ' + connection.escape(addP_id);
+					connection.query(extractO_idSql, function(err, extractO_idResults) {
 
-					connection.query(updateO_idSql, function(err, updateO_idResults) {
+						var o_id = extractO_idResults[0].o_id;
 
-						var resData = {};
+						var updateO_idSql = 'update account set o_id = ' + connection.escape(o_id) + ' where p_id = ' + connection.escape(addP_id);
 
-						if(!err) {
-							resData['results'] = true;
-							resData['err'] = null;
-						}
-						else {
-							resData['results'] = false;
-							resData['err'] = 'メンバーの追加に失敗しました。';
-						}
+						connection.query(updateO_idSql, function(err, updateO_idResults) {
 
-						console.log('send response about add member');
-						console.log(resData);
+							var resData = {};
 
-						res.send(resData);
+							if(!err) {
+								resData['results'] = true;
+								resData['err'] = null;
+							}
+							else {
+								resData['results'] = false;
+								resData['err'] = 'メンバーの追加に失敗しました。';
+							}
+
+							console.log('send response about add member');
+							console.log(resData);
+
+							res.send(resData);
+						});
 					});
-				});
+				}
+				else {
+					res.send({'results': false, 'err': 'そのユーザーはすでに他の団体に所属しています'});
+				}
 			}
 			else {
-				res.send({'results': false, 'err': 'そのユーザーはすでに他の団体に所属しています'});
+				res.send({'results': false, 'err': 'ログインに失敗しました。Eメールアドレスとパスワードをもう一度確認してください。'});
 			}
 		}
 		// ログイン失敗
