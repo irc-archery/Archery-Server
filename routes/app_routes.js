@@ -50,7 +50,7 @@ router.post('/login', function(req, res) {
 		// ログイン成功
 		if(Object.keys(results).length !== 0) {
 
-			if(crypto.decryptioin(results[0].password) === req.body.password) {
+			if(crypto.decryption(results[0].password) === req.body.password) {
 
 				console.log('success to login');
 
