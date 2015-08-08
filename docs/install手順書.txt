@@ -12,11 +12,12 @@
 ・Socket.IO v1.3.5
 
 手順
+
 1. Nodejsをインストール
-1. MySQLをインストール
-2. CouchDBをインストール
-3. リポジトリをクローン
-4. サーバーの設定 (環境変数, iptables)
+2. MySQLをインストール
+3. CouchDBをインストール
+4. サービスを起動する
+
 
 1. Nodejsをインストール
 Nodejsをインストールします。
@@ -95,26 +96,34 @@ vim /usr/local/etc/couchdb/local.ini
 以下を [httpd]の下に追加
 bind_address = x.x.x.x // 使用しているサーバのIPアドレス
 
-6. CouchDBを起動
+3-7. CouchDBを起動
 ln -s /usr/local/etc/rc.d/couchdb /etc/init.d/couchdb
 chkconfig --add couchdb
 chkconfig --level 1234 couchdb on
 
 
-4. リポジトリをクローンする
+4. サービスを起動する
 
+4-1. プロジェクトをクローンする
 git clone git@github.com:irc-archery/Archery-Server
 
-run.shファイルを編集し,使用している環境に合わせて環境変数を設定する
+4-2. run.shファイルを編集し,使用している環境に合わせて環境変数を設定する
 
-サーバーを起動
-
+4-3. サーバーを起動
 ./run.sh
 
-(option)
+4-4. プロセスの永続化
 プロセスを永続させる場合は forever を使用すると便利です。
 
+4-4-1. foreverをインストールする
 npm install -g forever
 
+4-4-2. foreverで起動するように設定する 
 run.shファイルを末端を以下のように変更
-forever start bin/www
+npm start -> forever start bin/www
+
+4-4-3. サービスを起動
+./run.sh
+
+4-4.4. サービスを停止
+forever stopall
