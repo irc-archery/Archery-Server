@@ -2,6 +2,14 @@ var express = require('express');
 var connection = require('../models/mysql.js')();
 var router = express.Router();
 var crypto = require('../models/crypto.js');
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+	service: 'Gmail',
+	auth: {
+		user: process.env.EMAIL,
+		pass: process.env.PASSWORD
+	}	
+});
 
 // ユーザーの登録を行うPOSTの処理
 router.post('/createAccount', function(req, res) {
@@ -21,6 +29,37 @@ router.post('/createAccount', function(req, res) {
 			req.session.p_id = results.insertId;
 			data['results'] = true;
 			data['err'] = null;
+
+			// 送信メッセージ
+			var mess = '';
+
+			mess += 'Archery realtime game systemにご登録いただきありがとうございます。<br><br>';
+
+			mess += 'ご登録いただいたアカウント情報は以下のとおりです。<br>';
+			mess += 'ログイン名 : ' + req.body.email + '<br>';
+			mess += 'パスワード : ' + req.body.password + '<br><br>';
+
+			var hostMail = process.env.EMAIL;
+
+			console.log(typeof hostMail)
+
+			mess += 'ご不明な点がありましたらこのメールに返信して連絡ください。';
+
+			var mailOptions = {
+				from: process.env.EMAIL,
+				to: req.body.email,
+				subject: 'Archery realtime game system アカウント登録',
+				html: mess
+			};
+
+			// メール送信 
+			transporter.sendMail(mailOptions, function(error, info) {
+				if(error) {
+					return console.log(error);
+				}
+				console.log('message send : ' + info.response);
+			});
+
 		}
 		else {
 			console.log('faild to create new account');
