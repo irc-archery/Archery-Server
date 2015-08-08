@@ -8,6 +8,9 @@ var loginCheck = function(req, res, next) {
 	console.log('bellow is req.session.p_id');
 	console.log(req.session.p_id);
 
+	console.log('req');
+	console.log(req);
+
 	if(req.session.p_id) {
 		console.log('success loginCheck with sessionID');
 
@@ -311,7 +314,7 @@ router.post('/members', loginCheck, function(req, res) {
 	console.log(req.body);
 
 	// 1. ログイン処理
-	var loginSql = 'select p_id, o_id from account where email = ' + connection.escape(req.body.email);
+	var loginSql = 'select p_id, o_id, password from account where email = ' + connection.escape(req.body.email);
 
 	connection.query(loginSql, function(err, results) {
 		console.log('results of loginSql');
