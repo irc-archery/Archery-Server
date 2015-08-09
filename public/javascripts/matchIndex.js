@@ -49,7 +49,7 @@ socket.on('extractMatchIndex', function (data) {
 
     // table
     for (var i = 0; i < data.length; i++) {
-      code += '<tr class="openModal" data-match="' + data[i]['m_id'] + '" data-toggle="modal" data-target="#matchModal"><td>' + data[i]['matchName'] + '</td><td>' + data[i]['sponsor'] + '</td></tr>';
+      code += '<tr class="openModal match' + data[i]['m_id'] + '" data-match="' + data[i]['m_id'] + '" data-toggle="modal" data-target="#matchModal"><td>' + data[i]['matchName'] + '</td><td>' + data[i]['sponsor'] + '</td></tr>';
 
       // save the data
       globalData[data[i]['m_id']] = data[i];
@@ -73,7 +73,7 @@ socket.on('broadcastInsertMatch', function(data) {
   if(data != '') {
     var code = '';
 
-    code += '<tr class="openModal" data-match="' + data['m_id'] + '" data-toggle="modal" data-target="#matchModal"><td>' + data['matchName'] + ' <span class="label label-info">New</span></td><td>' + data['sponsor'] + '</td></tr>';
+    code += '<tr class="openModal match' + data['m_id'] + '" data-match="' + data['m_id'] + '" data-toggle="modal" data-target="#matchModal"><td>' + data['matchName'] + ' <span class="label label-info">New</span></td><td>' + data['sponsor'] + '</td></tr>';
 
     // save the data
     globalData[data['m_id']] = data;
@@ -82,3 +82,13 @@ socket.on('broadcastInsertMatch', function(data) {
     $('.infoArea').empty();
   }
 })
+
+socket.on('broadcastCloseMatch', function(data) {
+  console.log('broadcastCloseMatch');
+  console.log(data); 
+
+  if(data != '') {
+    $('.match' + data.m_id).remove();
+  }
+});
+

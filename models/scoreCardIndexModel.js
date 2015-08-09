@@ -406,6 +406,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 										// broadcast
 										console.log('emit broadcastCloseMatch');
 										socket.broadcast.to('scoreCardIndexRoom' + m_id).emit('broadcastCloseMatch', {'m_id': m_id});
+										ios.of('/matchIndex').emit('broadcastCloseMatch', {'m_id': m_id});
 
 										// 得点表画面にいる人たちにも試合終了通知をbroadcast
 										var devicesSql = 'select sc_id from scoreCard where m_id = ' + m_id;

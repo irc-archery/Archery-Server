@@ -29,6 +29,9 @@ broadcastInsertScore, broadcastUpdateScoreを得点表一覧画面にいても�
 08/08
 ・都道府県登録による更新イベントのkeyをprefecturesからPrefecturesに変更
 
+08/09
+broadcastCloseMatchが試合一覧でも届くように変更
+
 
 試合一覧画面
 
@@ -189,6 +192,7 @@ On Data Format :
 // 試合終了のbroadcast通知を受け取ったクライアントのデバイスは、"試合は終了しました"の通知とともに強制的にその試合の得点表一覧から追い出される。
 // 終了した試合は試合一覧には表示されず、過去の得点表一覧より参照されることになる。
 // 試合が終了するとともに、得点表も完成したとみなされユーザーの過去の成績に反映されるようになる。
+// 試合一覧でこのイベントをonした場合は終了した試合のIDを参照し一覧の中から非同期で削除する
 
 
 Emit Event Name : closeMatch
