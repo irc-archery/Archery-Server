@@ -25,7 +25,7 @@ $('#matchIndexArea').on('click', 'tr.openModal', function() {
   $('.modal-created').append(data.created);
 
   $('.modal-length').empty();
-  $('.modal-length').append(data.length);
+  $('.modal-length').append(lengthOption[data.length]);
 
   $('.modal-perEnd').empty();
   $('.modal-perEnd').append(data.perEnd);

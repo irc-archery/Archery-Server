@@ -25,8 +25,6 @@ function viewScoreCard(data) {
       match.number = '';
     }
 
-    var lengthOption = ["90m", "70m", "60m", "50m", "40m", "30m", "70m前", "70m後"];
-
     match.length = lengthOption[data.length];
 
     for(var i = 0; i < data.countPerEnd; i++) {
