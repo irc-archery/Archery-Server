@@ -53,12 +53,13 @@ socket.on('broadcastInsertScore', function (data) {
   $('.perEnd' + data.perEnd + ' .scoreTotal').text(data.subTotal);
   $('.subTotalHeader' + data.perEnd).text(data.subTotal);
 
+  active_perEnd = data.perEnd + 1;
+  active_arrows = 1;
+
   // 存在しないのであれば0, or 1
   if($('.perEnd' + data.perEnd).length != 0) {
     // すでに存在する  つまり  自分も編集者だが、その得点表が誰かによって編集された場合
     $('.perEnd' + data.perEnd).remove();
-    active_arrows = 1;
-    active_perEnd = data.perEnd + 1;
 
     viewScore(data);
 
