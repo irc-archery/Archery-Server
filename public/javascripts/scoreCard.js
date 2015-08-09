@@ -53,7 +53,6 @@ socket.on('broadcastInsertScore', function (data) {
   $('.perEnd' + data.perEnd + ' .scoreTotal').text(data.subTotal);
   $('.subTotalHeader' + data.perEnd).text(data.subTotal);
 
-  console.log('fnifnit');
   // 存在しないのであれば0, or 1
   if($('.perEnd' + data.perEnd).length != 0) {
     // すでに存在する  つまり  自分も編集者だが、その得点表が誰かによって編集された場合
@@ -91,9 +90,8 @@ socket.on('broadcastInsertScore', function (data) {
     viewScore(data);
   }
 
-
   // 合計得点を更新
-  processing();
+  processing(data.perEnd);
 });
 
 // 得点の修正による更新
