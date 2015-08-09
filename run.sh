@@ -16,7 +16,7 @@ export COOKIE_SECRET="cookieSecret"
 
 export HASH_PASSWORD="hashPassword"
 
-export EMAIL="args.project@gmail.com"
-export PASSWORD="9rltDmbg"
+export EMAIL="example@email.com"
+export PASSWORD="password"
 
 forever start bin/www
