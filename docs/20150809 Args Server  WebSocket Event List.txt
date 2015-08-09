@@ -1,10 +1,10 @@
-Archery Server HTTP & WebSocket Event
-2015 08 04
+Args Server WebSocket通信 API 内部設計書
+2015 08 09
 
 更新履歴
 
 07/16
-Http Response を result から results に統一
+Response の result を results に統一
 
 07/17
 ・ゼッケン番号、都道府県の挿入、更新イベントの追加
@@ -28,47 +28,6 @@ broadcastInsertScore, broadcastUpdateScoreを得点表一覧画面にいても�
 
 08/08
 ・都道府県登録による更新イベントのkeyをprefecturesからPrefecturesに変更
-
-
-ログイン画面
-
-ブラウザ側は /login, アプリ側は /app/login にHTTP通信のPOSTでemailとpasswordを送信。
-認証が完了したら、サーバーはログイン状態を保持させるためのsessionIDをHTTPヘッダに送付したレスポンスを返す。
-
-ログイン
-
-HttpMethod : POST
-RequestURI(for browser) : http://hostname/login
-RequestURI(for app) : http://hostname/app/login
-Data Format :
-{
-	'email':	string,
-	'password':	string
-}
-
-Resonse
-
-
-アカウント作成画面
-
-ブラウザ側は /createAccount , アプリ側は /app/createAccount にHTTP通信のPOSTでアカウント作成に必要な情報を送信。作成が正常に完了したらレスポンスにログイン状態を保持させるためのsessionIDを送付する。
-
-アカウント作成
-
-HttpMethod : POST
-RequestURI(for browser) : http://hostname/createAccount
-RequestURI(for app) : http://hostname/app/createAccount
-Data Format :
-{
-	'firstName':	string,	// 名
-	'lastName':		string,	// 姓
-	'rubyFirstName':string,	// ふりがな - 名
-	'rubyLastName':	string,	// ふりがな - 姓
-	'email':		string,	// ログイン用のEmail
-	'password':		string,	// ログイン用のpassword (パスワードの再入力は各クライアント毎に実装する)
-	'birth':		string,	// 生年月日 format : 1997-08-06
-	'sex':			int 	// 男性 : 0, 女性 : 1, その他 : 8, 未設定 : 9
-}
 
 
 試合一覧画面
@@ -143,7 +102,7 @@ Emit Data Format :
 On Event Name : checkOrganization
 On Data Format :
 {
-	'belongs' : bool
+	'belongs' : bool	// 所属している : true, 所属していない: false
 }
 
 試合::作成
@@ -163,7 +122,7 @@ Emit Data Format :
 On Event Name : insertMatch
 On Data Format :
 {
-	'm_id': int
+	'm_id': int 		// 新たに作成された試合のID
 }
 
 
@@ -181,7 +140,7 @@ For Android Client : 得点表一覧画面で、各得点表のアクセス権(�
 Emit Event Name : joinMatch
 Emit Data Format :
 {
-	'm_id' : int,
+	'm_id' : int,			// 試合のID
 	'sessionID' : string
 }
 
@@ -215,7 +174,7 @@ On Data Format :
 Emit Event Name : checkPermission
 Emit Data Format :
 {
-	'sc_id' : int,
+	'sc_id' : int,			// 閲覧したい得点表のID
 	'sessionID' : string
 }
 
@@ -236,7 +195,7 @@ Emit Event Name : closeMatch
 Emit Data Format :
 {
 	'sessionID': string,
-	'm_id': int
+	'm_id': int 			// 終了したい試合のID
 }
 
 試合終了によるbroadcast通知
@@ -244,7 +203,7 @@ Emit Data Format :
 On Event Name : broadcastCloseMatch
 On Data Format :
 {
-	'm_id': int
+	'm_id': int 			// このIDの試合が終了したことを表す
 }
 
 試合終了の権限を確かめる

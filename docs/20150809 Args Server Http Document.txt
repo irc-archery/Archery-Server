@@ -1,5 +1,5 @@
-Archery マイページ・団体 内部設計書
-2015 08 05
+Args Server HTTP通信 API 内部設計書
+2015 08 09
 
 08/05
 団体削除に使用するo_idを get /organization/ のresponseに追加
@@ -8,15 +8,50 @@ Archery マイページ・団体 内部設計書
 団体削除権限確認APIを 団体情報抽出API ( get /app/organization )に統合
 
 
+ログイン画面
+
+ブラウザ側は /login, アプリ側は /app/login にHTTP通信のPOSTでemailとpasswordを送信。
+認証が完了したら、サーバーはログイン状態を保持させるためのsessionIDをHTTPヘッダに送付したレスポンスを返す。
+
+ログイン
+
+HttpMethod : POST
+RequestURI(for browser) : http://hostname/login
+RequestURI(for app) : http://hostname/app/login
+Data Format :
+{
+	'email':	string,
+	'password':	string
+}
+
+
+アカウント作成画面
+
+ /app/createAccount にHTTP通信のPOSTでアカウント作成に必要な情報を送信。作成が正常に完了したらレスポンスにログイン状態を保持させるためのsessionIDを送付する。
+
+アカウント作成
+
+HttpMethod : POST
+RequestURI(for browser) : http://hostname/createAccount
+RequestURI(for app) : http://hostname/app/createAccount
+Data Format :
+{
+	'firstName':	string,	// 名
+	'lastName':		string,	// 姓
+	'rubyFirstName':string,	// ふりがな - 名
+	'rubyLastName':	string,	// ふりがな - 姓
+	'email':		string,	// ログイン用のEmail
+	'password':		string,	// ログイン用のpassword (パスワードの再入力は各クライアント毎に実装する)
+	'birth':		string,	// 生年月日 format : 1997-08-06
+	'sex':			int 	// 男性 : 0, 女性 : 1, その他 : 8, 未設定 : 9
+}
+
+
 マイページ画面
 
 ログインが完了したら、このページに自動的に遷移する。
 アプリを起動した時に、ログインがすでに完了している場合は、この画面がホーム画面になる
 以下のAPIの仕様に沿って、HTTPメソッドのGETをするとマイページ画面に表示される氏名や成績などのデータをレスポンスとして取得することができる。
-// 全ページにおいてSession情報が無効だった場合は、HTTP エラーコード401を送信する
-// Http Status Code
-// 200 : Success 通常のコード
-// 401 : Unauthorized 認証失敗のコード
 
 マイページ情報取得API
 
