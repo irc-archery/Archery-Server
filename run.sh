@@ -19,4 +19,4 @@ export HASH_PASSWORD="hashPassword"
 export EMAIL="args.project@gmail.com"
 export PASSWORD="9rltDmbg"
 
-npm start
+forever start bin/www
