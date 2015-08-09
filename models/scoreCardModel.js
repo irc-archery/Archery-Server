@@ -55,21 +55,6 @@ function scoreCardModel(io, connection, sessions, ios) {
 								// 得点合計データの抽出を行うSQL分
 								var scoreTotalSql = 'select scoreTotal.ten, scoreTotal.x, scoreTotal.total from scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id);
 
-								console.log('scoreCardSql');
-								console.log(scoreCardSql);
-
-								console.log('matchSql');
-								console.log(matchSql);
-
-								console.log('countPerEndSql');
-								console.log(countPerEndSql);
-
-								console.log('scorePerEndSql');
-								console.log(scorePerEndSql);
-
-								console.log('scoreTotalSql');
-								console.log(scoreTotalSql);
-
 								// 得点表データの抽出
 								connection.query(scoreCardSql, function (err, scoreCardData) {
 									// 試合データの抽出
@@ -80,21 +65,6 @@ function scoreCardModel(io, connection, sessions, ios) {
 											connection.query(scorePerEndSql, function (err, scorePerEndData) {
 												// 得点合計データの抽出
 												connection.query(scoreTotalSql, function(err, scoreTotalData) {
-
-													console.log('scoreCardData');
-													console.log(scoreCardData);
-
-													console.log('matchData');
-													console.log(matchData);
-
-													console.log('countPerEndData');
-													console.log(countPerEndData);
-
-													console.log('scorePerEndData');
-													console.log(scorePerEndData);
-
-													console.log('scoreTotalSql');
-													console.log(scoreTotalSql);
 
 													// Check Permission
 													var p_idPermission = ( p_id === scoreCardIdData[0].p_id ? true : false );
@@ -110,7 +80,6 @@ function scoreCardModel(io, connection, sessions, ios) {
 															}
 														}
 													}
-
 
 													// 試合データの結合
 													Object.keys(matchData[0]).forEach(function(key) {
@@ -224,9 +193,6 @@ function scoreCardModel(io, connection, sessions, ios) {
 
 												// 挿入された値を抽出し、ブロードキャストでエミットするためのSQL文
 												var broadcastInsertScoreSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, scorePerEnd.perEnd, scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.subTotal, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scorePerEnd`, `scoreTotal` where scorePerEnd.sc_id = ' + connection.escape(data.sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(p_id) + ' and scorePerEnd.perEnd = ' + connection.escape(data.perEnd) + ' and scoreTotal.sc_id = ' + connection.escape(data.sc_id) + ' and scoreTotal.p_id = ' + connection.escape(p_id) + ';';
-
-												console.log('broadcastInsertScoreSql');
-												console.log(broadcastInsertScoreSql);
 
 												// broadcast Emit		
 												connection.query(broadcastInsertScoreSql, function (err, broadcastInsertScoreData) {
