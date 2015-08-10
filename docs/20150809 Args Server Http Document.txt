@@ -1,12 +1,23 @@
 Args Server HTTP通信 API 内部設計書
 2015 08 09
 
+概要
+
+Archery realtime game sysytemでは、HTTP, WebSocket通信を用いてサーバー、クライアント間の接続を確立します。
+HTTP通信では、主にアカウント情報や過去の成績などのデータ抽出を行うためのJSON形式のレスポンスを返すAPIをサーバーが提供します。
+WebScoket通信では、リアルタイムでデータを反映する必要がある得点表や一覧データの抽出や、データの挿入・更新に伴うブロードキャストの通知を行うためのイベントを提供します。
+クライアントはこれらのAPIを用いて、HTTP通信の場合は、以下の指定されたHTTP METHOD, Request URI, Data Formatにしたがって、WebSocket通信の場合は、指定されたEvent名、Data Formatにしたがってデータを送信することによりデータを取得することができます。
+
+
+新着情報
+
 08/05
 団体削除に使用するo_idを get /organization/ のresponseに追加
 
 08/06
 団体削除権限確認APIを 団体情報抽出API ( get /app/organization )に統合
 
+詳細
 
 ログイン画面
 
