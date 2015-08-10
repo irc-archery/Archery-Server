@@ -359,7 +359,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 					var p_id = body.sess.p_id;
 					var o_id = body.sess.o_id;
 					
-					var m_id = data.m_id;
+					var m_id = parseInt(data.m_id);
 
 					// 1. このユーザーがこの試合の管理者かどうかcheck
 					// 2. 試合のstatusを1にする
