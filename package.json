@@ -1,6 +1,6 @@
 {
-  "name": "Archery-Server",
-  "version": "0.0.2",
+  "name": "Args-Server",
+  "version": "1.0.0",
   "private": false,
   "scripts": {
     "start": "node ./bin/www"
