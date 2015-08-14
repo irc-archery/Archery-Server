@@ -1,7 +1,7 @@
 # Archery Realtime Game Sytem
 
-## Overview  
-This is Nodejs Websocket Server for Archery.  
+## 概要  
+This is Nodejs Http and Websocket Server for Archery reamtime game system.  
 
 ## 動作環境
 

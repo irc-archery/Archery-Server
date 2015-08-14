@@ -82,7 +82,7 @@ router.get('/', loginCheck, function(req, res) {
 
 		// 最新5件の得点表のidを抽出
 		//var userRecordSql = 'select sc_id, scoreTotal.total as sum from scoreTotal where p_id = ' + connection.escape(p_id) + ' limit 5';
-		var userRecordSql = 'select sc_id, DATE_FORMAT(created, "%Y/%m/%d %H:%m:%s") as created from scoreCard where p_id = ' + connection.escape(p_id) + ' order by created desc limit 5';
+		var userRecordSql = 'select sc_id, DATE_FORMAT(created, "%Y/%m/%d %H:%i:%s") as created from scoreCard where p_id = ' + connection.escape(p_id) + ' order by created desc limit 5';
 
 		console.log('userRecordSql');
 		console.log(userRecordSql);
@@ -238,7 +238,7 @@ router.get('/record', loginCheck, function(req, res) {
 	var p_id = req.session.p_id;
 
 	// ユーザーが過去に作成した得点表のidを抽出するためのSQL文
-	var scoreCardIdSql = 'select sc_id, DATE_FORMAT(created, "%Y/%m/%d %H:%m:%s") as created from scoreCard where p_id = ' + connection.escape(p_id) + ' order by created desc';
+	var scoreCardIdSql = 'select sc_id, DATE_FORMAT(created, "%Y/%m/%d %H:%i:%s") as created from scoreCard where p_id = ' + connection.escape(p_id) + ' order by created desc';
 
 	console.log('scoreCardIdSql');
 	console.log(scoreCardIdSql);
