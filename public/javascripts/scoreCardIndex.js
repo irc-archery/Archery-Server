@@ -105,6 +105,5 @@ socket.on('broadcastUpdateScore', function(data) {
   console.log('on broadcastUpdateScore');
   console.log(data);
 
-  $('.scoreCard' + data.sc_id + ' .perEnd').text(e(data.perEnd));
   $('.scoreCard' + data.sc_id + ' .total').text(e(data.total));
 });
