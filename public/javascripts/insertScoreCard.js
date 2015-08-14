@@ -30,6 +30,7 @@ function insertScoreCard() {
   }
 };
 
+// 得点表作成後の処理
 socket.on('insertScoreCard', function(data) {
 
   console.log('on insertScoreCard')
@@ -45,6 +46,7 @@ socket.on('insertScoreCard', function(data) {
   }
 });
 
+// set Default value
 $(function() {
 
   if($('input[name="radio"]:checked').val() === "me"){
@@ -55,6 +57,7 @@ $(function() {
   }
 });
 
+// Formの切り分け
 function showForm(flag){
   if(flag) {
     $('.others-form').show();

@@ -95,6 +95,7 @@ function viewScore(score) {
 	$('.scoreCardBody').prepend(code);
 }
 
+// updateを出力
 function viewUpdate(perEnd, arrows, score) {
     $('.perEnd' + perEnd + ' .updatedScore' + arrows).text(score);
 

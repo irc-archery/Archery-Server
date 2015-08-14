@@ -1,4 +1,6 @@
 $(function() {
+
+	// personalデータをajaxで非同期に取得
 	$.ajax({
 		url: '/app/personal',
 		type: 'GET',

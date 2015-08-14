@@ -1,5 +1,6 @@
 $(function() {
 
+	// 過去の得点表一覧データを非同期で取得
 	$.ajax({
 		url: "/app/personal/record/",
 		type: "GET",

@@ -21,6 +21,7 @@ $('.closeMatch').on('click', function() {
   }
 });
 
+// 特定の得点表が選択された時の処理
 $('#scoreCardIndexArea').on('click', 'tr.openScoreCard', function() {
   console.log('tr on click!');
   var matchId = getQueryString().m_id;
@@ -59,6 +60,7 @@ socket.on('extractScoreCardIndex', function(data){
   }
 });
 
+// 得点表の挿入を反映
 socket.on('broadcastInsertScoreCard', function(data) {
   console.log('on broadcastInsertScoreCard');
   console.log(data);
@@ -76,6 +78,7 @@ socket.on('broadcastInsertScoreCard', function(data) {
   $('.infoArea').empty(); 
 });
 
+// 試合終了
 socket.on('broadcastCloseMatch', function(data) {
   console.log('broadcastCloseMatch');
   console.log(data); 
@@ -87,6 +90,7 @@ socket.on('broadcastCloseMatch', function(data) {
   }
 });
 
+// 得点の挿入を反映
 socket.on('broadcastInsertScore', function(data) {
 
   console.log('on broadcastInsertScore');
@@ -96,6 +100,7 @@ socket.on('broadcastInsertScore', function(data) {
   $('.scoreCard' + data.sc_id + ' .total').text(e(data.total));
 });
 
+// 得点の更新を反映
 socket.on('broadcastUpdateScore', function(data) {
   console.log('on broadcastUpdateScore');
   console.log(data);

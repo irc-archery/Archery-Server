@@ -1,6 +1,6 @@
 # Archery Realtime Game Sytem
 
-## 概要  
+## Overview  
 This is Nodejs Http and Websocket Server for Archery reamtime game system.  
 
 ## 動作環境
@@ -165,3 +165,9 @@ run.shファイルを編集し,使用している環境に合わせて環境変�
 
 #### 5-2. サービスを停止
 `# forever stopall`  
+
+## Authors  
+宮城県工業高等学校 情報研究部 プロジェクトチーム Args  
+
+## Licence  
+MIT  

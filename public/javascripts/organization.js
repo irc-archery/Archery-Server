@@ -2,6 +2,7 @@ var o_id;
 
 $(function() {
 
+	// 団体データをajaxで非同期に取得
 	$.ajax({
 		url: '/app/organization',
 		type: 'GET',

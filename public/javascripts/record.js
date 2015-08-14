@@ -2,6 +2,7 @@ var match = {};
 
 $(function() {
 
+	// 得点表データをajaxで非同期に取得
 	$.ajax({
 		url: '/app/personal/record/' + getQueryString().sc_id,
 		type: 'GET',
