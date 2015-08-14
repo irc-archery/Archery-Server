@@ -50,8 +50,8 @@ socket.on('broadcastInsertScore', function (data) {
   console.log(data);
 
     // 計算したsubTotalを表示
-  $('.perEnd' + data.perEnd + ' .scoreTotal').text(data.subTotal);
-  $('.subTotalHeader' + data.perEnd).text(data.subTotal);
+  $('.perEnd' + data.perEnd + ' .scoreTotal').text(e(data.subTotal));
+  $('.subTotalHeader' + data.perEnd).text(e(data.subTotal));
 
   active_perEnd = data.perEnd + 1;
   active_arrows = 1;
@@ -176,8 +176,8 @@ function processing(perEnd) {
   }
 
   // 計算したsubTotalを表示
-  $('.perEnd' + perEnd + ' .scoreTotal').text(subTotal);
-  $('.subTotalHeader' + perEnd).text(subTotal);
+  $('.perEnd' + perEnd + ' .scoreTotal').text(e(subTotal));
+  $('.subTotalHeader' + perEnd).text(e(subTotal));
 
   // 合計得点を更新
   updateScoreSubTotal();
@@ -196,7 +196,7 @@ function updateScoreSubTotal() {
     total += parseInt(cel);
   }
 
-  $('.subTotalHeaderTotal').text(total);
+  $('.subTotalHeaderTotal').text(e(total));
 
   var countX = 0;
   var countTen = 0;
@@ -320,7 +320,6 @@ $('.scoreCardBody').on('click', '.comp', function() {
 
     $('.modalScore').val($(this).text());
   }
-
 });
 
 // 得点修正ボタン
@@ -389,12 +388,6 @@ function updateScore(perEnd, arrows, score) {
   socket.emit('updateScore', data);
 };
 
-// 試合終了
-socket.on('broadcastCloseMatch', function(data) {
-  console.log('broadcastCloseMatch');
-  console.log(data); 
-});
-
 $('.numberTextBox').change(function() {
   if(window.confirm('ゼッケン番号を送信しますか?') == true) {
 
@@ -447,6 +440,7 @@ socket.on('broadcastInsertNumber', function(data) {
   number = data.number;
 
   $('.numberTextBox').val(number);
+  $('.broadcastNumber').text(number);
 });
 
 socket.on('broadcastInsertPrefectures', function(data) {

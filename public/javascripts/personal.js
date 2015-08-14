@@ -8,9 +8,9 @@ $(function() {
 
 		    if(data != undefined) {
 
-		    	$('.playerName').append(data.playerName);
-		    	$('.email').append(data.email);
-		    	$('.birth').append(data.birth);
+		    	$('.playerName').append(e(data.playerName));
+		    	$('.email').append(e(data.email));
+		    	$('.birth').append(e(data.birth));
 
 		    	var sex = '';
 
@@ -43,7 +43,7 @@ $(function() {
 		    		organizationName = '無所属';
 		    	}
 
-		    	$('.organizationName').append(organizationName);
+		    	$('.organizationName').append(e(organizationName));
 
 		    	var record = '';
 
@@ -53,7 +53,7 @@ $(function() {
 
 			    	for(var i = 0; i < data.record.length; i++) {
 
-			    		record += '<tr><td>' + data.record[i].created + '</td><td>' + data.record[i].matchName + '</td><td>' + data.record[i].sum + '</td><td>' + (data.record[i].sum != 0 ? data.record[i].sum / data.record[i].perEnd / data.record[i].arrows : 0).toFixed(1) + '</td></tr>';
+			    		record += '<tr><td>' + e(data.record[i].created) + '</td><td>' + e(data.record[i].matchName) + '</td><td>' + e(data.record[i].sum) + '</td><td>' + (data.record[i].sum != 0 ? data.record[i].sum / data.record[i].perEnd / data.record[i].arrows : 0).toFixed(1) + '</td></tr>';
 			    	}
 
 			    	$('#recordArea').append(record);

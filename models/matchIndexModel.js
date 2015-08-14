@@ -106,41 +106,43 @@ function matchIndexModel(io, connection, sessions, ios) {
 
 						// 試合データを挿入
 						connection.query(insertMatchSql, function(err, insertMatchResults) {
+							if(!err) {
 
-							// output results 
-							console.log('connection.query insertMatch results');
-							console.log(insertMatchResults);
+								// output results 
+								console.log('connection.query insertMatch results');
+								console.log(insertMatchResults);
 
-							// output err
-							console.log('connection.query insertMatch err');
-							console.log(err);
+								// output err
+								console.log('connection.query insertMatch err');
+								console.log(err);
 
-							// 作成された試合のm_idをemit
-							console.log('emit insertMatch');
-							console.log(insertMatchResults.insertId);
+								// 作成された試合のm_idをemit
+								console.log('emit insertMatch');
+								console.log(insertMatchResults.insertId);
 
-							socket.emit('insertMatch', {'m_id': insertMatchResults.insertId});
+								socket.emit('insertMatch', {'m_id': insertMatchResults.insertId});
 
-							// 作成された試合データをbroadcast.emit
-							var broadcastInsertMatchSql  = 'select `match`.m_id, `match`.matchName, `match`.sponsor, `match`.created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + insertMatchResults.insertId  + ' and `scoreCard`.m_id = ' + insertMatchResults.insertId;
+								// 作成された試合データをbroadcast.emit
+								var broadcastInsertMatchSql  = 'select `match`.m_id, `match`.matchName, `match`.sponsor, `match`.created, `match`.arrows, `match`.perEnd, `match`.length, count(`scoreCard`.sc_id) as players from `match`, `scoreCard` where `match`.m_id = ' + insertMatchResults.insertId  + ' and `scoreCard`.m_id = ' + insertMatchResults.insertId;
 
-							connection.query(broadcastInsertMatchSql , function(err, broadcastInsertMatchData) {
+								connection.query(broadcastInsertMatchSql , function(err, broadcastInsertMatchData) {
 
-								// Emit log
-								console.log('broadcastInsertMatchData');
-								console.log(broadcastInsertMatchData[0]);
+									// Emit log
+									console.log('broadcastInsertMatchData');
+									console.log(broadcastInsertMatchData[0]);
 
-								// 試合のパーミッションはpublic
-								if(data.permission == 0){
-									// namespace内の送信元以外の全員にemit
-									socket.broadcast.emit('broadcastInsertMatch', broadcastInsertMatchData[0]);
-								}
-								// 試合のパーミッションはlocal
-								else if(data.permission == 1) {
-									// 同じ団体の人にのみ送る
-									socket.broadcast.to('matchIndexRoom' + o_id).emit('broadcastInsertMatch', broadcastInsertMatchData[0]);
-								}
-							});
+									// 試合のパーミッションはpublic
+									if(data.permission == 0){
+										// namespace内の送信元以外の全員にemit
+										socket.broadcast.emit('broadcastInsertMatch', broadcastInsertMatchData[0]);
+									}
+									// 試合のパーミッションはlocal
+									else if(data.permission == 1) {
+										// 同じ団体の人にのみ送る
+										socket.broadcast.to('matchIndexRoom' + o_id).emit('broadcastInsertMatch', broadcastInsertMatchData[0]);
+									}
+								});
+							}
 						});
 					}
 

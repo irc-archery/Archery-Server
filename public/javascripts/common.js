@@ -16,7 +16,6 @@ $(function() {
   $('.insertScoreCardLink').attr('href', '/insertScoreCard?m_id=' + getQueryString().m_id);
 });
 
-// quote from http://so-zou.jp/web-app/tech/programming/javascript/sample/get.htm
 function getQueryString()
 {
     var result = {};
@@ -44,3 +43,20 @@ function getQueryString()
 }
 
 var lengthOption = ["90m", "70m", "60m", "50m", "40m", "30m", "70m前", "70m後"];
+
+// escape function for xss
+function e(str) {
+
+    if(typeof str != 'string') {
+        return str;
+    }
+
+    str = str.toString();
+
+    str = str.replace(/&/g, '&amp;');
+    str = str.replace(/</g, '&lt;');
+    str = str.replace(/>/g, '&gt;');
+    str = str.replace(/"/g, '&quot;');
+    str = str.replace(/'/g, '&#39;');
+    return str;
+}

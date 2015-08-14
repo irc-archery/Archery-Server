@@ -17,11 +17,11 @@ $(function() {
 
 					for(var i = 0; i < data.record.length; i++) {
 
-						code += '<tr class="openScoreCard" data-id="' + data.record[i].sc_id + '">';
+						code += '<tr class="openScoreCard" data-id="' + e(data.record[i].sc_id) + '">';
 
-						code += '<td>' + data.record[i].matchName + '</td>';
-						code += '<td>' + data.record[i].created + '</td>';
-						code += '<td>' + data.record[i].sum + '</td>';
+						code += '<td>' + e(data.record[i].matchName) + '</td>';
+						code += '<td>' + e(data.record[i].created) + '</td>';
+						code += '<td>' + e(data.record[i].sum) + '</td>';
 						code += '<td>' + (data.record[i].sum != 0 ? data.record[i].sum / data.record[i].perEnd / data.record[i].arrows : 0).toFixed(1) + '</td>';
 
 						code += '</tr>';

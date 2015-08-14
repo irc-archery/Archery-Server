@@ -13,17 +13,17 @@ $(function() {
 
 		    	o_id = data.o_id;
 
-		    	$('.organizationName').append(data.organizationName);
+		    	$('.organizationName').append(e(data.organizationName));
 
-		    	$('.admin').append(data.admin);
+		    	$('.admin').append(e(data.admin));
 
-		    	$('.email').append(data.email);
+		    	$('.email').append(e(data.email));
 
-		    	$('.establish').append(data.establish);
+		    	$('.establish').append(e(data.establish));
 
-		    	$('.place').append(data.place);
+		    	$('.place').append(e(data.place));
 
-		    	$('.members').append(data.members);
+		    	$('.members').append(e(data.members));
 
 		    	var code = '';
 
@@ -31,9 +31,9 @@ $(function() {
 		    	for(var i = 0; i < data.memberList.length; i++) {
 
 		    		code += '<tr>';
-		    		code += '<td>' + data.memberList[i]['playerName'] + '</td>';
-		    		code += '<td>' + data.memberList[i]['birth'] + '</td>';
-		    		code += '<td>' + data.memberList[i]['email'] + '</td>';
+		    		code += '<td>' + e(data.memberList[i]['playerName']) + '</td>';
+		    		code += '<td>' + e(data.memberList[i]['birth']) + '</td>';
+		    		code += '<td>' + e(data.memberList[i]['email']) + '</td>';
 		    		code += '</tr>';
 		    	}
 

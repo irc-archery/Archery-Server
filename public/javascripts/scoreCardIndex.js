@@ -26,9 +26,6 @@ $('#scoreCardIndexArea').on('click', 'tr.openScoreCard', function() {
   var matchId = getQueryString().m_id;
   var scoreCardId = $(this).data('scorecard');
 
-  console.log(matchId);
-  console.log(scoreCardId);
-
   location.href = '/scoreCard?m_id=' + matchId + '&sc_id=' + scoreCardId;
 });
 
@@ -45,10 +42,10 @@ socket.on('extractScoreCardIndex', function(data){
   if(data != '') {
 
     for (var i = 0; i < data.length; i++) {
-      code += '<tr class="openScoreCard scoreCard' + data[i]['sc_id'] + '" data-scorecard="' + data[i]['sc_id'] + '">';
-      code += '<td>' + data[i]['playerName'] + '</td>';
-      code += '<td class="perEnd">' + data[i]['perEnd'] + '</td>';
-      code += '<td class="total">' + data[i]['total'] + '</td>';
+      code += '<tr class="openScoreCard scoreCard' + e(data[i]['sc_id']) + '" data-scorecard="' + e(data[i]['sc_id']) + '">';
+      code += '<td>' + e(data[i]['playerName']) + '</td>';
+      code += '<td class="perEnd">' + e(data[i]['perEnd']) + '</td>';
+      code += '<td class="total">' + e(data[i]['total']) + '</td>';
       code += '</tr>';
     }
 
@@ -68,10 +65,10 @@ socket.on('broadcastInsertScoreCard', function(data) {
 
   var code = '';
 
-  code += '<tr class="openScoreCard scoreCard' + data['sc_id'] + '" data-scorecard="' + data['sc_id'] + '">';
-  code += '<td>' + data['playerName'] + ' <span class="label label-info">New</span></td>';
-  code += '<td class="perEnd">' + data['perEnd'] + '</td>';
-  code += '<td class="total">' + data['total'] + '</td>';
+  code += '<tr class="openScoreCard scoreCard' + e(data['sc_id']) + '" data-scorecard="' + e(data['sc_id']) + '">';
+  code += '<td>' + e(data['playerName']) + ' <span class="label label-info">New</span></td>';
+  code += '<td class="perEnd">' + e(data['perEnd']) + '</td>';
+  code += '<td class="total">' + e(data['total']) + '</td>';
   code += '</tr>';
 
   $('#scoreCardIndexArea').append(code);
@@ -95,14 +92,14 @@ socket.on('broadcastInsertScore', function(data) {
   console.log('on broadcastInsertScore');
   console.log(data);
 
-  $('.scoreCard' + data.sc_id + ' .perEnd').text(data.perEnd);
-  $('.scoreCard' + data.sc_id + ' .total').text(data.total);
+  $('.scoreCard' + data.sc_id + ' .perEnd').text(e(data.perEnd));
+  $('.scoreCard' + data.sc_id + ' .total').text(e(data.total));
 });
 
 socket.on('broadcastUpdateScore', function(data) {
   console.log('on broadcastUpdateScore');
   console.log(data);
 
-  $('.scoreCard' + data.sc_id + ' .perEnd').text(data.perEnd);
-  $('.scoreCard' + data.sc_id + ' .total').text(data.total);
+  $('.scoreCard' + data.sc_id + ' .perEnd').text(e(data.perEnd));
+  $('.scoreCard' + data.sc_id + ' .total').text(e(data.total));
 });

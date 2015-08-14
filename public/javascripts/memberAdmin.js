@@ -14,9 +14,9 @@ function getMembers() {
 
 		    if(data != undefined) {
 
-		    	$('.organizationName').append(data.organizationName);
+		    	$('.organizationName').append(e(data.organizationName));
 
-		    	$('.members').append(data.members);
+		    	$('.members').append(e(data.members));
 
 		    	var code = '';
 
@@ -25,10 +25,10 @@ function getMembers() {
 				// memberの数分だけループ
 		    	for(var i = 0; i < data.memberList.length; i++) {
 
-				    code += '<tr class="openModal" data-personalid="' + data.memberList[i]['p_id'] + '" data-toggle="modal" data-target="#memberModal">';
-		    		code += '<td class="playerName">' + data.memberList[i]['playerName'] + '</td>';
-		    		code += '<td class="birth">' + data.memberList[i]['birth'] + '</td>';
-		    		code += '<td class="email">' + data.memberList[i]['email'] + '</td>';
+				    code += '<tr class="openModal" data-personalid="' + e(data.memberList[i]['p_id']) + '" data-toggle="modal" data-target="#memberModal">';
+		    		code += '<td class="playerName">' + e(data.memberList[i]['playerName']) + '</td>';
+		    		code += '<td class="birth">' + e(data.memberList[i]['birth']) + '</td>';
+		    		code += '<td class="email">' + e(data.memberList[i]['email']) + '</td>';
 		    		code += '</tr>';
 		    	}
 

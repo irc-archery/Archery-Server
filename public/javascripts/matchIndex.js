@@ -12,29 +12,27 @@ $('#matchIndexArea').on('click', 'tr.openModal', function() {
 
   var data = globalData[$(this).data('match')];
 
-  console.log(data);
-
   // change the text of modal window 
   $('.modal-matchName').empty();
-  $('.modal-matchName').append(data.matchName);
+  $('.modal-matchName').append(e(data.matchName));
 
   $('.modal-sponsor').empty();
-  $('.modal-sponsor').append(data.sponsor);
+  $('.modal-sponsor').append(e(data.sponsor));
 
   $('.modal-created').empty();
-  $('.modal-created').append(data.created);
+  $('.modal-created').append(e(data.created));
 
   $('.modal-length').empty();
   $('.modal-length').append(lengthOption[data.length]);
 
   $('.modal-perEnd').empty();
-  $('.modal-perEnd').append(data.perEnd);
+  $('.modal-perEnd').append(e(data.perEnd));
 
   $('.modal-arrows').empty();
-  $('.modal-arrows').append(data.arrows);
+  $('.modal-arrows').append(e(data.arrows));
 
   $('.modal-players').empty();
-  $('.modal-players').append(data.players);
+  $('.modal-players').append(e(data.players));
 
   $('.modal a').attr('href', '/scoreCardIndex/?m_id=' + $(this).data('match'));
 });
@@ -49,7 +47,8 @@ socket.on('extractMatchIndex', function (data) {
 
     // table
     for (var i = 0; i < data.length; i++) {
-      code += '<tr class="openModal match' + data[i]['m_id'] + '" data-match="' + data[i]['m_id'] + '" data-toggle="modal" data-target="#matchModal"><td>' + data[i]['matchName'] + '</td><td>' + data[i]['sponsor'] + '</td></tr>';
+
+      code += '<tr class="openModal match' + e(data[i]['m_id']) + '" data-match="' + e(data[i]['m_id']) + '" data-toggle="modal" data-target="#matchModal"><td>' + e(data[i]['matchName']) + '</td><td>' + e(data[i]['sponsor']) + '</td></tr>';
 
       // save the data
       globalData[data[i]['m_id']] = data[i];
@@ -73,7 +72,7 @@ socket.on('broadcastInsertMatch', function(data) {
   if(data != '') {
     var code = '';
 
-    code += '<tr class="openModal match' + data['m_id'] + '" data-match="' + data['m_id'] + '" data-toggle="modal" data-target="#matchModal"><td>' + data['matchName'] + ' <span class="label label-info">New</span></td><td>' + data['sponsor'] + '</td></tr>';
+    code += '<tr class="openModal match' + e(data['m_id']) + '" data-match="' + e(data['m_id']) + '" data-toggle="modal" data-target="#matchModal"><td>' + e(data['matchName']) + ' <span class="label label-info">New</span></td><td>' + e(data['sponsor']) + '</td></tr>';
 
     // save the data
     globalData[data['m_id']] = data;

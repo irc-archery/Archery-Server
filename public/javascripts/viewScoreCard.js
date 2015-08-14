@@ -12,14 +12,14 @@ function viewScoreCard(data) {
     // subtotalの出力
     for(var i = 0; i < 6; i++) {
       if(data.score[i] != undefined) {
-        $('.subTotalHeader' + (i + 1)).text(data.score[i].subTotal);
+        $('.subTotalHeader' + (i + 1)).text(e(data.score[i].subTotal));
       }
     }
 
     // total, 10数, x数の出力
-    $('.subTotalHeaderTotal').text(data.total);
-    $('.subTotalHeaderTen').text(data.ten);  
-    $('.subTotalHeaderX').text(data.x);  
+    $('.subTotalHeaderTotal').text(e(data.total));
+    $('.subTotalHeaderTen').text(e(data.ten));  
+    $('.subTotalHeaderX').text(e(data.x));  
 
     if(match.number == null) {
       match.number = '';
@@ -41,14 +41,14 @@ function viewScore(score) {
 
 	var code = '';
 
-	code += '<div class="perEnd' + score.perEnd + '">';
+	code += '<div class="perEnd' + e(score.perEnd) + '">';
 	code += '<div class="scoreAreaHeader rows">';
-	code += '<div class="col-fn-10 scoreRowsInfo"><span class="perEnd">' + score.perEnd + '</span>回目 : <span class="length">' + match.length + '</span></div>';
+	code += '<div class="col-fn-10 scoreRowsInfo"><span class="perEnd">' + e(score.perEnd) + '</span>回目 : <span class="length">' + e(match.length) + '</span></div>';
 	code += '<div class="col-fn-2 border_once scoreTotalHeader">小計</div>';
 	code += '</div>';
 
 	code += '<div class="rows scoreArea">';
-	code += '<div class="col-fn-2 border_once number">' + match.number + '</div>';
+	code += '<div class="col-fn-2 border_once number broadcastNumber">' + e(match.number) + '</div>';
 	code += '<div class="col-fn-8">';
 	code += '<div class="rows border score">';
 
@@ -57,16 +57,16 @@ function viewScore(score) {
 
     // 得点が修正済み
     if(scData != null && scData != '') {
-      code += '<div class="col-fn-2 updated through score' + i + '" data-score="' + i + '" data-perend="' + score.perEnd + '">' + score['score_' + i] + '</div>';
+      code += '<div class="col-fn-2 updated through score' + i + '" data-score="' + i + '" data-perend="' + e(score.perEnd) + '">' + e(score['score_' + i]) + '</div>';
     } 
     else {
-      code += '<div class="col-fn-2 score' + i + '" data-score="' + i + '" data-perend="' + score.perEnd + '">' + score['score_' + i] + '</div>';
+      code += '<div class="col-fn-2 score' + i + '" data-score="' + i + '" data-perend="' + e(score.perEnd) + '">' + e(score['score_' + i]) + '</div>';
     } 
 	}
 
 	code += '</div>';
 	code += '</div>';
-	code += '<div class="col-fn-2 border_once scoreTotal">' + score.subTotal + '</div>';
+	code += '<div class="col-fn-2 border_once scoreTotal">' + e(score.subTotal) + '</div>';
 	code += '</div>';
 
 	code += '<div class="rows updatedScoreArea bottom">';
@@ -79,10 +79,10 @@ function viewScore(score) {
 
 		if(scData == null || scData == '') {
 			scData = '';
-      code += '<div class="col-fn-2 updatedScore' + i + '">' + scData + '</div>';
+      code += '<div class="col-fn-2 updatedScore' + i + '">' + e(scData) + '</div>';
 		}
     else {
-      code += '<div class="col-fn-2 updated updatedScore' + i + '">' + scData + '</div>';
+      code += '<div class="col-fn-2 updated updatedScore' + i + '">' + e(scData) + '</div>';
     }
 	}
 
