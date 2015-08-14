@@ -2,6 +2,7 @@ var http = require('http');
 var addPrefix = require('./addPrefix');
 var crypto = require('../models/crypto.js');
 
+// websocketにて、/scoreCardIndexにアクセスされた時の処理
 function scoreCardIndexModel(io, connection, sessions, ios) {
 
 	io.on('connection', function(socket) {

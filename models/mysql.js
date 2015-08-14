@@ -1,4 +1,6 @@
 function mySql() {
+	// mysqlへの接続を確確立
+
 	var mysql = require('mysql');
 
 	return mysql.createConnection({

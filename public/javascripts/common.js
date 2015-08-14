@@ -1,3 +1,4 @@
+// config of bootstrap
 $('.dropdown-toggle').dropdown();
 $('.collapse').collapse();
 $('.modal').modal({
@@ -16,6 +17,7 @@ $(function() {
   $('.insertScoreCardLink').attr('href', '/insertScoreCard?m_id=' + getQueryString().m_id);
 });
 
+// urlのoptionから値を取得する関数
 function getQueryString()
 {
     var result = {};

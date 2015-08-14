@@ -1,6 +1,7 @@
 var http = require('http');
 var addPrefix = require('./addPrefix');
 
+// websocketにて、/scoreCardにアクセスされた時の処理
 function scoreCardModel(io, connection, sessions, ios) {
 
 	io.on('connection', function(socket) {
