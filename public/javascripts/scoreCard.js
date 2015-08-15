@@ -400,6 +400,8 @@ $('.numberTextBox').change(function() {
 
     number = $('.numberTextBox').val();
 
+    $('.broadcastNumber').text(number);   
+    
     console.log('emit insertNumber');
     console.log(data);
 
