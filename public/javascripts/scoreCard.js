@@ -64,6 +64,10 @@ socket.on('broadcastInsertScore', function (data) {
     viewScore(data);
 
     if(match.permission == true) {
+
+      // update対応
+      $('.perEnd' + data.perEnd + ' .score div').addClass('comp');
+
       // まだセットが残っている
       if(active_perEnd <= match.maxPerEnd) {
 
