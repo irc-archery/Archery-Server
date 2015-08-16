@@ -399,6 +399,7 @@ $('.numberTextBox').change(function() {
     data['number'] = $('.numberTextBox').val();
 
     number = $('.numberTextBox').val();
+    match.number = $('.numberTextBox').val();
 
     $('.broadcastNumber').text(number);   
     
