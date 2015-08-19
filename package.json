@@ -20,6 +20,7 @@
     "connect": "*",
     "cookie": "*",
     "nano": "*",
-    "nodemailer": "*"
+    "nodemailer": "*",
+    "forever": "*"
   }
 }
