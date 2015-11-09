@@ -1,9 +1,19 @@
-# Archery Realtime Game Sytem
+# アーチェリーリアルタイム対戦システム 「Args（アーグス）」
 
-## Overview  
-This is Nodejs Http and Websocket Server for Archery reamtime game system.  
+## システム概要  
+　このシステムはスマートフォンなどの携帯端末を使用して、離れたところでもリアルタイムでアーチェリーの試合が行えるシステムです。  
+得点表に得点を入力して管理することや試合の作成、過去の対戦データや個人のデータの管理なども行えるようになっています。   
 
-## 動作環境
+
+## システムの機能   
+　**離れたところでもリアルタイムでアーチェリーの試合ができる**ことを実現するために私たちは次のような機能を実装しました。得点表を電子データとして管理し、スマートフォンなどの端末で得点を入力することにより、同じ得点表を見ているユーザーに情報が__リアルタイム※1__で反映される機能(※1 ブラウザの更新ボタンを押すことなく自動的に更新されます。)やアカウントを作成することで、過去の得点を管理し、グラフとして視覚的にわかりやすく確認できる機能です。  
+
+
+## システムの利用  
+　このシステムを利用するためには、Nodejsを使用したWeb Serverを構築する必要があります。クライアントとして、ブラウザからの利用できるWebクライアントのほか、Android用 ネイティブアプリ([https://github.com/irc-archery/Args-for-Android](https://github.com/irc-archery/Args-for-Android))、iOS用ネイティブアプリ([https://github.com/irc-archery/Args-For-iOS](https://github.com/irc-archery/Args-For-iOS))も別途制作してあります。ウェブサーバーの構築手順については、このドキュメントの下記に掲載してある__サーバー構築手順__をご覧ください。
+
+
+## サーバー動作環境
 
 * CentOS release 6.6 (Final)  
 * Nodejs v0.12.7  
@@ -12,7 +22,7 @@ This is Nodejs Http and Websocket Server for Archery reamtime game system.
 * Express v4.11.2  
 * Socket.IO v1.3.5  
 
-## 手順
+## サーバー構築手順
 
 1. Nodejsをインストール  
 2. MySQLをインストール  
@@ -167,7 +177,7 @@ run.shファイルを編集し,使用している環境に合わせて環境変�
 `# forever stopall`  
 
 ## Authors  
-宮城県工業高等学校 情報研究部 プロジェクトチーム Args  
+宮城県工業高等学校 [情報研究部](http://www.irc.hira-tech.net) プロジェクトチーム Args  
 
 ## Licence  
 MIT  
