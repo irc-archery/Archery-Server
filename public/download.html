@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<title>Archery</title>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+	<link rel="stylesheet" type="text/css" href="/components/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/components/fontawesome/css/font-awesome.min.css"> 
+</head>
+<body id="body">
+    <header id="topBar" class="navbar navbar-fixed-top" role="banner">
+        <div class="container">
+                <h1>ダウンロード</h1>
+                <div class="dropdown navButtonArea">
+                    <div id="navButton" class="navButton pull-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></div>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navButton">
+                        <li><a href="/login">ログイン</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/createAccount">アカウント作成</a></li>
+                    </ul>
+            </div>
+        </div>
+    </header>
+    <main class="container col-sm-offset-2 col-sm-8 dp" role='main'>
+
+        <div class="mainVisual">
+            <img src="/images/logo.svg" alt="Archery realtime game system"> 
+        </div>
+
+        <section>
+            <h2>Args for Android</h2>
+            <p>Android用のArgsアプリです。</p>
+        </section>
+
+        <div class="form-group">
+       	   <a class="btn orange" href="/apk/args.apk">Android用アプリをダウンロード</a>
+        </div>
+
+        <section class="howtoinstall">
+            <h2>アプリのインストール方法</h2>
+            <ol class="row">
+                <li class="col-sm-4">
+                    <div class="icon"><img src="images/how-to-install1.png" alt="手順1"></div>
+                    <h3>1. アプリをダウンロードする</h3>
+                    <ul>
+                        <li>・ウェブサイトの「アプリをダウンロードする」ボタンをタップします。</li>
+                    </ul>
+                </li>
+                <li class="col-sm-4">
+                    <div class="icon"><img src="images/how-to-install2.png" alt="手順2"></div>
+                    <h3>2. インストールを許可する</h3>
+                    <ul>
+                        <li>・端末の設定を開き、セキュリティ(またはアプリケーション)を開きます。</li>
+                        <li>・「提供元不明のアプリのインストールを許可する」にチェックを入れます。</li>
+                        <li></li>
+                    </ul>
+                </li>
+                <li class="col-sm-4">
+                    <div class="icon"><img src="images/how-to-install3.png" alt="手順3"></div>
+                    <h3>3. インストールする</h3>
+                    <ul>
+                        <li>・メッセージ確認後OKをタップします。</li>
+                        <li>・端末の通知に表示されている「args.apk」をタップする</li>
+                        <li>・「インストール」をタップする</li>
+                    </ul>
+                </li>
+           </ol>
+       </section> 
+            
+    </main>
+
+    <footer role="contentinfo container">
+     <p>宮城県工業高等学校 情報研究部<br>プロジェクトチームArgs</p>
+    </footer>
+
+    <script src="/javascripts/jquery.min.js"></script>
+    <script src="/components/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/javascripts/common.js"></script>
+</body>
+</html>

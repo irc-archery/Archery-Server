@@ -141,6 +141,11 @@ tr:hover{
   color: white;
 }
 
+.orange {
+  background: #FF9800;
+  color: white;
+}
+
 .cyan {
   background: #00BCD4;
   color: white;
@@ -283,4 +288,61 @@ main.common .warning{
 
 .addCircleArea:hover {
   transform: scale(1.1);
+}
+
+/* download page */
+
+.dp h2, .dp p {
+  text-align: center;
+}
+
+.dp h2 {
+  margin-bottom: 30px;
+}
+
+.dp a.btn {
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  line-height: 2;
+  margin: 60px 0;
+  font-size: 1em;
+}
+
+.dp ol, .dp ul{
+  list-style: none;
+}
+
+.howtoinstall {
+  width: 100%;
+  margin-bottom: 120px;
+}
+
+.howtoinstall .icon{
+  width: 190px;
+  margin: 0 auto 20px;
+  text-align: center;
+}
+
+.howtoinstall .icon img{
+  width: 100%;
+}
+
+.howtoinstall h3 {
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.howtoinstall li{
+  line-height: 2;
+  margin: 0 auto;
+}
+
+.howtoinstall ol li.col-sm-4 {
+  margin-bottom: 60px;  
+}
+
+.howtoinstall ol li ul li{
+  width: 90%;
 }
