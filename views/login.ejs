@@ -29,7 +29,7 @@
             <img src="/images/logo.svg" alt="Archery realtime game system"> 
         </div>
 
-        <form id="sendForm" action="/login" method="POST">
+        <form id="sendForm" class="mb" action="/login" method="POST">
             <div class="form-group">
                 <label class="control-label" for="email">ログイン名(Eメールアドレス)</label>
             	<input id="email" class="form-control" name="email" type="email" placeholder="example@email.com">
@@ -44,6 +44,10 @@
            	   <button type="submit" id="send" class="btn blue">ログイン</button>
             </div>
         </form>
+
+        <div class="form-group">
+               <a class="btn orange pull-right" href="/download.html">Android用アプリのダウンロードページヘ</a>
+        </div>
     </main>
 
     <footer role="contentinfo container">
