@@ -44,7 +44,7 @@ function getQueryString()
     return result;
 }
 
-var lengthOption = ["90m", "70m", "60m", "50m", "40m", "30m", "70m前", "70m後"];
+var lengthOption = ["90m", "70m", "60m", "50m", "40m", "30m", "70m前", "70m後", "18m"];
 
 // escape function for xss
 function e(str) {

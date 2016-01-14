@@ -350,3 +350,7 @@ main.common .warning{
 .howtoinstall ol li ul li{
   width: 90%;
 }
+
+.version p{
+  text-align: right;
+}
