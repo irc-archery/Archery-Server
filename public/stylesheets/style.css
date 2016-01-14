@@ -354,3 +354,11 @@ main.common .warning{
 .version p{
   text-align: right;
 }
+
+.perEndView {
+  margin-top: 10px;
+}
+
+.incPerEnd {
+  padding-bottom: 20px;
+}
