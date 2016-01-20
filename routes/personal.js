@@ -1,6 +1,7 @@
 var express = require('express');
 var connection = require('../models/mysql.js')();
 var router = express.Router();
+var packageJson = require('../package.json');
 
 var loginCheck = function(req, res, next) {
 
@@ -61,7 +62,7 @@ var loginCheck = function(req, res, next) {
 // get /personal/ 
 router.get('/', loginCheck, function(req, res) {
 	// マイページ画面の出力
-	res.render('personal');
+	res.render('personal', {version: packageJson.version});
 });
 
 // get /personal/record/

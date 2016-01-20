@@ -31,6 +31,10 @@ a {
   color: #00B7FF;
 }
 
+.mb {
+  margin-bottom: 60px;
+}
+
 header#topBar{
     width:  100%;
     height: 55px;
@@ -141,6 +145,11 @@ tr:hover{
   color: white;
 }
 
+.orange {
+  background: #FF9800;
+  color: white;
+}
+
 .cyan {
   background: #00BCD4;
   color: white;
@@ -148,6 +157,16 @@ tr:hover{
 
 .err {
   display: none;
+}
+
+button.blue, input.blue {
+  transition: all .3s ease;
+  border: 2px solid #2196F3;
+}
+
+button.blue:hover, input.blue:hover {
+  background: #ecf0f1;
+  color: #2196F3;
 }
 
 /* personal page */
@@ -255,4 +274,91 @@ main.common .warning{
 
 #body .table-responsive {
   border-top: 0; 
+}
+
+.addCircleArea {
+  width: 70px;
+  height: 70px;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  transition: all .3s ease;
+}
+
+.addCircleArea img{
+  width: 100%;
+  height: 100%;
+}
+
+.addCircleArea:hover {
+  transform: scale(1.1);
+}
+
+/* download page */
+
+.dp h2, .dp p {
+  text-align: center;
+}
+
+.dp h2 {
+  margin-bottom: 30px;
+}
+
+.dp a.btn {
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  line-height: 2;
+  margin: 60px 0;
+  font-size: 1em;
+}
+
+.dp ol, .dp ul{
+  list-style: none;
+}
+
+.howtoinstall {
+  width: 100%;
+  margin-bottom: 120px;
+}
+
+.howtoinstall .icon{
+  width: 190px;
+  margin: 0 auto 20px;
+  text-align: center;
+}
+
+.howtoinstall .icon img{
+  width: 100%;
+}
+
+.howtoinstall h3 {
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.howtoinstall li{
+  line-height: 2;
+  margin: 0 auto;
+}
+
+.howtoinstall ol li.col-sm-4 {
+  margin-bottom: 60px;  
+}
+
+.howtoinstall ol li ul li{
+  width: 90%;
+}
+
+.version p{
+  text-align: right;
+}
+
+.perEndView {
+  margin-top: 10px;
+}
+
+.incPerEnd {
+  padding-bottom: 20px;
 }

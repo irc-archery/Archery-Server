@@ -64,6 +64,10 @@ socket.on('broadcastInsertScore', function (data) {
     viewScore(data);
 
     if(match.permission == true) {
+
+      // update対応
+      $('.perEnd' + data.perEnd + ' .score div').addClass('comp');
+
       // まだセットが残っている
       if(active_perEnd <= match.maxPerEnd) {
 
@@ -399,6 +403,7 @@ $('.numberTextBox').change(function() {
     data['number'] = $('.numberTextBox').val();
 
     number = $('.numberTextBox').val();
+    match.number = $('.numberTextBox').val();
 
     $('.broadcastNumber').text(number);   
     

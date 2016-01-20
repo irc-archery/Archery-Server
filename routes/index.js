@@ -2,6 +2,7 @@ var express = require('express');
 var connection = require('../models/mysql.js')();
 var router = express.Router();
 var crypto = require('../models/crypto.js');
+var packageJson = require('../package.json');
 
 var loginCheck = function(req, res, next) {
 
@@ -123,7 +124,7 @@ router.get('/login', function(req, res, next) {
 		res.redirect('/personal');
 	}
 	else {
-	    res.render('login');
+	    res.render('login', {version: packageJson.version});
 	}
 });
 
