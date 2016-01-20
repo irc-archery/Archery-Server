@@ -137,7 +137,6 @@ router.get('/createAccount', function(req, res) {
 
 // 試合一覧画面
 router.get('/matchIndex', loginCheck, function(req, res, next) {
-
 	res.render('matchIndex');
 });
 
@@ -159,6 +158,11 @@ router.get('/insertScoreCard', loginCheck, mIdCheck, function(req, res) {
 // 得点表画面
 router.get('/scoreCard', loginCheck, mIdCheck, function(req, res) {
 	res.render('scoreCard');
+});
+
+// ランキング画面
+router.get('/rankingIndex', loginCheck, mIdCheck, function(req, res) {
+	res.render('rankingIndex');
 });
 
 // browser用のログイン処理

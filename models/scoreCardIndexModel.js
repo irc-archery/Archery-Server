@@ -254,6 +254,100 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 			});
 		});
 
+		socket.on('extractTotalRankingIndex', function(data) {
+
+			var responseData = [
+			{
+				'rank': 1,
+				'sc_id':4,
+				'playerName': 'fnit',
+				'scoreTotal': 200
+			},
+			{
+				'rank': 2,
+				'sc_id':7,
+				'playerName': 'toya',
+				'scoreTotal': 180
+
+			},
+			{
+				'rank': 2,
+				'sc_id':1,
+				'playerName': 'taki',
+				'scoreTotal': 180
+
+			},
+			{
+				'rank': 4,
+				'sc_id':2,
+				'playerName': 'nogu',
+				'scoreTotal': 100
+			}];
+
+			socket.emit('extractTotalRankingIndex', responseData);
+
+		});
+
+		socket.on('extractAvgRankingIndex', function(data) {
+
+			var responseData = [
+			{
+				'rank': 1,
+				'sc_id':4,
+				'playerName': 'fnit',
+				'scoreTotal': 200,
+				'scoreAvg': 9,
+				'arrowsTotal': 20 
+			},
+			{
+				'rank': 2,
+				'sc_id':7,
+				'playerName': 'toya',
+				'scoreTotal': 180,
+				'scoreAvg': 8,
+				'arrowsTotal': 20 
+
+			},
+			{
+				'rank': 2,
+				'sc_id':1,
+				'playerName': 'taki',
+				'scoreTotal': 180,
+				'scoreAvg': 8,
+				'arrowsTotal': 20 
+
+			},
+			{
+				'rank': 4,
+				'sc_id':2,
+				'playerName': 'nogu',
+				'scoreTotal': 100,
+				'scoreAvg': 4,
+				'arrowsTotal': 20 
+			}];
+
+			socket.emit('extractAvgRankingIndex', responseData);
+		});	
+
+		socket.on('testBroadcastInsertScore', function(data) {
+			var responseData = {
+				'sc_id': 1,
+				'perEnd': 6,
+				'score_1': 10,
+				'score_2': 10,
+				'score_3': 10,
+				'score_4': 10,
+				'score_5': 10,
+				'score_6': 10,
+				'subTotal': 60,
+				'ten': 6,
+				'x': 0,
+				'total':220 
+			};
+
+			socket.emit('broadcastInsertScore', responseData);
+		});
+
 		// 受け取ったsc_idのpermissionを返すイベント
 		socket.on('checkPermission', function(data) {
 

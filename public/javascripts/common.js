@@ -15,6 +15,8 @@ $(function() {
   $('.scoreCardIndexLink').attr('href', '/scoreCardIndex?m_id=' + getQueryString().m_id);
   // 得点表作成へのリンクの生成
   $('.insertScoreCardLink').attr('href', '/insertScoreCard?m_id=' + getQueryString().m_id);
+  // ランキングページヘのリンクを生成
+  $('.rankingIndexLink').attr('href', '/rankingIndex?m_id=' + getQueryString().m_id);
 });
 
 // urlのoptionから値を取得する関数
