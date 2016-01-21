@@ -1,0 +1,116 @@
+Args ランキングシステム 内部設計書・通信仕様書
+
+Date: 2016/01/19
+writer: taiki.f
+meeting with: noguchi, taiki.f, takeru, toya, kageyama
+
+
+外部設計書
+・ランキング一覧ページは別アクティビティ(別ページ)
+・得点表一覧ページよりランキングページヘリンクを貼る
+・合計得点と平均得点による2つのランキングを実装する
+	・合計得点のランキングでは、ユーザーがその試合で作成した得点表の中で一番合計得点が高い得点表の得点でソートを行う。
+	・平均点のランキングでは、ユーザーがその試合で獲得した得点の1射ごとの平均得点でソートを行う。
+・ランキングリストのカラムとして以下の情報を表示する
+	・順位
+	・選手名
+	・合計得点 or 平均点
+・その試合に属する得点表が変更された場合に発生するイベント(broadcastInsertScore, broadcastUpdateScore)をランキング画面でも取得し、クライアントサイドでランキングを再構築して表示する。
+・broadcastで変更された得点を取得した場合は、ランキングリストのプレイヤーの位置は動かさず、順位の数値のみを動的に変更する。
+
+
+内部設計書
+ランキング機能を実装するにあたって、2つの新たなwebsocketのイベントを追加する。以下にワークフローを記載する。
+
+work flow
+
+1. ランキングページ表示時
+ランキング一覧の全データを取得する。
+
+取得には新しく実装するwebsocketのイベント"extractTotalRankingIndex"もしくは"extractAvgRankingIndex"をemitする。
+合計得点でソートする設定になっている場合は前者のイベント、平均点でソートする設定になっている場合は後者のイベントをemitする。
+これらの設定は、ランキングページ上部のタブで設定する。
+このイベントをemitすると同じイベント名でonし、ランキングデータを取得できる。データの詳細は下記の通信仕様書を参照。
+
+2. broadcast受信時
+受信したデータをランキングに反映させる。
+
+同じ試合内の誰かの得点表が更新された場合は、"broadcastInsertScore", "broadcastUpdateScore"のいずれかのイベントが発生する。
+このイベントでは、得点表のidと合計得点等が受信されるためこの更新されたデータを表示している既存のランキングに反映させる。
+具体的には、プログラムでランキングを再構築し、表示されている順位が変わった場合はその結果を反映させる。
+
+ランキング::ソートのアルゴリズムについて
+未決定
+
+
+通信仕様書
+新たに実装するwebsocketのイベントについて
+
+ランキング::一覧取得 (合計得点でソート)
+
+On Event Name : extractTotalRankingIndex
+On Data Format :
+[
+	{
+		'rank': int,		// 順位
+		'sc_id', int,		// 得点表ID
+		'playerName': string,	// 選手名
+		'scoreTotal': int 	// 得点合計
+	},
+	{ ... },
+	{ ... }
+]
+
+ランキング::一覧取得 (平均得点でソート)
+
+On Event Name : extractAvgRankingIndex
+On Data Format :
+[
+	{
+		'rank': int,		// 順位
+		'sc_id', int,		// 得点表ID
+		'playerName': string,	// 選手名
+		'scoreAvg': int 	// 得点の平均
+		'scoreTotal': int 		// 平均を算出するために使用した合計得点
+		'arrowsTotal': int 		// 平均を算出するために使用した合計射数
+	},
+	{ ... },
+	{ ... }
+]
+
+
+(再掲)
+Web Clientは以下のイベントを受信し、ランキングの再ソートを行う
+
+得点::得点挿入による更新
+
+On Event Name : broadcastInsertScore
+On Data Format :
+{
+	'sc_id': int,				// 得点表のID
+	'perEnd': int,				// 何セット目の得点か
+	'score_1': string,	// 1射目の得点
+	'score_2': string,	// 2射目の得点
+	'score_3': string,	// 3射目の得点
+	'score_4': string,	// 4射目の得点
+	'score_5': string,	// 5射目の得点
+	'score_6': string,	// 6射目の得点
+	'subTotal': int 	// そのセットの小計
+	'ten': int,			// 全セットの10数
+	'x': int,			// 全セットのx数
+	'total': int 		// 全セットの合計
+}
+
+得点::得点修正による更新
+
+On Event Name : broadcastUpdateScore
+On Data Format :
+{
+	'sc_id': int,				// 得点表のID
+	'perEnd': int,				// 何セット目の得点か
+	'updatedScore_x': string,	// x射目の得点 (ただし、xは何射目なのかを表す)
+	'subTotal': int 	// そのセットの小計
+	'ten': int,			// 全セットの10数
+	'x': int,			// 全セットのx数
+	'total': int 		// 全セットの合計
+}
