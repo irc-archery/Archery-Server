@@ -7,7 +7,7 @@ $(function() {
   initilaizeRankingList();
 });
 
-var mode = 1; // or 1
+var mode = 0; // or 1
 
 function initilaizeRankingList() {
 
@@ -39,10 +39,10 @@ socket.on('extractTotalRankingIndex', function(data) {
     // e(str); でxssエスケープ関数
     /*  得点表一覧のソースコード */
     for (var i = 0; i < data.length; i++) {
-      code += '<tr data-id="' + e(data[i]['sc_id']) + '" data-scorerank="' + e(data[i]['rank']) + '">';
+      code += '<tr data-id="' + e(data[i]['p_id']) + '" data-scorerank="' + e(data[i]['rank']) + '">';
       code += '<td class="rank">' + e(data[i]['rank'])  + '</td>';
       code += '<td class="playerName">' + e(data[i]['playerName']) + '</td>';
-      code += '<td class="scoreTotal">' + e(data[i]['scoreTotal']) + '</td>';
+      code += '<td class="scoreTotal">' + e(data[i]['total']) + '</td>';
       code += '</tr>';
     }
 
@@ -114,7 +114,7 @@ socket.on('broadcastInsertScore', function(data) {
   console.log('on broadcastInsertScore');
   console.log(data);
 
-  var total_select = '#total tr[data-id=' + data['sc_id'] + ']';
+  var total_select = '#total tr[data-id=' + data['p_id'] + ']';
 
   // 合計
   if (data['total'] > max) {
@@ -163,9 +163,6 @@ socket.on('broadcastInsertScore', function(data) {
 
     $(avg_select_rank + ' .rank').text(e(broadcast_rank));
     $(avg_select_rank + ' .scoreTotal').text(e(avg));
-
-    //$('.scoreCard' + data.sc_id + ' .perEnd').text(e(data.perEnd));
-    //$('.scoreCard' + data.sc_id + ' .total').text(e(data.total));
   }
 });
 
@@ -173,8 +170,6 @@ socket.on('broadcastInsertScore', function(data) {
 socket.on('broadcastUpdateScore', function(data) {
   console.log('on broadcastUpdateScore');
   console.log(data);
-
-  //$('.scoreCard' + data.sc_id + ' .total').text(e(data.total));
 });
 
 // 試合終了
