@@ -254,6 +254,9 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 			});
 		});
 
+		// ランキング一覧を返すイベント
+		// client side emit like 
+		// socket.emit(eventName, {'m_id': getQueryString().m_id, 'sessionID': document.cookie});
 		socket.on('extractTotalRankingIndex', function(data) {
 
 			var responseData = [
@@ -284,9 +287,110 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 				'scoreTotal': 100
 			}];
 
-			socket.emit('extractTotalRankingIndex', responseData);
+			// On log
+			console.log('on extractTotalRankingIndex');
+			console.log(data);
 
+			/* Get p_id related SessionID */
+			sessions.get(addPrefix(data.sessionID), function(err, body) {
+				if(!err) {
+ 
+					var p_id = body.sess.p_id;
+					var o_id = body.sess.o_id;
+
+					if(p_id !== undefined) {
+
+						// 送られてきたm_idに所属している得点表データを抽出するSQL文
+						var totalRankingSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total from scoreCard, scoreTotal, account where scoreCard.m_id = ' + connection.escape(data.m_id) + 'and scoreCard.sc_id = scoreTotal.sc_id and scoreCard.p_id = account.p_id';
+
+						// 得点表データを抽出：ｗ 
+						connection.query(totalRankingSql, function(totalRankingErr, totalRankingData) {
+
+							if(!totalRankingErr) {
+
+								// 抽出したデータ
+								console.log('totalRankingData');
+								console.log(totalRankingData);
+
+								var responseData = {};
+
+								// 1ユーザーあたり最高得点の得点表だけをresponseデータとして抽出する処理
+								for(var i = 0; i < totalRankingData.length; i++) {
+									// レスポンスとして用意しているデータの合計得点より、現在探索しているデータのほうが大きくなかったらresponseDataを上書きする処理をcontinueでskip
+									if(totalRankingData[i].p_id in responseData) {
+										if(!(totalRankingData[i].total > responseData[totalRankingData[i].p_id].total)) {
+											continue;	
+										}
+									}
+
+									responseData[totalRankingData[i].p_id] = totalRankingData[i];
+								}
+
+								var beforeSort = [];
+								var i = 0;
+
+								// 抽出したデータを配列化 (sort用)
+								Object.keys(responseData).forEach(function(key) {
+									beforeSort[i] = responseData[key];
+									i++;
+								});
+
+
+								// 配列化されたデータをtotalで昇順に並べ替える	
+								var afterSort = arraySort(beforeSort);
+
+
+								var rank = 1;
+
+								// 昇順に並べ替えられたarrayを利用して, response用に用意しているobjectへrankをつける
+								for(var j = 0; j < afterSort.length; j++, rank++) {
+
+									if(j != 0) {
+										// 得点重複時の処理
+										if(responseData[afterSort[j].p_id].total == responseData[afterSort[j - 1].p_id].total) {
+											responseData[afterSort[j].p_id].rank = responseData[afterSort[j - 1].p_id].rank; 
+											continue;
+										}
+									}
+
+									responseData[afterSort[j].p_id].rank = rank;
+								}
+
+
+								//  true response
+								var arrayResponseData = [];
+
+								i = 0;
+
+								// responseとして送るformatへ整形( obj to array)
+								Object.keys(responseData).forEach(function(key) {
+									arrayResponseData[i] = responseData[key];
+									i++;
+								});
+
+								console.log('data for extractTotalRankingIndex');
+								console.log(arrayResponseData);
+
+								socket.emit('extractTotalRankingIndex', arrayResponseData);
+							}
+						});
+					}
+					// p_idを取得できていない = ログインができていない ∴ ログイン画面に遷移する
+					else {
+						socket.emit('authorizationError');
+					}
+				}
+			});
 		});
+
+		function arraySort(obj) {
+
+			obj.sort(function(a, b) {
+				return a.total < b.total ? 1 : -1;
+			});
+
+			return obj;	
+		}
 
 		socket.on('extractAvgRankingIndex', function(data) {
 

@@ -7,7 +7,7 @@ $(function() {
   initilaizeRankingList();
 });
 
-var mode = 0; // or 1
+var mode = 1; // or 1
 
 function initilaizeRankingList() {
 
