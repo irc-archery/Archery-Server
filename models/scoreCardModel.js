@@ -19,7 +19,7 @@ function scoreCardModel(io, connection, sessions, ios) {
 			sessions.get(addPrefix(data.sessionID), function(err, body) {
 				if(!err) {
 					console.log('nano');
-					console.log(body);	
+					console.log(body);
 
 					var p_id = body.sess.p_id;
 
