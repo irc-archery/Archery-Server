@@ -31,6 +31,7 @@ work flow
 合計得点でソートする設定になっている場合は前者のイベント、平均点でソートする設定になっている場合は後者のイベントをemitする。
 これらの設定は、ランキングページ上部のタブで設定する。
 このイベントをemitすると同じイベント名でonし、ランキングデータを取得できる。データの詳細は下記の通信仕様書を参照。
+追記) ランキングページのWebSocketの接続先は得点表一覧と同じ '/scoreCardIndex' に接続する
 
 2. broadcast受信時
 受信したデータをランキングに反映させる。
@@ -48,6 +49,13 @@ work flow
 
 ランキング::一覧取得 (合計得点でソート)
 
+Emit Event Name : extractTotalRankingIndex
+Emit Data Format :
+{
+	'm_id' : int,			// 試合のID
+	'sessionID' : string
+}
+
 On Event Name : extractTotalRankingIndex
 On Data Format :
 [
@@ -62,6 +70,13 @@ On Data Format :
 ]
 
 ランキング::一覧取得 (平均得点でソート)
+
+Emit Event Name : extractAvgRankingIndex
+Emit Data Format :
+{
+	'm_id' : int,			// 試合のID
+	'sessionID' : string
+}
 
 On Event Name : extractAvgRankingIndex
 On Data Format :
