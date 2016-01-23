@@ -32,6 +32,10 @@ broadcastInsertScore, broadcastUpdateScoreを得点表一覧画面にいても�
 08/09
 broadcastCloseMatchが試合一覧でも届くように変更
 
+2016/01/23
+https://github.com/irc-archery/Archery-Server/issues/1 対策
+(ランキング機能に対応するため) broadcastInsertScore, broadcastUpdateScoreイベントのサーバーが送るデータにp_idを追加しました。
+
 
 試合一覧画面
 
@@ -384,6 +388,7 @@ On Event Name : broadcastInsertScore
 On Data Format :
 {
 	'sc_id': int,				// 得点表のID
+	'p_id': int,		// ユーザーid(ランキングシステムで使用) 2016/01/23追加
 	'perEnd': int,				// 何セット目の得点か
 	'score_1': string,	// 1射目の得点
 	'score_2': string,	// 2射目の得点
@@ -403,6 +408,7 @@ On Event Name : broadcastUpdateScore
 On Data Format :
 {
 	'sc_id': int,				// 得点表のID
+	'p_id': int,		// ユーザーid(ランキングシステムで使用) 2016/01/23追加
 	'perEnd': int,				// 何セット目の得点か
 	'updatedScore_x': string,	// x射目の得点 (ただし、xは何射目なのかを表す)
 	'subTotal': int 	// そのセットの小計
