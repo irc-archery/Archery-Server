@@ -259,7 +259,35 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 		// socket.emit(eventName, {'m_id': getQueryString().m_id, 'sessionID': document.cookie});
 		socket.on('extractTotalRankingIndex', function(data) {
 
-		    // On log
+			var responseData = [
+			{
+				'rank': 1,
+				'sc_id':4,
+				'playerName': 'fnit',
+				'scoreTotal': 200
+			},
+			{
+				'rank': 2,
+				'sc_id':7,
+				'playerName': 'toya',
+				'scoreTotal': 180
+
+			},
+			{
+				'rank': 2,
+				'sc_id':1,
+				'playerName': 'taki',
+				'scoreTotal': 180
+
+			},
+			{
+				'rank': 4,
+				'sc_id':2,
+				'playerName': 'nogu',
+				'scoreTotal': 100
+			}];
+
+			// On log
 			console.log('on extractTotalRankingIndex');
 			console.log(data);
 
@@ -408,7 +436,6 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 		socket.on('testBroadcastInsertScore', function(data) {
 			var responseData = {
 				'sc_id': 1,
-                'p_id': 1,
 				'perEnd': 6,
 				'score_1': 10,
 				'score_2': 10,
