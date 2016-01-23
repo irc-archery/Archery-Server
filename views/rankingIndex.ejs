@@ -36,11 +36,23 @@
     </header>
     <main class="container common" role='main'>
         <section class="panel">
-            <h2 class="panel-heading"><i class="fa fa-list"></i> ランキング</h2>
-            <div class="panel-body">
-                <div class="table-responsive">
-                    <table id="rankingIndexArea" class="table table-bordered">
-                        <tr><th>順位</th><th>選手名</th><th>得点</th></tr>
+            <h2 class="panel-heading"><i class="fa fa-list-ol"></i> ランキング</h2>
+
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#total" data-toggle="tab">最高点順</a></li>
+                <li><a href="#avg" data-toggle="tab">平均得点順</a></li>
+            </ul>
+
+            <div id="myTabContent" class="panel-body tab-content">
+                <div id="total" class="table-responsive total-rank tab-pane fade in active">
+                    <table class="rankingIndexArea table table-bordered">
+                        <tr><th>順位</th><th>選手名</th><th>最高得点</th></tr>
+                    </table>
+                </div>
+
+                <div id="avg" class="table-responsive avg-rank tab-pane fade">
+                    <table class="rankingIndexArea table table-bordered">
+                        <tr><th>順位</th><th>選手名</th><th>平均得点</th></tr>
                     </table>
                 </div>
 
