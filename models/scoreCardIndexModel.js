@@ -272,6 +272,9 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 
 					if(p_id !== undefined) {
 
+						// 試合に参加
+						socket.join('scoreCardIndexRoom' + data.m_id);
+
 						// 送られてきたm_idに所属している得点表データを抽出するSQL文
 						var totalRankingSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total from scoreCard, scoreTotal, account where scoreCard.m_id = ' + connection.escape(data.m_id) + 'and scoreCard.sc_id = scoreTotal.sc_id and scoreCard.p_id = account.p_id';
 
@@ -365,6 +368,9 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 		}
 
 		socket.on('extractAvgRankingIndex', function(data) {
+
+			// 試合に参加
+			socket.join('scoreCardIndexRoom' + data.m_id);
 
 			var responseData = [
 			{
