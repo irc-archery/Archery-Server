@@ -62,6 +62,7 @@ On Data Format :
 	{
 		'rank': int,		// 順位
 		'sc_id', int,		// 得点表ID
+        'p_id', int,        // 個人ID
 		'playerName': string,	// 選手名
 		'scoreTotal': int 	// 得点合計
 	},
@@ -83,7 +84,7 @@ On Data Format :
 [
 	{
 		'rank': int,		// 順位
-		'sc_id', int,		// 得点表ID
+		'p_id', int,		// 個人ID
 		'playerName': string,	// 選手名
 		'scoreAvg': int 	// 得点の平均
 		'scoreTotal': int 		// 平均を算出するために使用した合計得点
