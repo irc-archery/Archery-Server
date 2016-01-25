@@ -4,6 +4,11 @@ Date: 2016/01/19
 writer: taiki.f
 meeting with: noguchi, taiki.f, takeru, toya, kageyama
 
+更新履歴
+
+2016/01/23
+・extractTotalRankingIndex, extractAvgRankingIndexイベントにて、送信する合計得点の内訳(breakdown)を追加.(broadcastUpdateScoreで使用)
+・extractTotalRankingIndexでp_idを追加, extractAvgRankingIndexではsc_idを削除し、p_idを追加しました。(ランキングではsc_idは基本的には必要ないはずです。)
 
 外部設計書
 ・ランキング一覧ページは別アクティビティ(別ページ)
@@ -41,7 +46,7 @@ work flow
 具体的には、プログラムでランキングを再構築し、表示されている順位が変わった場合はその結果を反映させる。
 
 ランキング::ソートのアルゴリズムについて
-未決定
+各自実装
 
 
 通信仕様書
@@ -62,6 +67,7 @@ On Data Format :
 	{
 		'rank': int,		// 順位
 		'sc_id', int,		// 得点表ID
+		'p_id', int,		// 個人ID
 		'playerName': string,	// 選手名
 		'scoreTotal': int 	// 得点合計
 	},
@@ -83,11 +89,19 @@ On Data Format :
 [
 	{
 		'rank': int,		// 順位
-		'sc_id', int,		// 得点表ID
+		'p_id', int,		// 個人ID
 		'playerName': string,	// 選手名
 		'scoreAvg': int 	// 得点の平均
 		'scoreTotal': int 		// 平均を算出するために使用した合計得点
 		'arrowsTotal': int 		// 平均を算出するために使用した合計射数
+		'breakdown': [		// 'scoreTotal'の内訳 2016/01/23 追記
+			{
+				'sc_id': int,	// 得点合計を算出するために使った得点表のID
+				'total': int 	// この得点表の合計得点
+			},
+			{ ... },
+			{ ... }, ...
+		]
 	},
 	{ ... },
 	{ ... }
