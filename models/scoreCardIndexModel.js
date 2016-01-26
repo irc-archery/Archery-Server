@@ -138,7 +138,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 												// broadcast scoreCard information: added now
 
 												// 得点表データを抽出するためのSQL文 
-												var scoreCardDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total, (select count(scorePerEnd.perEnd) from scorePerEnd where scorePerEnd.sc_id = ' + insertScoreCardData.insertId + ') as perEnd from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
+												var scoreCardDataSql = 'select scoreTotal.sc_id, account.p_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total, (select count(scorePerEnd.perEnd) from scorePerEnd where scorePerEnd.sc_id = ' + insertScoreCardData.insertId + ') as perEnd from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
 
 												// 得点表データを抽出
 												connection.query(scoreCardDataSql, function(err, scoreCardData) {
@@ -226,7 +226,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 										// broadcast scoreCard information: added now
 
 										// 得点表データを抽出するためのSQL文 
-										var scoreCardDataSql = 'select scoreTotal.sc_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total, (select count(scorePerEnd.perEnd) from scorePerEnd where scorePerEnd.sc_id = ' + insertScoreCardData.insertId + ') as perEnd from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
+										var scoreCardDataSql = 'select scoreTotal.sc_id, account.p_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total, (select count(scorePerEnd.perEnd) from scorePerEnd where scorePerEnd.sc_id = ' + insertScoreCardData.insertId + ') as perEnd from account, scoreTotal where scoreTotal.sc_id = ' + insertScoreCardData.insertId + ' and account.p_id = ' + connection.escape(results[0].p_id);
 
 										// 得点表データを抽出
 										connection.query(scoreCardDataSql, function(err, scoreCardData) {
