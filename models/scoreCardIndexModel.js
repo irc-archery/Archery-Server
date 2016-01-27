@@ -276,9 +276,9 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 						socket.join('scoreCardIndexRoom' + data.m_id);
 
 						// 送られてきたm_idに所属している得点表データを抽出するSQL文
-						var totalRankingSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total from scoreCard, scoreTotal, account where scoreCard.m_id = ' + connection.escape(data.m_id) + 'and scoreCard.sc_id = scoreTotal.sc_id and scoreCard.p_id = account.p_id';
+						var totalRankingSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total from scoreCard, scoreTotal, account where scoreCard.m_id = ' + connection.escape(data.m_id) + ' and scoreCard.sc_id = scoreTotal.sc_id and scoreCard.p_id = account.p_id';
 
-						// 得点表データを抽出：ｗ 
+						// 得点表データを抽出
 						connection.query(totalRankingSql, function(totalRankingErr, totalRankingData) {
 
 							if(!totalRankingErr) {
@@ -348,12 +348,19 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 
 								socket.emit('extractTotalRankingIndex', arrayResponseData);
 							}
+							else {
+								console.log('得点表データの抽出に失敗');
+								console.log(totalRankingErr);
+							}
 						});
 					}
 					// p_idを取得できていない = ログインができていない ∴ ログイン画面に遷移する
 					else {
+						console.log('authorizationError');
 						socket.emit('authorizationError');
 					}
+				}else {
+					console.log('faild to getSession');
 				}
 			});
 		});
