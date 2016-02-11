@@ -489,6 +489,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 								// responseとして送るformatへ整形( obj to array)
 								Object.keys(indexedP_id).forEach(function(key) {
 									arrayResponseData[i] = indexedP_id[key];
+									arrayResponseData[i].scoreAvg = arrayResponseData[i].scoreAvg.toFixed(1);
 									i++;
 								});
 
