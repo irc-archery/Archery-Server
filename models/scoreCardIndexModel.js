@@ -382,37 +382,75 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 			var responseData = [
 			{
 				'rank': 1,
-				'sc_id':4,
+				'p_id': 1,
 				'playerName': 'fnit',
 				'scoreTotal': 200,
 				'scoreAvg': 9,
-				'arrowsTotal': 20 
+				'arrowsTotal': 20,
+				'breakdown': [
+					{
+						'sc_id': 1,
+						'total': 100
+					},
+					{
+						'sc_id': 2,
+						'total': 100
+					}
+					]
 			},
 			{
 				'rank': 2,
-				'sc_id':7,
+				'p_id': 2,
 				'playerName': 'toya',
 				'scoreTotal': 180,
 				'scoreAvg': 8,
-				'arrowsTotal': 20 
-
+				'arrowsTotal': 20,
+				'breakdown': [
+					{
+						'sc_id': 3,
+						'total':80 
+					},
+					{
+						'sc_id': 4,
+						'total': 100
+					}
+					]
 			},
 			{
 				'rank': 2,
-				'sc_id':1,
+				'p_id': 4,
 				'playerName': 'taki',
 				'scoreTotal': 180,
 				'scoreAvg': 8,
-				'arrowsTotal': 20 
-
+				'arrowsTotal': 20,
+				'breakdown': [
+					{
+						'sc_id': 5,
+						'total':80 
+					},
+					{
+						'sc_id': 6,
+						'total': 100
+					}
+					]
 			},
 			{
 				'rank': 4,
-				'sc_id':2,
+				'p_id': 3,
 				'playerName': 'nogu',
 				'scoreTotal': 100,
 				'scoreAvg': 4,
-				'arrowsTotal': 20 
+				'arrowsTotal': 20,
+				'breakdown': [
+					{
+						'sc_id': 5,
+						'total': 50
+					},
+					{
+						'sc_id': 6,
+						'total': 50
+					}
+					] 
 			}];
 
 			socket.emit('extractAvgRankingIndex', responseData);
