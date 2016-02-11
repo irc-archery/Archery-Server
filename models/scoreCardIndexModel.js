@@ -402,7 +402,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 						socket.join('scoreCardIndexRoom' + data.m_id);
 
 						// 送られてきたm_idに所属している得点表データを抽出 
-						avgRankingSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, concat(account.lastName, account.firstName) as playerName, count(scorePerEnd.sc_id) as totalPerEnd, scoreTotal.total, `match`.arrows, `match`.m_id from scorePerEnd, `match`, account, scoreCard, scoreTotal where `match`.m_id = 8 and scoreCard.m_id = 8 and scoreCard.sc_id = scorePerEnd.sc_id and scoreCard.sc_id = scoreTotal.sc_id and account.p_id = scorePerEnd.p_id group by scorePerEnd.sc_id';
+						var avgRankingSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, concat(account.lastName, account.firstName) as playerName, count(scorePerEnd.sc_id) as totalPerEnd, scoreTotal.total, `match`.arrows, `match`.m_id from scorePerEnd, `match`, account, scoreCard, scoreTotal where `match`.m_id = ' + connection.escape(data.m_id) + ' and scoreCard.m_id = ' + connection.escape(data.m_id) + ' and scoreCard.sc_id = scorePerEnd.sc_id and scoreCard.sc_id = scoreTotal.sc_id and account.p_id = scorePerEnd.p_id group by scorePerEnd.sc_id';
 
 						// 得点表データを抽出
 						connection.query(avgRankingSql, function(avgRankingErr, avgRankingData) {
