@@ -363,3 +363,28 @@ main.common .warning{
   padding-bottom: 20px;
 }
 
+/* Ranking Page */
+h2.ranking {
+  background-color: #FF9800 !important;
+}
+
+.rankingIndexArea {
+  overflow: hidden;
+}
+
+.plus {
+  -webkit-animation-duration: 2.5s;
+  -o-animation-duration: 2.5s;
+  animation-duration: 2.5s;
+  animation-name: slide-in;
+  transition-timing-function: ease-in-out;
+}
+
+@keyframes slide-in {
+  from {
+    background-color: rgba(255, 193, 7, 0.3);
+  }
+  to {
+    background-color: none;
+  }
+}

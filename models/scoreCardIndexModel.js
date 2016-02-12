@@ -375,14 +375,16 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 			var responseData = [
 			{
 				'rank': 1,
+				'p_id': 1,
 				'sc_id':4,
 				'playerName': 'fnit',
 				'scoreTotal': 200,
 				'scoreAvg': 9,
-				'arrowsTotal': 20 
+				'arrowsTotal': 20
 			},
 			{
 				'rank': 2,
+				'p_id': 9,
 				'sc_id':7,
 				'playerName': 'toya',
 				'scoreTotal': 180,
@@ -392,6 +394,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 			},
 			{
 				'rank': 2,
+				'p_id': 3,
 				'sc_id':1,
 				'playerName': 'taki',
 				'scoreTotal': 180,
@@ -401,6 +404,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 			},
 			{
 				'rank': 4,
+				'p_id': 4,
 				'sc_id':2,
 				'playerName': 'nogu',
 				'scoreTotal': 100,
@@ -414,6 +418,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 		socket.on('testBroadcastInsertScore', function(data) {
 			var responseData = {
 				'sc_id': 1,
+				'p_id': 3,
 				'perEnd': 6,
 				'score_1': 10,
 				'score_2': 10,
@@ -424,7 +429,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 				'subTotal': 60,
 				'ten': 6,
 				'x': 0,
-				'total':220 
+				'total':220
 			};
 
 			socket.emit('broadcastInsertScore', responseData);
