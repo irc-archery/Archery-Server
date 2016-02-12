@@ -48,8 +48,8 @@ socket.on('extractTotalRankingIndex', function(data) {
     $(".total-rank tr[data-id]").remove();
     $(".total-rank .rankingIndexArea").append(code);
   }
-  else {
-    var infoCode = '<div class="alert alert-info" role="alert">現在この試合に得点表は存在しません。新たに得点表を作成したい場合は、上のアイコンから移動できる<a href="/insertScoreCard?m_id=' + getQueryString().m_id + '" class="alert-link">得点表作成画面</a>から新たに得点表を作成してください。</div>';
+  else if (document.getElementById("none") == null) {
+    var infoCode = '<div id="none" class="alert alert-info" role="alert">現在この試合に得点表は存在しません。新たに得点表を作成したい場合は、上のアイコンから移動できる<a href="/insertScoreCard?m_id=' + getQueryString().m_id + '" class="alert-link">得点表作成画面</a>から新たに得点表を作成してください。</div>';
 
     $('.infoArea').append(infoCode);
   }
@@ -61,10 +61,10 @@ socket.on('extractAvgRankingIndex', function(data) {
   console.log('on extractAvgRankingIndex');
 
   var code = '';
+  console.log(getReady_avg);
 
   if(data != '') {
     getReady_avg = data;
-    console.log(getReady_avg);
 
     // e(str); でxssエスケープ関数
     /*  得点表一覧のソースコード */
@@ -72,47 +72,27 @@ socket.on('extractAvgRankingIndex', function(data) {
       code += '<tr data-id="' + e(data[i]['p_id']) + '">';
       code += '<td class="rank">' + e(data[i]['rank'])  + '</td>';
       code += '<td class="playerName">' + e(data[i]['playerName']) + '</td>';
-      code += '<td class="scoreTotal">' + e(data[i]['scoreAvg'].toFixed(1)) + '</td>';
+      code += '<td class="scoreTotal">' + e(data[i]['scoreAvg']) + '</td>';
       code += '</tr>';
     }
 
     $(".avg-rank tr[data-id]").remove();
     $(".avg-rank .rankingIndexArea").append(code);
   }
-  else {
-    var infoCode = '<div class="alert alert-info" role="alert">現在この試合に得点表は存在しません。新たに得点表を作成したい場合は、上のアイコンから移動できる<a href="/insertScoreCard?m_id=' + getQueryString().m_id + '" class="alert-link">得点表作成画面</a>から新たに得点表を作成してください。</div>';
+  else if (document.getElementById("none") == null) {
+    var infoCode = '<div id="none" class="alert alert-info" role="alert">現在この試合に得点表は存在しません。新たに得点表を作成したい場合は、上のアイコンから移動できる<a href="/insertScoreCard?m_id=' + getQueryString().m_id + '" class="alert-link">得点表作成画面</a>から新たに得点表を作成してください。</div>';
 
     $('.infoArea').append(infoCode);
   }
 });
 
-/* debug用イベント (削除可) */
-$('#fire').on('click', function() {
-  socket.emit('testBroadcastInsertScore');
-
-  var code = '';
-  code += '<tr data-id="' + e(0) + '" class="plus">';
-  code += '<td class="rank">' + e(0)  + '</td>';
-  code += '<td class="playerName">' + e(0) + '</td>';
-  code += '<td class="scoreTotal">' + 0 + '</td>';
-  code += '</tr>';
-
-  if (mode == 0) {
-    $(".total-rank .rankingIndexArea").append($(code));
-  }
-  else {
-    $(".avg-rank .rankingIndexArea").append(code);
-  }
-
-  code.on('ready', function () {
-    $(this).removeClass('.plus');
-    alert("sdas");
-    console.log(this);
-  });
-});
-
 // .plus のアニメーション終了後 class 削除
 $(function() {
+  $('.plus').each(function() { // #hogeがあれば
+    setTimeout(function() {
+      $(this).removeClass('plus');
+      }, 1000);      // 情報表示
+  });
 });
 
 // 得点表の表示を切り替える
