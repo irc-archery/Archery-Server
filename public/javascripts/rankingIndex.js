@@ -1,4 +1,4 @@
-var socket = io('/scoreCardIndex');
+var socket = io('/rankingIndex');
 
 $(function() {
 

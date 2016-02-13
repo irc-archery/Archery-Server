@@ -12,6 +12,7 @@ function socketio(server) {
   var matchIndex = require('./matchIndexModel.js')(io.of('/matchIndex'), connection, sessions, io);
   var scoreCardIndex = require('./scoreCardIndexModel.js')(io.of('/scoreCardIndex'), connection, sessions, io);
   var scoreCard = require('./scoreCardModel.js')(io.of('/scoreCard'), connection, sessions, io);
+  var rankingIndex = require('./rankingIndex.js')(io.of('/rankingIndex'), connection, sessions, io);
 
   // クライアントとの接続が確立
   io.sockets.on('connection', function(socket) {
