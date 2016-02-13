@@ -236,6 +236,7 @@ function scoreCardIndexModel(io, connection, sessions, ios) {
 											console.log(scoreCardData);
 
 											socket.broadcast.to('scoreCardIndexRoom' + data.m_id).emit('broadcastInsertScoreCard', scoreCardData[0]);
+											ios.of('/rankingIndex').to('scoreCardIndexRoom' + data.m_id).emit('broadcastInsertScoreCard', scoreCardData[0]);
 										});
 									});
 								});

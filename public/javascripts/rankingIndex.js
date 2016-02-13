@@ -214,9 +214,11 @@ socket.on('broadcastInsertScore', function(data) {
 
 // 新しいメンバーの参加時
 socket.on('broadcastInsertScoreCard', function(data) {
+  
+  console.log('on broadcastInsertScoreCard');
+  console.log(data);
+
   if (data != '') {
-    console.log('on broadcastInsertScoreCard');
-    console.log(data);
 
     // 最下位の算出
     var lowestRank = 1;
