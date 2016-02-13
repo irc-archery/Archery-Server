@@ -118,13 +118,24 @@ router.get('/', loginCheck, function(req, res) {
 router.get('/login', function(req, res, next) {
 	console.log('bellow is req.session.p_id');
 	console.log(req.session.p_id);
+
+	var errFlash;
+
+	if(req.session.err) {
+		errFlash = req.session.err;
+		req.session.err = null;
+	}
+	else {
+		errFlash = null;
+	}
+
 	// すでにログイン済み
 	if(req.session.p_id) {
 		console.log('already logged in ')
 		res.redirect('/personal');
 	}
 	else {
-	    res.render('login', {version: packageJson.version});
+	    res.render('login', {version: packageJson.version, 'err': errFlash});
 	}
 });
 
@@ -183,20 +194,32 @@ router.post('/login', function(req, res) {
 			// ログイン成功
 			if(Object.keys(results).length !== 0) {
 				console.log('try to decryption');
-				if(crypto.decryption(results[0].password) === req.body.password) {
-					console.log('success to login');
-					req.session.p_id = results[0].p_id;
-					req.session.o_id = results[0].o_id;
-					res.redirect('/personal');
-				}
-				else {
-					console.log('faild to login');
+
+				try{
+
+					if(crypto.decryption(results[0].password) === req.body.password) {
+						console.log('success to login');
+						req.session.p_id = results[0].p_id;
+						req.session.o_id = results[0].o_id;
+						res.redirect('/personal');
+					}
+					else {
+						console.log('faild to login');
+						req.session.err = "ログイン名が存在しないか、パスワードが間違っているためログインできませんでした。";
+						res.redirect('/login');
+					}
+				} catch(e) {
+
+					console.log('on catch index.js 200 line. maybe crypto method cause it.(hashedPassword is diff)');
+
+					req.session.err = "エラーが発生しました。(ErrCode 500:01) 再度ログインしても直らない場合はこのシステムの管理者まで連絡していただけると幸いです。";
 					res.redirect('/login');
 				}
 			}
 			// ログイン失敗
 			else {
 				console.log('faild to login');
+				req.session.err = "ログイン名が存在しないか、パスワードが間違っているためログインできませんでした。";
 				res.redirect('/login');
 			}
 		}

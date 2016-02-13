@@ -90,20 +90,28 @@ router.post('/login', function(req, res) {
 		if(Object.keys(results).length !== 0) {
 
 			// TODO cryptoをtry catch
-			if(crypto.decryption(results[0].password) === req.body.password) {
 
-				console.log('success to login');
+			try{
 
-				req.session.p_id = results[0].p_id;
-				req.session.o_id = results[0].o_id;
+				if(crypto.decryption(results[0].password) === req.body.password) {
 
-				data['results'] = true;
-				data['err'] = null;
-			}
-			else {
-				console.log('faild to login');
+					console.log('success to login');
+
+					req.session.p_id = results[0].p_id;
+					req.session.o_id = results[0].o_id;
+
+					data['results'] = true;
+					data['err'] = null;
+				}
+				else {
+					console.log('faild to login');
+					data['results'] = false;
+					data['err'] = 'ログイン名が存在しないか、パスワードが間違っているためログインできませんでした。';
+				}
+			} catch(e) {
+				console.log('on catch app_route 112 line. maybe crypto method cause it.(hashedPassword is diff)');
 				data['results'] = false;
-				data['err'] = 'ログイン名が存在しないか、パスワードが間違っているためログインできませんでした。';
+				data['err'] = 'エラーが発生しました。(ErrCode 500:01) 再度ログインしても直らない場合はこのシステムの管理者まで連絡していただけると幸いです。';
 			}
 		}
 		// ログイン失敗
