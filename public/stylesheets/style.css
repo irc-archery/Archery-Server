@@ -276,21 +276,29 @@ main.common .warning{
   border-top: 0; 
 }
 
-.addCircleArea {
+.addCircleArea, .rankingIconArea {
   width: 70px;
   height: 70px;
   position: fixed;
-  bottom: 10px;
-  right: 10px;
   transition: all .3s ease;
 }
 
-.addCircleArea img{
+.addCircleArea {
+  bottom: 10px;
+  right: 10px;
+}
+
+.rankingIconArea {
+  right: 10px;
+  bottom: 90px; 
+}
+
+.addCircleArea img, .rankingIconArea img{
   width: 100%;
   height: 100%;
 }
 
-.addCircleArea:hover {
+.addCircleArea:hover, .rankingIconArea:hover{
   transform: scale(1.1);
 }
 
