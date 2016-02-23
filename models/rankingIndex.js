@@ -33,6 +33,10 @@ function rankingIndexModel(io, connection, sessions, ios) {
 						// 送られてきたm_idに所属している得点表データを抽出するSQL文
 						var totalRankingSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total from scoreCard, scoreTotal, account where scoreCard.m_id = ' + connection.escape(data.m_id) + ' and scoreCard.sc_id = scoreTotal.sc_id and scoreCard.p_id = account.p_id';
 
+						console.log('totalRankingSql');
+						console.log(totalRankingSql);
+
+
 						// 得点表データを抽出
 						connection.query(totalRankingSql, function(totalRankingErr, totalRankingData) {
 
@@ -65,10 +69,8 @@ function rankingIndexModel(io, connection, sessions, ios) {
 									i++;
 								});
 
-
 								// 配列化されたデータをtotalで昇順に並べ替える	
 								var afterSort = arraySort(beforeSort);
-
 
 								var rank = 1;
 
@@ -157,7 +159,11 @@ function rankingIndexModel(io, connection, sessions, ios) {
 						socket.join('scoreCardIndexRoom' + data.m_id);
 
 						// 送られてきたm_idに所属している得点表データを抽出 
-						var avgRankingSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, concat(account.lastName, account.firstName) as playerName, count(scorePerEnd.sc_id) as totalPerEnd, scoreTotal.total, `match`.arrows, `match`.m_id from scorePerEnd, `match`, account, scoreCard, scoreTotal where `match`.m_id = ' + connection.escape(data.m_id) + ' and scoreCard.m_id = ' + connection.escape(data.m_id) + ' and scoreCard.sc_id = scorePerEnd.sc_id and scoreCard.sc_id = scoreTotal.sc_id and account.p_id = scorePerEnd.p_id group by scorePerEnd.sc_id';
+						//var avgRankingSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, concat(account.lastName, account.firstName) as playerName, count(scorePerEnd.sc_id) as totalPerEnd, scoreTotal.total, `match`.arrows, `match`.m_id from scorePerEnd, `match`, account, scoreCard, scoreTotal where `match`.m_id = ' + connection.escape(data.m_id) + ' and scoreCard.m_id = ' + connection.escape(data.m_id) + ' and scoreCard.sc_id = scorePerEnd.sc_id and scoreCard.sc_id = scoreTotal.sc_id and account.p_id = scorePerEnd.p_id group by scorePerEnd.sc_id';
+						var avgRankingSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, count(scorePerEnd.sc_id) as totalPerEnd, scoreTotal.total, `match`.arrows, `match`.m_id from scoreCard left join scorePerEnd on scoreCard.sc_id = scorePerEnd.sc_id left join scoreTotal on scoreCard.sc_id = scoreTotal.sc_id left join account on scoreCard.p_id = account.p_id left join `match` on scoreCard.m_id = `match`.m_id where scoreCard.m_id = ' + connection.escape(data.m_id) + ' group by scoreCard.sc_id;';
+
+						console.log('avgRankingSql');
+						console.log(avgRankingSql);
 
 						// 得点表データを抽出
 						connection.query(avgRankingSql, function(avgRankingErr, avgRankingData) {
@@ -180,7 +186,11 @@ function rankingIndexModel(io, connection, sessions, ios) {
 
 										indexedP_id[p_id]['scoreTotal'] += avgRankingData[i]['total'];
 										indexedP_id[p_id]['arrowsTotal'] += avgRankingData[i]['totalPerEnd'] * avgRankingData[i]['arrows'];
-									    indexedP_id[p_id]['scoreAvg'] =  indexedP_id[p_id]['scoreTotal'] / indexedP_id[p_id]['arrowsTotal'];
+									    //indexedP_id[p_id]['scoreAvg'] =  indexedP_id[p_id]['scoreTotal'] / indexedP_id[p_id]['arrowsTotal'];
+									    // 得点が0だった場合の処理
+									    var zero_swap = indexedP_id[p_id]['scoreTotal'] / indexedP_id[p_id]['arrowsTotal'];
+									    // jsの評価値としてfalseと評価されるもの(0, null, undefined, false, NaN等)はすべて0, そうでなければそのままの値
+									    indexedP_id[p_id]['scoreAvg'] = zero_swap ? zero_swap : 0; 
 									    indexedP_id[p_id]['breakdown'].push({
 											'sc_id': avgRankingData[i]['sc_id'],
 											'total': avgRankingData[i]['total']
@@ -194,7 +204,11 @@ function rankingIndexModel(io, connection, sessions, ios) {
 										indexedP_id[p_id]['playerName'] = avgRankingData[i]['playerName'];
 										indexedP_id[p_id]['scoreTotal'] = avgRankingData[i]['total'];
 										indexedP_id[p_id]['arrowsTotal'] = avgRankingData[i]['totalPerEnd'] * avgRankingData[i]['arrows'];
-									    indexedP_id[p_id]['scoreAvg'] =  indexedP_id[p_id]['scoreTotal'] / indexedP_id[p_id]['arrowsTotal'];
+									    //indexedP_id[p_id]['scoreAvg'] = indexedP_id[p_id]['scoreTotal'] / indexedP_id[p_id]['arrowsTotal'];
+									    // 得点が0だった場合の処理
+									    var zero_swap = indexedP_id[p_id]['scoreTotal'] / indexedP_id[p_id]['arrowsTotal'];
+									    // jsの評価値としてfalseと評価されるもの(0, null, undefined, false, NaN等)はすべて0, そうでなければそのままの値
+									    indexedP_id[p_id]['scoreAvg'] = zero_swap ? zero_swap : 0;
 										indexedP_id[p_id]['breakdown'] = [{
 											'sc_id': avgRankingData[i]['sc_id'],
 											'total': avgRankingData[i]['total']
