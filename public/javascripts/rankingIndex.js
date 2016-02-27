@@ -30,10 +30,10 @@ socket.on('extractTotalRankingIndex', function(data) {
   console.log('on extractTotalRankingIndex');
 
   var code = '';
+  console.log(getReady_total);
 
   if(data != '') {
     getReady_total = data;
-    console.log(getReady_total);
 
     // e(str); でxssエスケープ関数
     /*  得点表一覧のソースコード */
@@ -86,12 +86,12 @@ socket.on('extractAvgRankingIndex', function(data) {
   }
 });
 
-// .plus のアニメーション終了後 class 削除
+// .plus のアニメーション終了後(1秒後) class 削除
 $(function() {
-  $('.plus').each(function() { // #hogeがあれば
+  $('.plus').each(function() {
     setTimeout(function() {
       $(this).removeClass('plus');
-      }, 1000);      // 情報表示
+      }, 1000);
   });
 });
 
@@ -191,7 +191,7 @@ function rankInsertorUpdate(data) {
   else {
     // Avgスコアの順位変更（表示部分）
     rankAllocation(avg, '#avg');
-    $('#avg tr[data-id=' + data['p_id'] + '] .scoreTotal').text(getReady_avg[dataAround(data, '#avg')]['scoreAvg']);
+    $('#avg tr[data-id=' + data['p_id'] + '] .scoreTotal').text(getReady_avg[dataAround(data, '#avg')]['scoreAvg'].toFixed(1));
   }
 }
 
@@ -204,7 +204,7 @@ socket.on('broadcastInsertScore', function(data) {
   console.log('on broadcastInsertScore');
   console.log(data);
 
-  if (data != '') {
+  if (data != '' && parseInt($('tr[data-id=' + data['p_id'] + '] .scoreTotal').text(), 10) <= data['total']) {
     sortReady(getReady_total, data, 'total');
     sortReady(getReady_avg, data, 'avg');
 
@@ -214,12 +214,11 @@ socket.on('broadcastInsertScore', function(data) {
 
 // 新しいメンバーの参加時
 socket.on('broadcastInsertScoreCard', function(data) {
-  
+
   console.log('on broadcastInsertScoreCard');
   console.log(data);
 
-  if (data != '') {
-
+  if (data != '' && !$('tr[data-id=' + data['p_id'] + ']')[0]) {
     // 最下位の算出
     var lowestRank = 1;
     if (mode == 0) {
