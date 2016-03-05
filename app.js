@@ -33,9 +33,12 @@ app.use(session({
 	secret: process.env.session_sercret || 'secret',
   	saveUninitialized: false,
 	cookie: {
-		httpOnly: false
+		httpOnly: false,
     		// bellow is a recommended option. however, it requires an https-enabled website...
     		// secure: true,
+            cookie: {
+                maxAge:  365 * 24 * 60 * 60 * 1000
+            }
 	},
 	store: store
 	})
