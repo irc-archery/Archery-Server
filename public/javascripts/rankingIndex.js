@@ -204,11 +204,16 @@ socket.on('broadcastInsertScore', function(data) {
   console.log('on broadcastInsertScore');
   console.log(data);
 
-  if (data != '' && parseInt($('tr[data-id=' + data['p_id'] + '] .scoreTotal').text(), 10) <= data['total']) {
-    sortReady(getReady_total, data, 'total');
+  if (data != '') {
+    initilaizeRankingList();
+    /*if ($('.infoArea')[0]) {
+      $('.infoArea').remove();
+    }
+
+    if($('tr[data-id=' + data['p_id'] + '] .scoreTotal').text() <= data['total']) { sortReady(getReady_total, data, 'total'); }
     sortReady(getReady_avg, data, 'avg');
 
-    rankInsertorUpdate(data);
+    rankInsertorUpdate(data);*/
   }
 });
 
