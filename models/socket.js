@@ -17,7 +17,7 @@ function socketio(server) {
   // クライアントとの接続が確立
   io.sockets.on('connection', function(socket) {
 		// 接続成功時のログ
-		console.log('suceess connection');	
+		// console.log('suceess connection');	
   });
 };
 

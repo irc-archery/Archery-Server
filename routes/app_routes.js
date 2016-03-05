@@ -13,11 +13,11 @@ var transporter = nodemailer.createTransport({
 
 // ユーザーの登録を行うPOSTの処理
 router.post('/createAccount', function(req, res) {
-	console.log('post /app/createAccount');
-	console.log(req.body);
+	// console.log('post /app/createAccount');
+	// console.log(req.body);
 
 	var createAccountSql = 'insert into account(firstName, lastName, rubyFirstName, rubyLastName, email, password, birth, type, sex) values(' + connection.escape(req.body.firstName) + ', ' + connection.escape(req.body.lastName) + ', ' + connection.escape(req.body.rubyFirstName) + ', ' + connection.escape(req.body.rubyLastName) + ', ' + connection.escape(req.body.email) + ', ' + connection.escape(crypto.encryption(req.body.password)) + ', ' + connection.escape(req.body.birth) + ', ' + 2 + ', ' + connection.escape(req.body.sex) + ');';
-	console.log(createAccountSql);
+	// console.log(createAccountSql);
 
 	connection.query(createAccountSql, function(err, results) {
 
@@ -25,7 +25,7 @@ router.post('/createAccount', function(req, res) {
 
 		// 作成成功
 		if(err === null) {
-			console.log('success to create new account');
+			// console.log('success to create new account');
 			req.session.p_id = results.insertId;
 			data['results'] = true;
 			data['err'] = null;
@@ -41,7 +41,7 @@ router.post('/createAccount', function(req, res) {
 
 			var hostMail = process.env.EMAIL;
 
-			console.log(typeof hostMail)
+			// console.log(typeof hostMail)
 
 			mess += 'ご不明な点がありましたらこのメールに返信してご連絡ください。';
 
@@ -55,14 +55,14 @@ router.post('/createAccount', function(req, res) {
 			// メール送信 
 			transporter.sendMail(mailOptions, function(error, info) {
 				if(error) {
-					return console.log(error);
+					return // console.log(error);
 				}
-				console.log('message send : ' + info.response);
+				// console.log('message send : ' + info.response);
 			});
 
 		}
 		else {
-			console.log('faild to create new account');
+			// console.log('faild to create new account');
 			data['results'] = false;
 			data['err'] = '入力されたメールアドレスがすでに登録されているなどの原因で、新規作成できませんでした。';
 		}
@@ -73,16 +73,16 @@ router.post('/createAccount', function(req, res) {
 
 // app用のログイン処理
 router.post('/login', function(req, res) {
-	console.log('post /app/login');
-	console.log(req.body);
+	// console.log('post /app/login');
+	// console.log(req.body);
 
 	var loginSql = 'select * from account where email = ' + connection.escape(req.body.email);
-	console.log('loginSql');
-	console.log(loginSql);
+	// console.log('loginSql');
+	// console.log(loginSql);
 
 	connection.query(loginSql, function(err, results) {
-		console.log('results of loginSql');
-		console.log(results);
+		// console.log('results of loginSql');
+		// console.log(results);
 
 		var data = {};
 
@@ -95,7 +95,7 @@ router.post('/login', function(req, res) {
 
 				if(crypto.decryption(results[0].password) === req.body.password) {
 
-					console.log('success to login');
+					// console.log('success to login');
 
 					req.session.p_id = results[0].p_id;
 					req.session.o_id = results[0].o_id;
@@ -104,19 +104,19 @@ router.post('/login', function(req, res) {
 					data['err'] = null;
 				}
 				else {
-					console.log('faild to login');
+					// console.log('faild to login');
 					data['results'] = false;
 					data['err'] = 'ログイン名が存在しないか、パスワードが間違っているためログインできませんでした。';
 				}
 			} catch(e) {
-				console.log('on catch app_route 112 line. maybe crypto method cause it.(hashedPassword is diff)');
+				// console.log('on catch app_route 112 line. maybe crypto method cause it.(hashedPassword is diff)');
 				data['results'] = false;
 				data['err'] = 'エラーが発生しました。(ErrCode 500:01) 再度ログインしても直らない場合はこのシステムの管理者まで連絡していただけると幸いです。';
 			}
 		}
 		// ログイン失敗
 		else {
-			console.log('faild to login');
+			// console.log('faild to login');
 			data['results'] = false;
 			data['err'] = 'ログイン名が存在しないか、パスワードが間違っているためログインできませんでした。';
 		}

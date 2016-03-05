@@ -5,20 +5,20 @@ function matchIndexModel(io, connection, sessions, ios) {
 
 	io.on('connection', function(socket) {
 
-		console.log('connection matchIndexModel');
+		// console.log('connection matchIndexModel');
 
 		// 試合一覧データの取得
 		socket.on('extractMatchIndex', function(data){
 
 			// On log
-			console.log('on extractMatchIndex');
-			console.log(data);
+			// console.log('on extractMatchIndex');
+			// console.log(data);
 
 			/* Get p_id related SessionID */
 			sessions.get(addPrefix(data.sessionID), function(err, body) {
 				if(!err) {
-					console.log('nano');
-					console.log(body);	
+					// console.log('nano');
+					// console.log(body);	
 
 					var p_id = body.sess.p_id;
 					var o_id = body.sess.o_id;
@@ -55,8 +55,8 @@ function matchIndexModel(io, connection, sessions, ios) {
 								connection.query(matchIndexDataSql, function (err, matchIndexData) {
 
 									// emit log
-									console.log('emit extractMatchIndex');
-									console.log(matchIndexData);
+									// console.log('emit extractMatchIndex');
+									// console.log(matchIndexData);
 
 									// 試合一覧データをEmit
 									socket.emit('extractMatchIndex', matchIndexData);
@@ -86,14 +86,14 @@ function matchIndexModel(io, connection, sessions, ios) {
 		socket.on('insertMatch', function(data) {
 
 			// ON log
-			console.log('on insertMatch');
-			console.log(data);
+			// console.log('on insertMatch');
+			// console.log(data);
 
 			/* Get p_id related SessionID */
 			sessions.get(addPrefix(data.sessionID), function(err, body) {
 				if(!err) {
-					console.log('nano');
-					console.log(body);	
+					// console.log('nano');
+					// console.log(body);	
 
 					var p_id = body.sess.p_id;
 					var o_id = body.sess.o_id;
@@ -109,16 +109,16 @@ function matchIndexModel(io, connection, sessions, ios) {
 							if(!err) {
 
 								// output results 
-								console.log('connection.query insertMatch results');
-								console.log(insertMatchResults);
+								// console.log('connection.query insertMatch results');
+								// console.log(insertMatchResults);
 
 								// output err
-								console.log('connection.query insertMatch err');
-								console.log(err);
+								// console.log('connection.query insertMatch err');
+								// console.log(err);
 
 								// 作成された試合のm_idをemit
-								console.log('emit insertMatch');
-								console.log(insertMatchResults.insertId);
+								// console.log('emit insertMatch');
+								// console.log(insertMatchResults.insertId);
 
 								socket.emit('insertMatch', {'m_id': insertMatchResults.insertId});
 
@@ -128,8 +128,8 @@ function matchIndexModel(io, connection, sessions, ios) {
 								connection.query(broadcastInsertMatchSql , function(err, broadcastInsertMatchData) {
 
 									// Emit log
-									console.log('broadcastInsertMatchData');
-									console.log(broadcastInsertMatchData[0]);
+									// console.log('broadcastInsertMatchData');
+									// console.log(broadcastInsertMatchData[0]);
 
 									// 試合のパーミッションはpublic
 									if(data.permission == 0){
@@ -158,14 +158,14 @@ function matchIndexModel(io, connection, sessions, ios) {
 		socket.on('checkOrganization', function(data) {
 
 			// On log
-			console.log('on checkOrganization');
-			console.log(data);
+			// console.log('on checkOrganization');
+			// console.log(data);
 
 			/* Get p_id related SessionID */
 			sessions.get(addPrefix(data.sessionID), function(err, body) {
 				if(!err) {
-					console.log('nano');
-					console.log(body);	
+					// console.log('nano');
+					// console.log(body);	
 
 					var p_id = body.sess.p_id;
 					var o_id = body.sess.o_id;
@@ -179,13 +179,13 @@ function matchIndexModel(io, connection, sessions, ios) {
 						// idを抽出
 						connection.query(checkOrganizationSql, function (err, checkOrganizationData) {
 
-							console.log('checkOrganizationData');
-							console.log(checkOrganizationData);
+							// console.log('checkOrganizationData');
+							// console.log(checkOrganizationData);
 
 							var emitData = {'belongs' : checkOrganizationData[0].o_id != null ? true : false};
 
-							console.log('emit checkOrganization');
-							console.log(emitData);
+							// console.log('emit checkOrganization');
+							// console.log(emitData);
 
 							socket.emit('checkOrganization', emitData);
 						});

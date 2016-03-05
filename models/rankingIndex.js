@@ -7,7 +7,7 @@ function rankingIndexModel(io, connection, sessions, ios) {
 
 	io.on('connection', function(socket) {
 
-		console.log('connection rankingIndex');
+		// console.log('connection rankingIndex');
 
 		// ランキング一覧を返すイベント
 		// client side emit like 
@@ -15,8 +15,8 @@ function rankingIndexModel(io, connection, sessions, ios) {
 		socket.on('extractTotalRankingIndex', function(data) {
 
 			// On log
-			console.log('on extractTotalRankingIndex');
-			console.log(data);
+			// console.log('on extractTotalRankingIndex');
+			// console.log(data);
 
 			/* Get p_id related SessionID */
 			sessions.get(addPrefix(data.sessionID), function(err, body) {
@@ -33,8 +33,8 @@ function rankingIndexModel(io, connection, sessions, ios) {
 						// 送られてきたm_idに所属している得点表データを抽出するSQL文
 						var totalRankingSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, scoreTotal.total from scoreCard, scoreTotal, account where scoreCard.m_id = ' + connection.escape(data.m_id) + ' and scoreCard.sc_id = scoreTotal.sc_id and scoreCard.p_id = account.p_id';
 
-						console.log('totalRankingSql');
-						console.log(totalRankingSql);
+						// console.log('totalRankingSql');
+						// console.log(totalRankingSql);
 
 
 						// 得点表データを抽出
@@ -43,8 +43,8 @@ function rankingIndexModel(io, connection, sessions, ios) {
 							if(!totalRankingErr) {
 
 								// 抽出したデータ
-								console.log('totalRankingData');
-								console.log(totalRankingData);
+								// console.log('totalRankingData');
+								// console.log(totalRankingData);
 
 								var responseData = {};
 
@@ -100,24 +100,24 @@ function rankingIndexModel(io, connection, sessions, ios) {
 									i++;
 								});
 
-								console.log('data for extractTotalRankingIndex');
-								console.log(arrayResponseData);
+								// console.log('data for extractTotalRankingIndex');
+								// console.log(arrayResponseData);
 
 								socket.emit('extractTotalRankingIndex', arrayResponseData);
 							}
 							else {
-								console.log('得点表データの抽出に失敗');
-								console.log(totalRankingErr);
+								// console.log('得点表データの抽出に失敗');
+								// console.log(totalRankingErr);
 							}
 						});
 					}
 					// p_idを取得できていない = ログインができていない ∴ ログイン画面に遷移する
 					else {
-						console.log('authorizationError');
+						// console.log('authorizationError');
 						socket.emit('authorizationError');
 					}
 				}else {
-					console.log('faild to getSession');
+					// console.log('faild to getSession');
 				}
 			});
 		});
@@ -143,8 +143,8 @@ function rankingIndexModel(io, connection, sessions, ios) {
 		socket.on('extractAvgRankingIndex', function(data) {
 
 			// On log
-			console.log('on extractAvgRankingIndex');
-			console.log(data);
+			// console.log('on extractAvgRankingIndex');
+			// console.log(data);
 
 			/* Get p_id related SessionID */
 			sessions.get(addPrefix(data.sessionID), function(err, body) {
@@ -162,8 +162,8 @@ function rankingIndexModel(io, connection, sessions, ios) {
 						//var avgRankingSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, concat(account.lastName, account.firstName) as playerName, count(scorePerEnd.sc_id) as totalPerEnd, scoreTotal.total, `match`.arrows, `match`.m_id from scorePerEnd, `match`, account, scoreCard, scoreTotal where `match`.m_id = ' + connection.escape(data.m_id) + ' and scoreCard.m_id = ' + connection.escape(data.m_id) + ' and scoreCard.sc_id = scorePerEnd.sc_id and scoreCard.sc_id = scoreTotal.sc_id and account.p_id = scorePerEnd.p_id group by scorePerEnd.sc_id';
 						var avgRankingSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, count(scorePerEnd.sc_id) as totalPerEnd, scoreTotal.total, `match`.arrows, `match`.m_id from scoreCard left join scorePerEnd on scoreCard.sc_id = scorePerEnd.sc_id left join scoreTotal on scoreCard.sc_id = scoreTotal.sc_id left join account on scoreCard.p_id = account.p_id left join `match` on scoreCard.m_id = `match`.m_id where scoreCard.m_id = ' + connection.escape(data.m_id) + ' group by scoreCard.sc_id;';
 
-						console.log('avgRankingSql');
-						console.log(avgRankingSql);
+						// console.log('avgRankingSql');
+						// console.log(avgRankingSql);
 
 						// 得点表データを抽出
 						connection.query(avgRankingSql, function(avgRankingErr, avgRankingData) {
@@ -171,8 +171,8 @@ function rankingIndexModel(io, connection, sessions, ios) {
 							if(!avgRankingErr) {
 
 								// 抽出したデータ
-								console.log('avgRankingData');
-								console.log(avgRankingData);
+								// console.log('avgRankingData');
+								// console.log(avgRankingData);
 
 								var indexedP_id = {};
 
@@ -216,8 +216,8 @@ function rankingIndexModel(io, connection, sessions, ios) {
 									}
 								}
 
-								console.log('indexedP_id');
-								console.log(indexedP_id);
+								// console.log('indexedP_id');
+								// console.log(indexedP_id);
 
 								//socket.emit('extractAvgRankingIndex', indexedP_id);
 
@@ -262,8 +262,8 @@ function rankingIndexModel(io, connection, sessions, ios) {
 									i++;
 								});
 
-								console.log('data for extractAvgRankingIndex');
-								console.log(arrayResponseData);
+								// console.log('data for extractAvgRankingIndex');
+								// console.log(arrayResponseData);
 
 								socket.emit('extractAvgRankingIndex', arrayResponseData);	
 							}
@@ -271,11 +271,11 @@ function rankingIndexModel(io, connection, sessions, ios) {
 					}
 					// p_idを取得できていない = ログインができていない ∴ ログイン画面に遷移する
 					else {
-						console.log('authorizationError');
+						// console.log('authorizationError');
 						socket.emit('authorizationError');
 					}
 				}else {
-					console.log('faild to getSession');
+					// console.log('faild to getSession');
 				}
 			});
 		});	
@@ -304,14 +304,14 @@ function rankingIndexModel(io, connection, sessions, ios) {
 		socket.on('checkPermission', function(data) {
 
 			// On log
-			console.log('on checkPermission');
-			console.log(data);
+			// console.log('on checkPermission');
+			// console.log(data);
 
 			/* Get p_id related SessionID */
 			sessions.get(addPrefix(data.sessionID), function(err, body) {
 				if(!err) {
-					console.log('nano');
-					console.log(body);	
+					// console.log('nano');
+					// console.log(body);	
 
 					var p_id = body.sess.p_id;
 					var o_id = body.sess.o_id;
@@ -341,8 +341,8 @@ function rankingIndexModel(io, connection, sessions, ios) {
 							// パーミッションを追加
 							var emitData = {'permission' : ( p_idPermission || sc_idPermission ) ? true : false};
 
-							console.log('checkPermission');
-							console.log(emitData);
+							// console.log('checkPermission');
+							// console.log(emitData);
 
 							socket.emit('checkPermission', emitData);
 						});

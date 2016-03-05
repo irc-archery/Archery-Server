@@ -6,21 +6,21 @@ var packageJson = require('../package.json');
 
 var loginCheck = function(req, res, next) {
 
-	console.log('bellow is req.session.p_id');
-	console.log(req.session.p_id);
+	// console.log('bellow is req.session.p_id');
+	// console.log(req.session.p_id);
 
 	if(req.session.p_id) {
-		console.log('success loginCheck with sessionID');
+		// console.log('success loginCheck with sessionID');
 
 		var checkSession = 'select p_id, o_id from account where p_id = ' + connection.escape(req.session.p_id);
 
 		connection.query(checkSession, function(err, results) {
 
-			console.log('results');
-			console.log(Object.keys(results).length);
+			// console.log('results');
+			// console.log(Object.keys(results).length);
 
-			console.log('err');
-			console.log(err);
+			// console.log('err');
+			// console.log(err);
 
 			if(Object.keys(results).length !== 0) {
 				// アカウントは存在する
@@ -53,7 +53,7 @@ var loginCheck = function(req, res, next) {
 	}
 
 	function faild() {
-		console.log('faild loginCheck with sessionID. redirect login form');
+		// console.log('faild loginCheck with sessionID. redirect login form');
 		req.session.p_id = undefined;
 		req.session.o_id = undefined;
 		res.redirect('/login');
@@ -67,8 +67,8 @@ var mIdCheck = function(req, res, next) {
 
 	// ユーザーが参加しようとしている試合id
 	var m_id = req.query.m_id;
-	console.log('m_id');
-	console.log(m_id);
+	// console.log('m_id');
+	// console.log(m_id);
 
 	// m_idのオプションが存在しないGET
 	if(m_id == undefined) {
@@ -116,8 +116,8 @@ router.get('/', loginCheck, function(req, res) {
 
 // ログイン画面
 router.get('/login', function(req, res, next) {
-	console.log('bellow is req.session.p_id');
-	console.log(req.session.p_id);
+	// console.log('bellow is req.session.p_id');
+	// console.log(req.session.p_id);
 
 	var errFlash;
 
@@ -131,7 +131,7 @@ router.get('/login', function(req, res, next) {
 
 	// すでにログイン済み
 	if(req.session.p_id) {
-		console.log('already logged in ')
+		// console.log('already logged in ')
 		res.redirect('/personal');
 	}
 	else {
@@ -178,39 +178,39 @@ router.get('/rankingIndex', loginCheck, mIdCheck, function(req, res) {
 
 // browser用のログイン処理
 router.post('/login', function(req, res) {
-	console.log('post /login');
-	console.log(req.body);
+	// console.log('post /login');
+	// console.log(req.body);
 
 	var loginSql = 'select * from account where email = ' + connection.escape(req.body.email);
-	console.log('loginSql');
-	console.log(loginSql);
+	// console.log('loginSql');
+	// console.log(loginSql);
 
 	connection.query(loginSql, function(err, results) {
 		if(!err) {
 
-			console.log('results of loginSql');
-			console.log(results);
+			// console.log('results of loginSql');
+			// console.log(results);
 
 			// ログイン成功
 			if(Object.keys(results).length !== 0) {
-				console.log('try to decryption');
+				// console.log('try to decryption');
 
 				try{
 
 					if(crypto.decryption(results[0].password) === req.body.password) {
-						console.log('success to login');
+						// console.log('success to login');
 						req.session.p_id = results[0].p_id;
 						req.session.o_id = results[0].o_id;
 						res.redirect('/personal');
 					}
 					else {
-						console.log('faild to login');
+						// console.log('faild to login');
 						req.session.err = "ログイン名が存在しないか、パスワードが間違っているためログインできませんでした。";
 						res.redirect('/login');
 					}
 				} catch(e) {
 
-					console.log('on catch index.js 200 line. maybe crypto method cause it.(hashedPassword is diff)');
+					// console.log('on catch index.js 200 line. maybe crypto method cause it.(hashedPassword is diff)');
 
 					req.session.err = "エラーが発生しました。(ErrCode 500:01) 再度ログインしても直らない場合はこのシステムの管理者まで連絡していただけると幸いです。";
 					res.redirect('/login');
@@ -218,20 +218,20 @@ router.post('/login', function(req, res) {
 			}
 			// ログイン失敗
 			else {
-				console.log('faild to login');
+				// console.log('faild to login');
 				req.session.err = "ログイン名が存在しないか、パスワードが間違っているためログインできませんでした。";
 				res.redirect('/login');
 			}
 		}
 		else {
-			console.log(err);
+			// console.log(err);
 		}
 	});
 });
 
 router.get('/logout', function(req, res) {
 	req.session.destroy();
-	console.log('deleted session');
+	// console.log('deleted session');
 	res.redirect('/');
 });
 

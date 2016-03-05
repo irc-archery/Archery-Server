@@ -5,21 +5,21 @@ var packageJson = require('../package.json');
 
 var loginCheck = function(req, res, next) {
 
-	console.log('bellow is req.session.p_id');
-	console.log(req.session.p_id);
+	// console.log('bellow is req.session.p_id');
+	// console.log(req.session.p_id);
 
 	if(req.session.p_id) {
-		console.log('success loginCheck with sessionID');
+		// console.log('success loginCheck with sessionID');
 
 		var checkSession = 'select p_id, o_id from account where p_id = ' + connection.escape(req.session.p_id);
 
 		connection.query(checkSession, function(err, results) {
 
-			console.log('results');
-			console.log(Object.keys(results).length);
+			// console.log('results');
+			// console.log(Object.keys(results).length);
 
-			console.log('err');
-			console.log(err);
+			// console.log('err');
+			// console.log(err);
 
 			if(Object.keys(results).length !== 0) {
 				// アカウントは存在する
@@ -52,7 +52,7 @@ var loginCheck = function(req, res, next) {
 	}
 
 	function faild() {
-		console.log('faild loginCheck with sessionID. redirect login form');
+		// console.log('faild loginCheck with sessionID. redirect login form');
 		req.session.p_id = undefined;
 		req.session.o_id = undefined;
 		res.redirect('/login');

@@ -4,21 +4,21 @@ var router = express.Router();
 
 var loginCheck = function(req, res, next) {
 
-	console.log('bellow is req.session.p_id');
-	console.log(req.session.p_id);
+	// console.log('bellow is req.session.p_id');
+	// console.log(req.session.p_id);
 
 	if(req.session.p_id) {
-		console.log('success loginCheck with sessionID');
+		// console.log('success loginCheck with sessionID');
 
 		var checkSession = 'select p_id, o_id from account where p_id = ' + connection.escape(req.session.p_id);
 
 		connection.query(checkSession, function(err, results) {
 
-			console.log('results');
-			console.log(Object.keys(results).length);
+			// console.log('results');
+			// console.log(Object.keys(results).length);
 
-			console.log('err');
-			console.log(err);
+			// console.log('err');
+			// console.log(err);
 
 			if(Object.keys(results).length !== 0) {
 				// アカウントは存在する
@@ -51,7 +51,7 @@ var loginCheck = function(req, res, next) {
 	}
 
 	function faild() {
-		console.log('faild loginCheck with sessionID. redirect login form');
+		// console.log('faild loginCheck with sessionID. redirect login form');
 		req.session.p_id = undefined;
 		req.session.o_id = undefined;
 		res.redirect('/login');
@@ -63,11 +63,11 @@ router.get('/', loginCheck, function(req, res) {
 	// 団体画面の出力
 	var o_id = req.session.o_id;
 
-	console.log('typeof o_id')
-	console.log(typeof o_id)
+	// console.log('typeof o_id')
+	// console.log(typeof o_id)
 
-	console.log('o_id');
-	console.log(o_id);
+	// console.log('o_id');
+	// console.log(o_id);
 
 	if(o_id != undefined && o_id != 'null') {
 		res.render('organization');
@@ -85,8 +85,8 @@ router.get('/create', loginCheck, function(req, res) {
 // post /organization/
 router.post('/', loginCheck, function(req, res) {
 	// 団体作成
-	console.log('req.body');
-	console.log(req.body);
+	// console.log('req.body');
+	// console.log(req.body);
 
 	var p_id = req.session.p_id;
 
@@ -95,20 +95,20 @@ router.post('/', loginCheck, function(req, res) {
 
 	// 団体を作成
 	connection.query(insertOrganizationSql, function(err, insertOrganizationResults) {
-		console.log('insertOrganizationResults');
-		console.log(insertOrganizationResults);
+		// console.log('insertOrganizationResults');
+		// console.log(insertOrganizationResults);
 
 		// 作成したユーザーを団体に所属させるためのSQL文
 		var joinOrganizationSql = 'update account set o_id = ' + insertOrganizationResults.insertId + ' where p_id = ' + p_id;
 
-		console.log('joinOrganizationSql');
-		console.log(joinOrganizationSql);
+		// console.log('joinOrganizationSql');
+		// console.log(joinOrganizationSql);
 
 		// 作成したユーザーを団体に所属させる
 		connection.query(joinOrganizationSql, function(err, joinOrganizationResults) {
 
-			console.log('joinOrganizationResults');
-			console.log(joinOrganizationResults);
+			// console.log('joinOrganizationResults');
+			// console.log(joinOrganizationResults);
 
 			var responseData = {};
 
@@ -133,8 +133,8 @@ router.post('/', loginCheck, function(req, res) {
 router.delete('/:id', loginCheck, function(req, res) {
 	// :idの団体の削除
 
-	console.log(':id');
-	console.log(req.params.id);
+	// console.log(':id');
+	// console.log(req.params.id);
 });
 
 // get /organization/members
@@ -144,8 +144,8 @@ router.get('/members', loginCheck, function(req, res) {
 	var p_id = req.session.p_id;
 	var o_id = req.session.o_id;
 
-	console.log('fnit o_id');
-	console.log(o_id);
+	// console.log('fnit o_id');
+	// console.log(o_id);
 
 	// ユーザーが団体に所属している
 	if (o_id != undefined && o_id != null) {

@@ -5,21 +5,21 @@ var crypto = require('../models/crypto.js');
 
 var loginCheck = function(req, res, next) {
 
-	console.log('bellow is req.session.p_id');
-	console.log(req.session.p_id);
+	//console.log('bellow is req.session.p_id');
+	//console.log(req.session.p_id);
 
 	if(req.session.p_id) {
-		console.log('success loginCheck with sessionID');
+		//console.log('success loginCheck with sessionID');
 
 		var checkSession = 'select * from account where p_id = ' + connection.escape(req.session.p_id);
 
 		connection.query(checkSession, function(err, results) {
 
-			console.log('results');
-			console.log(Object.keys(results).length);
+			//console.log('results');
+			//console.log(Object.keys(results).length);
 
-			console.log('err');
-			console.log(err);
+			//console.log('err');
+			//console.log(err);
 
 			if(Object.keys(results).length !== 0) {
 				// アカウントは存在する
@@ -52,7 +52,7 @@ var loginCheck = function(req, res, next) {
 	}
 
 	function faild() {
-		console.log('faild loginCheck with sessionID. redirect login form');
+		// console.log('faild loginCheck with sessionID. redirect login form');
 		res.send({'results': false, 'err': 'ログインに失敗しました.'});
 	}
 };
@@ -74,8 +74,8 @@ router.get('/', loginCheck, function(req, res) {
 			o_id = extractOrganizationIdResults[0].o_id;
 		}
 
-		console.log('o_id');
-		console.log(o_id);
+		// console.log('o_id');
+		// console.log(o_id);
 
 		if(o_id != undefined) {
 			// 責任者idを抽出するためのSQL文
@@ -91,16 +91,16 @@ router.get('/', loginCheck, function(req, res) {
 
 					var extractMembersSql = 'select account.p_id, concat(account.lastName, account.firstName) as playerName, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, account.email from account where account.o_id = ' + connection.escape(o_id);
 
-					console.log(extractMembersSql);
+					// console.log(extractMembersSql);
 
-					console.log('extractMembersSql');
-					console.log(extractMembersSql);
+					// console.log('extractMembersSql');
+					// console.log(extractMembersSql);
 
 					// メンバー一覧を抽出
 					connection.query(extractMembersSql, function(err, extractMembersResults) {
 
-						console.log('extractMembersResults');
-						console.log(extractMembersResults);
+						// console.log('extractMembersResults');
+						// console.log(extractMembersResults);
 
 						organizationDataResults[0]['status'] = 1;
 
@@ -108,8 +108,8 @@ router.get('/', loginCheck, function(req, res) {
 
 						organizationDataResults[0]['permission'] = organizationAdminIdResults[0].p_id == p_id ? true : false;
 
-						console.log('organizationDataResults[0]');
-						console.log(organizationDataResults[0]);
+						// console.log('organizationDataResults[0]');
+						// console.log(organizationDataResults[0]);
 
 						res.send(organizationDataResults[0]);
 					});
@@ -128,8 +128,8 @@ router.post('/', loginCheck, function(req, res) {
 
 	// 団体作成
 
-	console.log('req.body');
-	console.log(req.body);
+	// console.log('req.body');
+	// console.log(req.body);
 
 	var p_id = req.session.p_id;
 
@@ -138,20 +138,20 @@ router.post('/', loginCheck, function(req, res) {
 
 	// 団体を作成
 	connection.query(insertOrganizationSql, function(err, insertOrganizationResults) {
-		console.log('insertOrganizationResults');
-		console.log(insertOrganizationResults);
+		// console.log('insertOrganizationResults');
+		// console.log(insertOrganizationResults);
 
 		// 作成したユーザーを団体に所属させるためのSQL文
 		var joinOrganizationSql = 'update account set o_id = ' + insertOrganizationResults.insertId + ' where p_id = ' + p_id;
 
-		console.log('joinOrganizationSql');
-		console.log(joinOrganizationSql);
+		// console.log('joinOrganizationSql');
+		// console.log(joinOrganizationSql);
 
 		// 作成したユーザーを団体に所属させる
 		connection.query(joinOrganizationSql, function(err, joinOrganizationResults) {
 
-			console.log('joinOrganizationResults');
-			console.log(joinOrganizationResults);
+			// console.log('joinOrganizationResults');
+			// console.log(joinOrganizationResults);
 
 			var responseData = {};
 
@@ -175,8 +175,8 @@ router.post('/', loginCheck, function(req, res) {
 router.delete('/:id', loginCheck, function(req, res) {
 	// :idの団体の削除
 
-	console.log(':id');
-	console.log(req.params.id);
+	// console.log(':id');
+	// console.log(req.params.id);
 
 	var o_id = req.params.id;
 
@@ -211,11 +211,11 @@ router.delete('/:id', loginCheck, function(req, res) {
 								if(!err) {
 									req.session.o_id = undefined;
 
-									console.log('団体の削除が完了しました');
+									// console.log('団体の削除が完了しました');
 									resData['results'] = true;
 								}
 								else {
-									console.log('ユーザーの団体情報更新に失敗しました');
+									// console.log('ユーザーの団体情報更新に失敗しました');
 									resData['err'] = 'ユーザーの団体情報更新に失敗しました';
 								}
 
@@ -223,27 +223,27 @@ router.delete('/:id', loginCheck, function(req, res) {
 							//});
 						}
 						else {
-							console.log('団体の削除に失敗しました');
+							// console.log('団体の削除に失敗しました');
 							resData['err'] = '団体の削除に失敗しました';
 							res.send(resData);
 						}
 					});
 				}
 				else {
-					console.log('団体削除の権限がありません');
+					// console.log('団体削除の権限がありません');
 					resData['err'] = '団体削除の権限がありません';
 					res.send(resData);
 				}
 			}
 			else {
-				console.log('不正な団体IDです');
+				// console.log('不正な団体IDです');
 				resData['err'] = '不正な団体IDです';
 				res.send(resData);
 			}
 		});
 	}	
 	else {
-		console.log('不正な団体IDです');
+		// console.log('不正な団体IDです');
 		resData['err'] = '不正な団体IDです';
 		res.send(resData);
 	}
@@ -272,23 +272,23 @@ router.get('/members', loginCheck, function(req, res) {
 
 			var extractOrganizationSql = 'select organization.organizationName, (select count(*) from account where account.o_id = ' + connection.escape(o_id) + ') as members from organization where organization.o_id = ' + connection.escape(o_id);
 
-			console.log('extractOrganizationSql');
-			console.log(extractOrganizationSql);
+			// console.log('extractOrganizationSql');
+			// console.log(extractOrganizationSql);
 
 			connection.query(extractOrganizationSql, function(err, extractOrganizationData) {
 
-				console.log('extractOrganizationData');
-				console.log(extractOrganizationData);
+				// console.log('extractOrganizationData');
+				// console.log(extractOrganizationData);
 
 				var extractMembersSql = 'select account.p_id, concat(account.lastName, account.firstName) as playerName, DATE_FORMAT(account.birth, "%Y/%m/%d") as birth, account.email from account where account.o_id = ' + connection.escape(o_id);
 
-				console.log('extractMembersSql');
-				console.log(extractMembersSql);
+				// console.log('extractMembersSql');
+				// console.log(extractMembersSql);
 
 				connection.query(extractMembersSql, function(err, extractMembersResults) {
 
-					console.log('extractMembersResults');
-					console.log(extractMembersResults);
+					// console.log('extractMembersResults');
+					// console.log(extractMembersResults);
 
 					extractOrganizationData[0]['memberList'] = extractMembersResults;
 
@@ -306,22 +306,22 @@ router.get('/members', loginCheck, function(req, res) {
 router.post('/members', loginCheck, function(req, res) {
 	// メンバー追加API
 
-	console.log('req.body');
-	console.log(req.body);
+	// console.log('req.body');
+	// console.log(req.body);
 
 	// 1. ログイン処理
 	var loginSql = 'select p_id, o_id, password from account where email = ' + connection.escape(req.body.email);
 
 	connection.query(loginSql, function(err, results) {
-		console.log('results of loginSql');
-		console.log(results);
+		// console.log('results of loginSql');
+		// console.log(results);
 
 		// ログイン成功
 		if(Object.keys(results).length !== 0) {
 
 			if(crypto.decryption(results[0].password) === req.body.password) {
 
-				console.log('success to login');
+				// console.log('success to login');
 
 				if(!results[0].o_id) {
 
@@ -353,8 +353,8 @@ router.post('/members', loginCheck, function(req, res) {
 								resData['err'] = 'メンバーの追加に失敗しました。';
 							}
 
-							console.log('send response about add member');
-							console.log(resData);
+							// console.log('send response about add member');
+							// console.log(resData);
 
 							res.send(resData);
 						});
@@ -370,7 +370,7 @@ router.post('/members', loginCheck, function(req, res) {
 		}
 		// ログイン失敗
 		else {
-			console.log('faild to login');
+			// console.log('faild to login');
 
 			res.send({'results': false, 'err': 'ログインに失敗しました。Eメールアドレスとパスワードをもう一度確認してください。'});
 		}

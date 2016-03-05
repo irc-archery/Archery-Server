@@ -6,20 +6,20 @@ function scoreCardModel(io, connection, sessions, ios) {
 
 	io.on('connection', function(socket) {
 
-		console.log('connection scoreCard');
+		// console.log('connection scoreCard');
 
 		// 得点表の抽出
 		socket.on('extractScoreCard', function(data) {
 
 			// On log
-			console.log('on extractScoreCard');
-			console.log(data);
+			// console.log('on extractScoreCard');
+			// console.log(data);
 
 			/* Get p_id related SessionID */
 			sessions.get(addPrefix(data.sessionID), function(err, body) {
 				if(!err) {
-					console.log('nano');
-					console.log(body);
+					// console.log('nano');
+					// console.log(body);
 
 					var p_id = body.sess.p_id;
 
@@ -34,8 +34,8 @@ function scoreCardModel(io, connection, sessions, ios) {
 						// idを抽出
 						connection.query(scoreCardIdSql, function (err, scoreCardIdData) {
 
-							console.log('scoreCardIdData');
-							console.log(scoreCardIdData);
+							// console.log('scoreCardIdData');
+							// console.log(scoreCardIdData);
 
 							// データが正常に取得できていたら
 							if(scoreCardIdData != ''){
@@ -103,8 +103,8 @@ function scoreCardModel(io, connection, sessions, ios) {
 
 
 													// Emit log
-													console.log('emit : extractScoreCard');
-													console.log(scoreCardData[0]);
+													// console.log('emit : extractScoreCard');
+													// console.log(scoreCardData[0]);
 
 													// 得点表データのEmit
 													socket.emit('extractScoreCard', scoreCardData[0]);
@@ -115,7 +115,7 @@ function scoreCardModel(io, connection, sessions, ios) {
 								});
 							}
 							else {
-								console.log('不正なsc_idです');
+								// console.log('不正なsc_idです');
 							}
 						});
 					}
@@ -131,14 +131,14 @@ function scoreCardModel(io, connection, sessions, ios) {
 		socket.on('insertScore', function (data) {
 
 			// On log
-			console.log('on insertScore');
-			console.log(data);
+			// console.log('on insertScore');
+			// console.log(data);
 
 			/* Get p_id related SessionID */
 			sessions.get(addPrefix(data.sessionID), function(err, body) {
 				if(!err) {
-					console.log('nano');
-					console.log(body);	
+					// console.log('nano');
+					// console.log(body);	
 
 					var loggedp_id = body.sess.p_id;
 					var o_id = body.sess.o_id;
@@ -179,21 +179,21 @@ function scoreCardModel(io, connection, sessions, ios) {
 												// 後にこのコールバック関数で、挿入された得点をブロードキャストでエミットする
 
 												// output results
-												console.log('connection.query insertScore results');
-												console.log(insertScoreData);
+												// console.log('connection.query insertScore results');
+												// console.log(insertScoreData);
 
 												// output err
-												console.log('connection.query insertScore err');
-												console.log(err);
+												// console.log('connection.query insertScore err');
+												// console.log(err);
 
 												// 得点合計の挿入処理
 												connection.query(updateScoreTotalSql, function (err3, updateScoreTotalData) {
 													if(!err3) {
-														console.log('connection.query updateScore results');
-														console.log(updateScoreTotalData);
+														// console.log('connection.query updateScore results');
+														// console.log(updateScoreTotalData);
 
-														console.log('connection.query updateScore err');
-														console.log(err);
+														// console.log('connection.query updateScore err');
+														// console.log(err);
 
 														// 挿入された値を抽出し、ブロードキャストでエミットするためのSQL文
 														var broadcastInsertScoreSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, scorePerEnd.perEnd, scorePerEnd.score_1, scorePerEnd.score_2, scorePerEnd.score_3, scorePerEnd.score_4, scorePerEnd.score_5, scorePerEnd.score_6, scorePerEnd.subTotal, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scorePerEnd`, `scoreTotal` where scorePerEnd.sc_id = ' + connection.escape(data.sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(p_id) + ' and scorePerEnd.perEnd = ' + connection.escape(data.perEnd) + ' and scoreTotal.sc_id = ' + connection.escape(data.sc_id) + ' and scoreTotal.p_id = ' + connection.escape(p_id) + ';';
@@ -201,8 +201,8 @@ function scoreCardModel(io, connection, sessions, ios) {
 														// broadcast Emit		
 														connection.query(broadcastInsertScoreSql, function (err, broadcastInsertScoreData) {
 
-															console.log('Emit : broadcastInsertScoreData');
-															console.log(broadcastInsertScoreData[0]);
+															// console.log('Emit : broadcastInsertScoreData');
+															// console.log(broadcastInsertScoreData[0]);
 
 															socket.broadcast.to('scoreCardRoom' + data.sc_id).emit('broadcastInsertScore', broadcastInsertScoreData[0]);
 
@@ -217,7 +217,7 @@ function scoreCardModel(io, connection, sessions, ios) {
 								});
 							}
 							else {
-								console.log('データの重複が発生したためデータを挿入しませんでした');
+								// console.log('データの重複が発生したためデータを挿入しませんでした');
 							}
 						});
 					}
@@ -233,14 +233,14 @@ function scoreCardModel(io, connection, sessions, ios) {
 		socket.on('updateScore', function (data) {
 
 			// On log
-			console.log('on updateScore');
-			console.log(data);
+			// console.log('on updateScore');
+			// console.log(data);
 
 			/* Get p_id related SessionID */
 			sessions.get(addPrefix(data.sessionID), function(err, body) {
 				if(!err) {
-					console.log('nano');
-					console.log(body);	
+					// console.log('nano');
+					// console.log(body);	
 
 					var loggedp_id = body.sess.p_id;
 					var o_id = body.sess.o_id;
@@ -278,12 +278,12 @@ function scoreCardModel(io, connection, sessions, ios) {
 										// 後にこのコールバック関数で、挿入された得点をブロードキャストでエミットする
 
 										// output results
-										console.log('connection.query updateScore results');
-										console.log(updateScoreData);
+										// console.log('connection.query updateScore results');
+										// console.log(updateScoreData);
 
 										// output err
-										console.log('connection.query updateScore err');
-										console.log(err2);
+										// console.log('connection.query updateScore err');
+										// console.log(err2);
 
 										// 得点合計の挿入処理
 										connection.query(updateScoreTotalSql, function (err3, updateScoreTotalData) {
@@ -291,12 +291,12 @@ function scoreCardModel(io, connection, sessions, ios) {
 											if(!err3) {
 
 												// output results
-												console.log('connection.query updateScore results');
-												console.log(updateScoreTotalData);
+												// console.log('connection.query updateScore results');
+												// console.log(updateScoreTotalData);
 
 												// output err
-												console.log('connection.query updateScore err');
-												console.log(err3);
+												// console.log('connection.query updateScore err');
+												// console.log(err3);
 
 												// 挿入された値を抽出し、ブロードキャストでエミットするためのSQL文
 												var broadcastUpdateScoreSql = 'select scorePerEnd.sc_id, scorePerEnd.p_id, scorePerEnd.perEnd, '
@@ -312,8 +312,8 @@ function scoreCardModel(io, connection, sessions, ios) {
 												connection.query(broadcastUpdateScoreSql, function(err, broadcastUpdateScoreData) {
 
 													// Emit log
-													console.log('Emit : broadcastUpdateScore');
-													console.log(broadcastUpdateScoreData[0]);
+													// console.log('Emit : broadcastUpdateScore');
+													// console.log(broadcastUpdateScoreData[0]);
 
 													socket.broadcast.to('scoreCardRoom' + data.sc_id).emit('broadcastUpdateScore', broadcastUpdateScoreData[0]);
 
@@ -339,14 +339,14 @@ function scoreCardModel(io, connection, sessions, ios) {
 		socket.on('insertNumber', function (data) {
 
 			// On log
-			console.log('on insertNumber');
-			console.log(data);
+			// console.log('on insertNumber');
+			// console.log(data);
 
 			/* Get p_id related SessionID */
 			sessions.get(addPrefix(data.sessionID), function(err, body) {
 				if(!err) {
-					console.log('nano');
-					console.log(body);	
+					// console.log('nano');
+					// console.log(body);	
 
 					var p_id = body.sess.p_id;
 					var o_id = body.sess.o_id;
@@ -370,8 +370,8 @@ function scoreCardModel(io, connection, sessions, ios) {
 
 								connection.query(broadcastInsertNumberSql, function(err, broadcastInsertNumberResults) {
 
-									console.log('Emit: broadcastInsertNumber');
-									console.log(broadcastInsertNumberSql[0]);
+									// console.log('Emit: broadcastInsertNumber');
+									// console.log(broadcastInsertNumberSql[0]);
 
 									socket.broadcast.to('scoreCardRoom' + sc_id).emit('broadcastInsertNumber', broadcastInsertNumberResults[0]);
 								});
@@ -389,14 +389,14 @@ function scoreCardModel(io, connection, sessions, ios) {
 		socket.on('insertPrefectures', function (data) {
 
 			// On log
-			console.log('on insertPrefectures');
-			console.log(data);
+			// console.log('on insertPrefectures');
+			// console.log(data);
 
 			/* Get p_id related SessionID */
 			sessions.get(addPrefix(data.sessionID), function(err, body) {
 				if(!err) {
-					console.log('nano');
-					console.log(body);	
+					// console.log('nano');
+					// console.log(body);	
 
 					var p_id = body.sess.p_id;
 					var o_id = body.sess.o_id;
@@ -420,8 +420,8 @@ function scoreCardModel(io, connection, sessions, ios) {
 
 								connection.query(broadcastInsertPrefecturesSql, function(err, broadcastInsertPrefecturesResults) {
 
-									console.log('Emit: broadcastInsertPrefectures');
-									console.log(broadcastInsertPrefecturesSql[0]);
+									// console.log('Emit: broadcastInsertPrefectures');
+									// console.log(broadcastInsertPrefecturesSql[0]);
 
 									socket.broadcast.to('scoreCardRoom' + sc_id).emit('broadcastInsertPrefectures', broadcastInsertPrefecturesResults[0]);
 								});

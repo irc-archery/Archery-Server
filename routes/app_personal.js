@@ -4,21 +4,21 @@ var router = express.Router();
 
 var loginCheck = function(req, res, next) {
 
-	console.log('bellow is req.session.p_id');
-	console.log(req.session.p_id);
+	// console.log('bellow is req.session.p_id');
+	// console.log(req.session.p_id);
 
 	if(req.session.p_id) {
-		console.log('success loginCheck with sessionID');
+		// console.log('success loginCheck with sessionID');
 
 		var checkSession = 'select * from account where p_id = ' + connection.escape(req.session.p_id);
 
 		connection.query(checkSession, function(err, results) {
 
-			console.log('results');
-			console.log(Object.keys(results).length);
+			// console.log('results');
+			// console.log(Object.keys(results).length);
 
-			console.log('err');
-			console.log(err);
+			// console.log('err');
+			// console.log(err);
 
 			if(Object.keys(results).length !== 0) {
 				// アカウントは存在する
@@ -51,7 +51,7 @@ var loginCheck = function(req, res, next) {
 	}
 
 	function faild() {
-		console.log('faild loginCheck with sessionID. redirect login form');
+		// console.log('faild loginCheck with sessionID. redirect login form');
 		res.send({'results': false, 'err': 'ログインに失敗しました.'});
 	}
 };
@@ -63,8 +63,8 @@ router.get('/', loginCheck, function(req, res) {
 	// sessionよりidを抽出
 	var p_id = req.session.p_id;
 
-	console.log('p_id');
-	console.log(p_id);
+	// console.log('p_id');
+	// console.log(p_id);
 
 	// o_id抽出
 	var extractOrganizationIdSql = 'select o_id from account where p_id = ' + p_id;
@@ -84,8 +84,8 @@ router.get('/', loginCheck, function(req, res) {
 		//var userRecordSql = 'select sc_id, scoreTotal.total as sum from scoreTotal where p_id = ' + connection.escape(p_id) + ' limit 5';
 		var userRecordSql = 'select sc_id, DATE_FORMAT(created, "%Y/%m/%d %H:%i:%s") as created from scoreCard where p_id = ' + connection.escape(p_id) + ' order by created desc limit 5';
 
-		console.log('userRecordSql');
-		console.log(userRecordSql);
+		// console.log('userRecordSql');
+		// console.log(userRecordSql);
 
 		// ユーザーの基本情報を追加
 		connection.query(userDataSql, function(err, userDataResults){
@@ -110,49 +110,49 @@ router.get('/', loginCheck, function(req, res) {
 							countPerEndSql += ' union all select count(spe_id) as perEnd from scorePerEnd where scorePerEnd.sc_id = ' + userRecordResults[i].sc_id;
 						}
 
-						console.log('userRecordMatchSql');
-						console.log(userRecordMatchSql);
+						// console.log('userRecordMatchSql');
+						// console.log(userRecordMatchSql);
 
-						console.log('countPerEndSql');
-						console.log(countPerEndSql);
+						// console.log('countPerEndSql');
+						// console.log(countPerEndSql);
 
 						// これまでの得点表データを抽出
 						connection.query(userRecordMatchSql, function(err, userRecordMatchResults) {
 							// セット数のカウント
 							connection.query(countPerEndSql, function(err, countPerEndData) {
 
-								console.log('err');
-								console.log(err);
+								// console.log('err');
+								// console.log(err);
 
-								console.log('userRecordMatchResults');
-								console.log(userRecordMatchResults);
+								// console.log('userRecordMatchResults');
+								// console.log(userRecordMatchResults);
 
-								console.log('userRecordResults');
-								console.log(userRecordResults);
+								// console.log('userRecordResults');
+								// console.log(userRecordResults);
 
-								console.log('countPerEndData');
-								console.log(countPerEndData);
+								// console.log('countPerEndData');
+								// console.log(countPerEndData);
 
 								userDataResults[0]['record'] = userRecordMatchResults;
 
 								for(var i = 0; i < userRecordMatchResults.length; i++) {
 									userDataResults[0]['record'][i]['perEnd'] = countPerEndData[i]['perEnd'];
 								}
-								console.log('response of GET /personal/')
-								console.log(userDataResults[0]);
+								// console.log('response of GET /personal/')
+								// console.log(userDataResults[0]);
 
 								res.send(userDataResults[0]);
 							});
 						});
 					}
 					else {
-						console.log('userDataResults');
-						console.log(userDataResults);
+						// console.log('userDataResults');
+						// console.log(userDataResults);
 
 						userDataResults[0]['record'] = [];
 
-						console.log('response of GET /personal/');
-						console.log(userDataResults[0]);
+						// console.log('response of GET /personal/');
+						// console.log(userDataResults[0]);
 
 						res.send(userDataResults[0]);
 					}
@@ -206,11 +206,11 @@ router.delete('/', loginCheck, function(req, res) {
 
 		connection.query(deleteAccountSql, function(err, deleteAccountData) {
 
-			console.log('deleteAccountData');
-			console.log(deleteAccountData);
+			// console.log('deleteAccountData');
+			// console.log(deleteAccountData);
 
-			console.log('err');
-			console.log(err);
+			// console.log('err');
+			// console.log(err);
 
 			var resData = {};
 
@@ -240,14 +240,14 @@ router.get('/record', loginCheck, function(req, res) {
 	// ユーザーが過去に作成した得点表のidを抽出するためのSQL文
 	var scoreCardIdSql = 'select sc_id, DATE_FORMAT(created, "%Y/%m/%d %H:%i:%s") as created from scoreCard where p_id = ' + connection.escape(p_id) + ' order by created desc';
 
-	console.log('scoreCardIdSql');
-	console.log(scoreCardIdSql);
+	// console.log('scoreCardIdSql');
+	// console.log(scoreCardIdSql);
 
 	// ユーザーが過去に作成した得点表のidを抽出する
 	connection.query(scoreCardIdSql, function(err, scoreCardIdData) {
 
-		console.log('scoreCardIdData');
-		console.log(scoreCardIdData);
+		// console.log('scoreCardIdData');
+		// console.log(scoreCardIdData);
 
 		if(scoreCardIdData != '') {
 
@@ -258,14 +258,14 @@ router.get('/record', loginCheck, function(req, res) {
 				personalRecordSql += ' union all select (' + connection.escape(scoreCardIdData[i].sc_id) + ') as sc_id, `match`.matchName, DATE_FORMAT(' + connection.escape(scoreCardIdData[i].created) + ', "%m月%d日") as created, (select count(spe_id) from scorePerEnd where scorePerEnd.sc_id = ' + scoreCardIdData[i].sc_id + ') as perEnd, `match`.arrows, (select scoreTotal.total from scoreTotal where scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[i].sc_id) + ' limit 1) as sum from `match` where `match`.m_id = (select scoreCard.m_id from scoreCard where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[i].sc_id) + ')';
 			}
 
-			console.log('personalRecordSql');
-			console.log(personalRecordSql);
+			// console.log('personalRecordSql');
+			// console.log(personalRecordSql);
 
 			// 過去の得点表データを抽出する
 			connection.query(personalRecordSql, function(err, personalRecordData) {
 
-				console.log('personalRecordData');
-				console.log(personalRecordData);
+				// console.log('personalRecordData');
+				// console.log(personalRecordData);
 
 				var resData = {"status": 1, "record": personalRecordData};
 
@@ -303,8 +303,8 @@ router.get('/record/:id', loginCheck, function(req, res) {
 		// idを抽出
 		connection.query(scoreCardIdSql, function (err, scoreCardIdData) {
 
-			console.log('scoreCardIdData');
-			console.log(scoreCardIdData);
+			// console.log('scoreCardIdData');
+			// console.log(scoreCardIdData);
 
 			// データが正常に取得できていたら
 			if(scoreCardIdData != '') {
@@ -322,8 +322,8 @@ router.get('/record/:id', loginCheck, function(req, res) {
 						scoreCardSql = 'select scoreCard.sc_id, scoreCard.p_id, concat(account.lastName, account.firstName) as playerName, `match`.matchName, DATE_FORMAT(`match`.created, "%Y/%m/%d") as created, scoreCard.prefectures, scoreCard.number, `match`.length, scoreTotal.ten, scoreTotal.x, scoreTotal.total from `scoreCard`, `account`, `match`, `scoreTotal` where scoreCard.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and account.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ' and `match`.m_id = ' + connection.escape(scoreCardIdData[0].m_id) + ' and scoreTotal.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scoreTotal.p_id = ' + connection.escape(scoreCardIdData[0].p_id)+ ';';
 					}
 
-					console.log('scoreCardSql');
-					console.log(scoreCardSql);
+					// console.log('scoreCardSql');
+					// console.log(scoreCardSql);
 
 					// 得点表の現在のセット数をカウントするためのSQL文
 					var countPerEndSql = 'select count(spe_id) as countPerEnd from scorePerEnd where scorePerEnd.sc_id = ' + connection.escape(scoreCardIdData[0].sc_id) + ' and scorePerEnd.p_id = ' + connection.escape(scoreCardIdData[0].p_id) + ';';
@@ -338,14 +338,14 @@ router.get('/record/:id', loginCheck, function(req, res) {
 							// 得点データの抽出
 							connection.query(scorePerEndSql, function (err, scorePerEndData) {
 
-								console.log('scoreCardData');
-								console.log(scoreCardData);
+								// console.log('scoreCardData');
+								// console.log(scoreCardData);
 
-								console.log('countPerEndData');
-								console.log(countPerEndData);
+								// console.log('countPerEndData');
+								// console.log(countPerEndData);
 
-								console.log('scorePerEndData');
-								console.log(scorePerEndData);
+								// console.log('scorePerEndData');
+								// console.log(scorePerEndData);
 
 								// ２つのSQL文の結果を結合
 								scoreCardData[0]['score'] = scorePerEndData;
@@ -353,8 +353,8 @@ router.get('/record/:id', loginCheck, function(req, res) {
 								scoreCardData[0]['countPerEnd'] = countPerEndData[0].countPerEnd;
 
 								// Emit log
-								console.log('emit : extractScoreCard');
-								console.log(scoreCardData[0]);
+								// console.log('emit : extractScoreCard');
+								// console.log(scoreCardData[0]);
 
 								// 得点表データのEmit
 								res.send(scoreCardData[0]);
@@ -363,11 +363,11 @@ router.get('/record/:id', loginCheck, function(req, res) {
 					});
 				}
 				else {
-					console.log('不正なアクセスです');
+					// console.log('不正なアクセスです');
 				}
 			}
 			else {
-				console.log('不正なsc_idです');
+				// console.log('不正なsc_idです');
 			}
 		});
 	});
@@ -400,11 +400,11 @@ router.delete('/record/:id', loginCheck, function(req, res) {
 					connection.query(deleteScoreTotalSql, function(err, deleteScoreTotalResults) {
 						connection.query(deleteScorePerEndSql, function(err, deleteScorePerEndResults) {
 							if(!err) {
-								console.log('faild to delete scoreCard');
+								// console.log('faild to delete scoreCard');
 								res.send({'results': true, 'err': null});
 							}
 							else {
-								console.log('faild to delete scoreCard');
+								// console.log('faild to delete scoreCard');
 								res.send({'results': false, 'err': '得点表の削除に失敗しました'});
 							}
 						});
@@ -413,7 +413,7 @@ router.delete('/record/:id', loginCheck, function(req, res) {
 			}
 		}
 		else {
-			console.log('faild to checkPermission on delete /record/:id');
+			// console.log('faild to checkPermission on delete /record/:id');
 			res.send({'results': false, 'err': 'アカウントの認証に失敗しました'});
 		}
 	});
