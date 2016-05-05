@@ -5,179 +5,18 @@
 得点表に得点を入力して管理することや試合の作成、過去の対戦データや個人のデータの管理なども行えるようになっています。   
 
 
+
 ## システムの機能   
 　**離れたところでもリアルタイムでアーチェリーの試合ができる**ことを実現するために私たちは次のような機能を実装しました。得点表を電子データとして管理し、スマートフォンなどの端末で得点を入力することにより、同じ得点表を見ているユーザーに情報が__リアルタイム※1__で反映される機能(※1 ブラウザの更新ボタンを押すことなく自動的に更新されます。)やアカウントを作成することで、過去の得点を管理し、グラフとして視覚的にわかりやすく確認できる機能です。  
 
 
 ## システムの利用  
-　このシステムを利用するためには、Nodejsを使用したWeb Serverを構築する必要があります。クライアントとして、ブラウザからの利用できるWebクライアントのほか、Android用 ネイティブアプリ([https://github.com/irc-archery/Args-for-Android](https://github.com/irc-archery/Args-for-Android))、iOS用ネイティブアプリ([https://github.com/irc-archery/Args-For-iOS](https://github.com/irc-archery/Args-For-iOS))も別途制作してあります。ウェブサーバーの構築手順については、このドキュメントの下記に掲載してある__サーバー構築手順__をご覧ください。
+　このシステムを利用するためには、Nodejsを使用したWeb Serverを構築する必要があります。クライアントとして、ブラウザからの利用できるWebクライアントのほか、Android用 ネイティブアプリ([https://github.com/irc-archery/Args-for-Android](https://github.com/irc-archery/Args-for-Android))、iOS用ネイティブアプリ([https://github.com/irc-archery/Args-For-iOS](https://github.com/irc-archery/Args-For-iOS))も別途制作してあります。ウェブサーバーの構築手順については、このリポジトリのWiki([https://github.com/irc-archery/Archery-Server/wiki](https://github.com/irc-archery/Archery-Server/wiki))をご覧ください。
 
-
-## サーバー動作環境
-
-* CentOS release 6.6 (Final)  
-* Nodejs v0.12.7  
-* MySQL v5.6.24  
-* CouchDB v1.6.1  
-* Express v4.11.2  
-* Socket.IO v1.3.5  
-
-## サーバー構築手順
-
-1. Nodejsをインストール  
-2. MySQLをインストール  
-3. CouchDBをインストール  
-4. 環境設定  
-5. サービスを起動する  
-
-### 1. Nodejsをインストール  
-Nodejsをインストールします。  
-ここでは、複数のnode.jsのバージョンを管理することができるnaveを使用してNode.jsをインストールします。  
-
-#### 1-1. nave リポジトリをクローン
-Terminal上から以下のコマンドの入力してください。(Gitが必要となります)  
-
-`# git clone git@github.com:isaacs/nave`  
-
-#### 1-2. インストールに使用する nave.shファイルをカレントディレクトリにコピーする  
-
-`# cp ~/nave/nave.sh ~/`  
-
-#### 1-3. nave.shを使用してNodejsの安定版をインストールする
-
-`# ./nave.sh install stable`  
-
-#### 1-4. Nodejsを起動する
-
-`# ./nave.sh use stable`  
-
----
-### 2. MySQLをインストール
-
-#### 2-1. RPM パッケージを取得する
-
-`# wget http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm`  
-
-#### 2-2. yumでインストールする
-
-    # yum localinstall mysql-community-release-el6-5.noarch.rpm  
-    # yum install mysql-community-server  
-
-#### 2-3. MySQLを起動する
-
-`# /etc/rc.d/init.d/mysqld start`
-
----
-### 3. CouchDBをインストール
-
-#### 3-1. リポジトリをインストールする
-
-    # wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm  
-    # wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm  
-    # rpm -Uvh remi-release-6.rpm epel-release-6-8.noarch.rpm  
-
-#### 3-2. ビルドに必要なツールをインストール
-
-`#yum install libicu-devel openssl-devel curl-devel make gcc erlang js-devel libtool which gcc-c++`  
-
-#### 3-3. ミラーサイトからCouchDBのソースコードをダウンロード
-
-`# wget http://apache.cs.utah.edu/couchdb/source/1.6.1/apache-couchdb-1.6.1.tar.gz`  
-
-※ミラーサイト一覧  
-<https://www.apache.org/dyn/closer.cgi?path=/couchdb/source/1.6.1/apache-couchdb-1.6.1.tar.gz>  
-
-#### 3-4. CouchDBのインストール 
-
-    # gunzip -c apache-couchdb-1.6.1.tar.gz | tar -xvf -  
-    # cd apache-couchdb-1.6.1  
-    # ./configure --with-erlang=/usr/lib64/erlang/usr/include  
-    # make && make install  
-
-#### 3-5. CouchDBユーザーを作成
-
-    # adduser -r --home /usr/local/var/lib/couchdb -M --shell /bin/bash --comment "CouchDB Administrator" couchdb  
-    # chown -R couchdb:couchdb /usr/local/etc/couchdb  
-    # chown -R couchdb /usr/local/var/lib/couchdb  
-    # chown -R couchdb /usr/local/var/run/couchdb  
-    # chown -R couchdb:couchdb /usr/local/var/log/couchdb  
-    # chmod -R 0770 /usr/local/etc/couchdb 
-    # chmod -R 0770 /usr/local/var/lib/couchdb  
-    # chmod -R 0770 /usr/local/var/log/couchdb  
-    # chmod -R 0770 /usr/local/var/run/couchdb  
-
-#### 3-6. Couchdbの設定ファイルを編集
-
-`# vim /usr/local/etc/couchdb/local.ini`
-
-以下を [httpd]の下に追加  
-`bind_address = x.x.x.x // 使用しているサーバのIPアドレス`
-
-#### 3-7. CouchDBを起動
-`# ln -s /usr/local/etc/rc.d/couchdb /etc/init.d/couchdb`  
-`# chkconfig --add couchdb`  
-`# chkconfig --level 1234 couchdb on`  
-
----
-### 4. 環境設定
-
-#### 4-1. プロジェクトをクローンする  
-
-`# git clone git@github.com:irc-archery/Archery-Server`  
-
-#### 4-2. データベースを定義  
-MySQLにログインして、システムで使用するデータベースを構築します。    
-
-##### 4-2-1. TerminalからMySQL起動
-
-    # cd Archery-Server  
-    # mysql -u root -p  
-    Enter password: ***  
-
-##### 4-2-2. データベースを定義する
-
-`mysql> source ./sql/setup.sql`  
-
-`mysql> exit`  
-
-#### 4-3. 環境変数の設定
-run.shファイルを編集し,使用している環境に合わせて環境変数を設定する  
-
-`# vim ./run.sh`  
-
-    export MYSQL_HOST="127.0.0.1"					// MySQLのIP Address
-    export MYSQL_USER="archery_user"				// MySQLのユーザー
-    export MYSQL_PASS="archery_password"			// MySQLのパスワード
-    export MYSQL_DB="archery"						// システムで使用するDB名j
-
-    # setup couchdb options
-    export COUCHDB_NAME="archery-server-sessions"	// Session storeに使用するDB名
-    export COUCHDB_HOST="127.0.0.1"					// CouchDBのIP Address
-
-    # setup session secret
-    export SESSION_SECRET="sessionSecret"			// セッションを生成するためのパスフレーズ
-    export COOKIE_SECRET="cookieSecret"				// クッキーを生成するためのパスフレーズ
-    
-    export HASH_PASSWORD="hashPassword"				// パスワードの暗号化に必要なパスフレーズ
-
-    export EMAIL="example@email.com"				// 新規アカウント作成時に送信されるメールアドレスの送信元
-    export PASSWORD="password"						// メールアドレスを利用するために必要なパスワード
-
-#### 4-4. プロセスの永続化に必要なパッケージをインストール
-
-`# npm install -g forever`  
-
-
-### 5. サービスを起動する
-
-#### 5-1. サービスを起動
-`# ./run.sh`  
-
-#### 5-2. サービスを停止
-`# forever stopall`  
 
 ## Authors  
 宮城県工業高等学校 [情報研究部](http://www.irc.hira-tech.net) プロジェクトチーム Args  
+
 
 ## Licence  
 MIT  
